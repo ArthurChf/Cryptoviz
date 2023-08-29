@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  api:
+    build: ./api
+    restart: 'on-failure:2'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./api:/nest_api
