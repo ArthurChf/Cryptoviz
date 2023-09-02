@@ -4,10 +4,12 @@ https://docs.nestjs.com/modules
 
 import { Module } from '@nestjs/common';
 import { RssFeedTestController } from './rss-feed-test.controller';
+import { RssFeedService } from './rss-feed.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-    imports: [],
+    imports: [HttpModule],
     controllers: [RssFeedTestController],
-    providers: [],
+    providers: [RssFeedService],
 })
-export class RssFeedModule {}
+export class RssFeedModule { }

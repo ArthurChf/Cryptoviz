@@ -1,12 +1,11 @@
 import { Controller, Get } from "@nestjs/common";
-import { RssFeedModel } from "./rss-feed.model";
+import { RssFeedService } from "./rss-feed.service";
 
 @Controller('/rss-feed-test')
 export class RssFeedTestController {
+    constructor(private readonly rssFeedService: RssFeedService) { }
     @Get()
     async test() {
-        const feed = new RssFeedModel('https://cryptoslate.com/feed/');
-        return await feed.read();
+        return await this.rssFeedService.read();
     }
-
 }
