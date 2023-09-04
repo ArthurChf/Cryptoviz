@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+        "paths": {
+            "@assets/*": ["./src/assets/*"],
+            "@components/*": ["./src/components/*"],
+            "@composables/*": ["./src/composables/*"],
+            "@enums/*": ["./src/enums/*"],
+            "@layouts/*": ["./src/layouts/*"],
+            "@router/*": ["./src/router/*"],
+            "@types/*": ["./src/types/*"],
+            "@views/*": ["./src/views/*"]
+        },
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": false,
+        "target": "ESNext",
+        "useUnknownInCatchVariables": true
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "include": [
+        "./**/*.ts",
+        "./**/*.js",
+        "./**/*.vue",
+        "./.eslintrc.js"
+    ]
+}
