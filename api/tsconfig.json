@@ -19,9 +19,11 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@app/entities": [
+        "libs/entities/src",
         "libs/entities/src"
       ],
       "@app/entities/*": [
+        "libs/entities/src/*",
         "libs/entities/src/*"
       ],
       "@app/database": [

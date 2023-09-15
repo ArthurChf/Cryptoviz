@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import * as Entites from '@app/entities';
+
 
 @Module({
   imports: [ConfigModule.forRoot(), TypeOrmModule.forRoot({
@@ -10,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: 'cryptoviz',
-    entities: [],
+    entities: Entites,
     synchronize: process.env.RUN_MIGRATIONS === 'true' ? true : false,
   })]
 })
