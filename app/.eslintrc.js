@@ -564,16 +564,6 @@ module.exports = {
             'error',
             'last'
         ],
-        'sort-keys': [
-            'error',
-            'asc',
-            {
-                allowLineSeparatedGroups: false,
-                caseSensitive: false,
-                minKeys: 2,
-                natural: false
-            }
-        ],
         'space-before-blocks': [
             'error',
             'always'

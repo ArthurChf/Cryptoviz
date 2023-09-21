@@ -1,5 +1,5 @@
 <template>
-    <div class="app-layout">
+    <div class="default-layout bg-slate-900">
         <slot />
     </div>
 </template>
