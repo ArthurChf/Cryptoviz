@@ -59,7 +59,6 @@ module.exports = {
         '@typescript-eslint/no-useless-empty-export': 'error',
         '@typescript-eslint/prefer-enum-initializers': 'error',
         '@typescript-eslint/prefer-for-of': 'error',
-        '@typescript-eslint/prefer-function-type': 'error',
         '@typescript-eslint/prefer-includes': 'error',
         '@typescript-eslint/prefer-nullish-coalescing': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
@@ -133,10 +132,6 @@ module.exports = {
         ],
         'for-direction': [
             'error'
-        ],
-        'func-call-spacing': [
-            'error',
-            'never'
         ],
         'function-call-argument-newline': [
             'error',
