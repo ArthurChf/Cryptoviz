@@ -22,7 +22,7 @@ module.exports = {
         '@typescript-eslint/consistent-generic-constructors': ['error', 'type-annotation'],
         '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
         '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
-        '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
         '@typescript-eslint/consistent-type-exports': ['error', { fixMixedExportsWithInlineTypeSpecifier: false }],
         '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'separate-type-imports', prefer: 'type-imports' }],
         '@typescript-eslint/default-param-last': 'error',
@@ -59,7 +59,6 @@ module.exports = {
         '@typescript-eslint/no-useless-empty-export': 'error',
         '@typescript-eslint/prefer-enum-initializers': 'error',
         '@typescript-eslint/prefer-for-of': 'error',
-        '@typescript-eslint/prefer-function-type': 'error',
         '@typescript-eslint/prefer-includes': 'error',
         '@typescript-eslint/prefer-nullish-coalescing': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
@@ -133,10 +132,6 @@ module.exports = {
         ],
         'for-direction': [
             'error'
-        ],
-        'func-call-spacing': [
-            'error',
-            'never'
         ],
         'function-call-argument-newline': [
             'error',
@@ -563,16 +558,6 @@ module.exports = {
         'semi-style': [
             'error',
             'last'
-        ],
-        'sort-keys': [
-            'error',
-            'asc',
-            {
-                allowLineSeparatedGroups: false,
-                caseSensitive: false,
-                minKeys: 2,
-                natural: false
-            }
         ],
         'space-before-blocks': [
             'error',
