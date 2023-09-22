@@ -1,8 +1,8 @@
 <template>
     <table>
-        <thead class="table table-fixed" style="width: calc(100% - 17px);">
+        <thead class="table table-fixed w-full">
             <tr class="w-full">
-                <th v-for="(col, colId) in headers" :key="colId" class="text-left px-3 py-2 last:pr-0 border-b-2 border-b-slate-800 min-w-[500px]">
+                <th v-for="(col, colId) in headers" :key="colId" class="text-left px-3 py-2 last:pr-0 border-b-2 border-b-slate-800 min-w-[500px] break-all">
                     <span class="font-medium text-slate-500 hover:text-slate-400 hover:cursor-pointer">{{ col.label }}</span>
                 </th>
             </tr>
