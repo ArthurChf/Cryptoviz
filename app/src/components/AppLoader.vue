@@ -15,7 +15,7 @@
 import { LoaderEnum } from '@enums/loader/LoaderEnum';
 import type { LoaderPropsType } from '@types/loader/LoaderPropsType';
 
-const props = withDefaults(defineProps<LoaderPropsType>(), {
+withDefaults(defineProps<LoaderPropsType>(), {
     size: '7',
     width: '5'
 });
