@@ -1,8 +1,8 @@
 <template>
     <div>
-        <input class="h-10 leading-none p-2 bg-inherit outline-none w-40 hover:bg-slate-900 transition duration-[200ms] text-sm" :placeholder="selectedItem.name" v-model="search" @input="updateSearchValue" />
+        <input class="h-[40px] leading-none p-2 bg-inherit outline-none w-40 hover:bg-slate-900 transition duration-[200ms] text-sm" :placeholder="selectedItem.name" v-model="search" @input="updateSearchValue" />
         <Transition :name="TransitionEnum.FADE">
-            <div v-if="search.length" class="select-none absolute top-11 left-[2px] w-40 flex flex-col rounded-b-md flex-nowrap overflow-x-auto scrollbar bg-slate-950 overflow-y-auto scrollbar max-h-32 text-sm">
+            <div v-if="search.length" class="select-none absolute top-[43.4px] left-[1.9px] w-40 flex flex-col rounded-b-md flex-nowrap overflow-x-auto scrollbar bg-slate-950 overflow-y-auto scrollbar max-h-32 text-sm">
                 <span v-if="loading" class="py-3 px-2 flex justify-center">
                     <AppLoader size="9" :type="LoaderEnum.DOTS" color="bg-slate-600" />
                 </span>
