@@ -1,11 +1,24 @@
 <template>
     <DashboardLayout>
         <template #left>
-            <div class="grid sm:grid-cols-1 md:grid-cols-2 h-full w-full">
-                <div class="bg-red-200">card 1</div>
-                <div class="bg-orange-200">card 2</div>
-                <div class="bg-green-200">card 3</div>
-                <div class="bg-indigo-200">card 4</div>
+            <div class="flex flex-col justify-stretch w-auto h-full overflow-x-hidden overflow-y-auto scrollbar">
+                <div class="flex flex-col lg:flex-row border-b-2 border-slate-800 h-full">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                        <AppChart id="ttest" />
+                    </div>
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                        <AppChart id="tteste" />
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row h-full">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                        <AppChart id="ttestee" />
+                    </div>
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                        <AppChart id="ttesteee" />
+                    </div>
+                </div>
             </div>
         </template>
         <template #right>
@@ -32,6 +45,7 @@ import { LoaderEnum } from '@enums/loader/LoaderEnum';
 import type { TableHeaderType } from '@types/table/TableHeaderType';
 import type { TableDataType } from '@types/table/TableDataType';
 import { TableDataEnum } from '@enums/table/TableDataEnum';
+import AppChart from '@components/AppChart.vue';
 
 const headers: TableHeaderType[] = [
     { label: 'Symbol', name: 'symbol', type: TableDataEnum.STRING },
