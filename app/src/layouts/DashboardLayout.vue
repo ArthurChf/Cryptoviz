@@ -1,10 +1,10 @@
 <template>
-    <div class="layout bg-slate-900 flex flex-col lg:flex-row">
-        <div class="flex flex-col flex-grow border-slate-800 border-2">
+    <div class="layout lg:h-full bg-slate-900 flex flex-col lg:flex-row">
+        <div class="flex flex-col w-full h-full lg:w-9/12 border-slate-800 border-2">
             <AppNavbar />
             <slot name="left" />
         </div>
-        <div class="flex flex-col lg:w-1/4 overflow-y-auto scrollbar">
+        <div class="flex flex-col w-full lg:w-3/12 overflow-y-auto scrollbar py-4">
             <slot name="right" />
         </div>
     </div>
