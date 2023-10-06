@@ -3,18 +3,19 @@
         <template #left>
             <div class="flex flex-col justify-stretch w-auto h-full overflow-x-hidden overflow-y-auto scrollbar">
                 <div class="flex flex-col lg:flex-row border-b-2 border-slate-800 h-full">
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-r-2 border-slate-800">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttest" />
                     </div>
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="tteste" />
                     </div>
                 </div>
+
                 <div class="flex flex-col lg:flex-row h-full">
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-r-2 border-slate-800">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttestee" />
                     </div>
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2">
+                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttesteee" />
                     </div>
                 </div>
@@ -22,8 +23,7 @@
         </template>
         <template #right>
             <div class="border-b-2 border-slate-800">
-                <p>truc</p>
-                <!-- <AppTable :headers="headers" :data="data" /> -->
+                <AppTable :headers="headers" :data="data" />
             </div>
             <AppIcon :name="IconEnum.STATUS_SUCCESS" class="h-7 w-7 fill-teal-500" />
             <AppIcon :name="IconEnum.STATUS_ERROR" class="h-7 w-7 fill-red-500" />

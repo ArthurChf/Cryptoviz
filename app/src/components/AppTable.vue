@@ -7,7 +7,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody class="w-full overflow-auto max-h-48 block scrollbar">
+        <tbody class="w-full overflow-auto max-h-80 block scrollbar">
             <tr v-for="(row, rowId) in data" :key="rowId" class="w-full border-b-2 border-b-slate-800 table table-fixed">
                 <td v-for="(col, colId) in headers" :key="colId" class="text-slate-300 py-1 px-2 first:pl-3" :class="[textColor(row[col.name]!, col.type)]">{{ formatText(row[col.name]!, col.type) }}</td>
             </tr>
