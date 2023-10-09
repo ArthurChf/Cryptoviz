@@ -1,11 +1,13 @@
 <template>
-    <div class="flex scrollbar flex-nowrap bg-slate-950 text-slate-400 border-b-2 border-slate-800">
+    <div class="flex scrollbar flex-nowrap bg-slate-950 text-slate-400 border-b-2 border-slate-800 items-center gap-3">
         <AppSelect :loading="itemsLoading" :items="currencyItems" @update="searchCurrency" class="inline-flex border-r-2 border-slate-800" />
+        <AppPeriodSelector />
     </div>
 </template>
 
 <script setup lang="ts">
 import AppSelect from '@components/AppSelect.vue';
+import AppPeriodSelector from '@components/AppPeriodSelector.vue';
 import type { CurrencyType } from '@types/CurrencyType';
 import { ref } from 'vue';
 
