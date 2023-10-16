@@ -8,12 +8,12 @@
 <script setup lang="ts">
 import AppSelect from '@components/AppSelect.vue';
 import AppPeriodSelector from '@components/AppPeriodSelector.vue';
-import type { CurrencyType } from '@types/CurrencyType';
+import type { CurrencyInterface } from '@interfaces/CurrencyInterface';
 import { ref } from 'vue';
 
 const itemsLoading = ref(false);
 
-const currencyItems: CurrencyType[] = [
+const currencyItems: CurrencyInterface[] = [
     { name: 'Bitcoin', symbol: 'BTC' },
     { name: 'Ethereum', symbol: 'ETH' },
     { name: 'Ripple', symbol: 'XRP' },

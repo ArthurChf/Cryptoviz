@@ -17,14 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import type { CurrencyType } from '@types/CurrencyType';
+import type { CurrencyInterface } from '@interfaces/CurrencyInterface';
 import AppLoader from '@components/AppLoader.vue';
 import { reactive, ref } from 'vue';
 import { LoaderEnum } from '@enums/loader/LoaderEnum';
 import { TransitionEnum } from '@enums/TransitionEnum';
 
 defineProps<{
-    items: CurrencyType[];
+    items: CurrencyInterface[];
     loading: boolean;
 }>();
 

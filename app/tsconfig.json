@@ -22,7 +22,7 @@
             "@enums/*": ["./src/enums/*"],
             "@layouts/*": ["./src/layouts/*"],
             "@router/*": ["./src/router/*"],
-            "@types/*": ["./src/types/*"],
+            "@interfaces/*": ["./src/interfaces/*"],
             "@views/*": ["./src/views/*"]
         },
         "resolveJsonModule": true,

@@ -1,7 +1,7 @@
 import type { TableDataEnum } from '@enums/table/TableDataEnum';
 
-export type TableHeaderType = {
+export interface TableHeaderInterface {
     label: string;
     name: string;
     type: TableDataEnum;
-};
+}
