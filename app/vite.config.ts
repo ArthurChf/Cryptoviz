@@ -18,7 +18,7 @@ export default defineConfig({
             { find: '@repositories', replacement: fileURLToPath(new URL('./src/repositories', import.meta.url)) },
             { find: '@router', replacement: fileURLToPath(new URL('./src/router', import.meta.url)) },
             { find: '@stores', replacement: fileURLToPath(new URL('./src/stores', import.meta.url)) },
-            { find: '@types', replacement: fileURLToPath(new URL('./src/types', import.meta.url)) },
+            { find: '@interfaces', replacement: fileURLToPath(new URL('./src/interfaces', import.meta.url)) },
             { find: '@views', replacement: fileURLToPath(new URL('./src/views', import.meta.url)) }
         ]
     }

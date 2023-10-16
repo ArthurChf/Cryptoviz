@@ -17,12 +17,12 @@
 
 <script setup lang="ts">
 import { TableDataEnum } from '@enums/table/TableDataEnum';
-import type { TableDataType } from '@types/table/TableDataType';
-import type { TableHeaderType } from '@types/table/TableHeaderType';
+import type { TableDataInterface } from '@interfaces/table/TableDataInterface';
+import type { TableHeaderInterface } from '@interfaces/table/TableHeaderInterface';
 
 defineProps<{
-    headers: TableHeaderType[];
-    data: TableDataType[];
+    headers: TableHeaderInterface[];
+    data: TableDataInterface['data'][];
 }>();
 
 const textColor = (value: number | string, type: TableDataEnum): string => {

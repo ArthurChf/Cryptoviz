@@ -1,8 +1,8 @@
 import type { LoaderEnum } from '@enums/loader/LoaderEnum';
 
-export type LoaderPropsType = {
+export interface LoaderPropsInterface {
     color: string;
     size?: string;
     width?: string;
     type: LoaderEnum;
-};
+}

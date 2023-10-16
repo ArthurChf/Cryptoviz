@@ -13,9 +13,9 @@
 
 <script setup lang="ts">
 import { LoaderEnum } from '@enums/loader/LoaderEnum';
-import type { LoaderPropsType } from '@types/loader/LoaderPropsType';
+import type { LoaderPropsInterface } from '@interfaces/loader/LoaderPropsInterface';
 
-withDefaults(defineProps<LoaderPropsType>(), {
+withDefaults(defineProps<LoaderPropsInterface>(), {
     size: '7',
     width: '5'
 });

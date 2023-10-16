@@ -42,19 +42,19 @@ import AppIcon from '@components/AppIcon.vue';
 import AppTable from '@components/AppTable.vue';
 import { IconEnum } from '@enums/IconEnum';
 import { LoaderEnum } from '@enums/loader/LoaderEnum';
-import type { TableHeaderType } from '@types/table/TableHeaderType';
-import type { TableDataType } from '@types/table/TableDataType';
+import type { TableHeaderInterface } from '@interfaces/table/TableHeaderInterface';
+import type { TableDataInterface } from '@interfaces/table/TableDataInterface';
 import { TableDataEnum } from '@enums/table/TableDataEnum';
 import AppChart from '@components/AppChart.vue';
 
-const headers: TableHeaderType[] = [
+const headers: TableHeaderInterface[] = [
     { label: 'Symbol', name: 'symbol', type: TableDataEnum.STRING },
     { label: 'Last', name: 'last', type: TableDataEnum.NUMBER },
     { label: 'Chg', name: 'chg', type: TableDataEnum.NUMBER },
     { label: 'Chg%', name: 'chgP', type: TableDataEnum.PERCENTAGE }
 ];
 
-const data: TableDataType[] = [
+const data: TableDataInterface['data'][] = [
     { symbol: 'TWTR qsd qsdioj sd', last: 68.16, chg: 1.33, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 0, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
