@@ -22,6 +22,7 @@
             "@enums/*": ["./src/enums/*"],
             "@layouts/*": ["./src/layouts/*"],
             "@router/*": ["./src/router/*"],
+            "@stores/*": ["./src/stores/*"],
             "@interfaces/*": ["./src/interfaces/*"],
             "@views/*": ["./src/views/*"]
         },
