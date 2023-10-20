@@ -1,17 +1,16 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 import * as Parser from 'rss-parser';
-import { RSSNews } from "@app/entities";
+import { RSSNews } from '@libs/entities/src';
 
-type CustomFeed = { foo: string };
-type CustomItem = { bar: number };
+interface CustomFeed { foo: string }
+interface CustomItem { bar: number }
 @Injectable()
 export class RssFeedService {
-
     constructor() { }
 
     private readonly logger = new Logger(RssFeedService.name);
 
-    urls: { name: string, url: string }[] = [
+    urls: { name: string; url: string }[] = [
         {
             name: 'coindesk',
             url: 'https://www.coindesk.com/arc/outboundfeeds/rss'
@@ -51,12 +50,12 @@ export class RssFeedService {
         {
             name: 'bitcoin',
             url: 'https://bitcoin.org/en/rss/blog.xml'
-        },
+        }
     ];
-    async read() {
+    async read(): Promise<number> {
         const parser: Parser<CustomFeed, CustomItem> = new Parser({
             customFields: {
-                feed: ['foo',],
+                feed: ['foo'],
                 item: ['bar']
             },
             headers: {
@@ -88,7 +87,7 @@ export class RssFeedService {
                             source: data.name,
                             resume: item.contentSnippet,
                             creator: item.creator,
-                            pubDate: item.pubDate,
+                            pubDate: item.pubDate
                         });
                         existingArticles.add(uniqueIdentifier); // Ajoutez-le pour éviter de le reconsidérer lors du prochain cycle
                     }
@@ -97,7 +96,9 @@ export class RssFeedService {
                 this.logger.error(`Error reading RSS feed from ${data.name} at URL ${data.url}: ${error.message}`);
             }
 
-            await new Promise(resolve => setTimeout(resolve, 6000));
+            await new Promise(resolve => {
+                setTimeout(resolve, 6000);
+            });
         }
 
         this.logger.log(`Writing ${news.length} news to database`);

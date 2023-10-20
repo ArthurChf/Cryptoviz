@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class RSSNews extends BaseEntity {
@@ -22,5 +22,4 @@ export class RSSNews extends BaseEntity {
 
     @Column()
     source: string;
-
 }
