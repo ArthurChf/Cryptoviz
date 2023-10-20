@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { RssFeedModule } from './rss-feed/rss-feed.module';
+import { RssFeedModule } from '@app/online-scrapper/rss-feed/rss-feed.module';
 
 @Module({
     imports: [RssFeedModule],
     controllers: [],
-    providers: [],
+    providers: []
 })
 export class OnlineScrapperModule { }

@@ -1,1 +1,1 @@
-export * from './database.module';
+export * from '@libs/database/src/database.module';
