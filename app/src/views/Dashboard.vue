@@ -46,6 +46,7 @@ import type { TableHeaderInterface } from '@interfaces/table/TableHeaderInterfac
 import type { TableDataInterface } from '@interfaces/table/TableDataInterface';
 import { TableDataEnum } from '@enums/table/TableDataEnum';
 import AppChart from '@components/AppChart.vue';
+import { ref } from 'vue';
 
 const headers: TableHeaderInterface[] = [
     { label: 'Symbol', name: 'symbol', type: TableDataEnum.STRING },
@@ -54,7 +55,7 @@ const headers: TableHeaderInterface[] = [
     { label: 'Chg%', name: 'chgP', type: TableDataEnum.PERCENTAGE }
 ];
 
-const data: TableDataInterface['data'][] = [
+const data = ref<TableDataInterface['data'][]>([
     { symbol: 'TWTR qsd qsdioj sd', last: 68.16, chg: 1.33, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 0, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
@@ -68,5 +69,23 @@ const data: TableDataInterface['data'][] = [
     { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
     { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 }
-];
+]);
+
+setTimeout(() => {
+    data.value = [
+        { symbol: 'TWTR qsd qsdioj sd', last: 31.97, chg: 1.35, chgP: 1.99 },
+        { symbol: 'TWTR', last: -8.22, chg: 0, chgP: 1.99 },
+        { symbol: 'TWTR', last: -7.05, chg: 6.56, chgP: 1.99 },
+        { symbol: 'TWTR', last: 76, chg: 1.33, chgP: 12.05 },
+        { symbol: 'TWTR', last: 2.87, chg: 31, chgP: 1.99 },
+        { symbol: 'TWTR', last: -5.98, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 23.83, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 }
+    ];
+}, 2000);
 </script>

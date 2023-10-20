@@ -8,22 +8,85 @@
             </tr>
         </thead>
         <tbody class="w-full overflow-auto max-h-80 block scrollbar">
-            <tr v-for="(row, rowId) in data" :key="rowId" class="w-full border-b-2 border-b-slate-800 table table-fixed">
-                <td v-for="(col, colId) in headers" :key="colId" class="text-slate-300 py-1 px-2 first:pl-3" :class="[textColor(row[col.name]!, col.type)]">{{ formatText(row[col.name]!, col.type) }}</td>
+            <tr v-if="!isTableLoading" v-for="(row, rowId) in data" :key="rowId" class="w-full border-b-2 border-b-slate-800 table table-fixed">
+                <TransitionGroup :name="TransitionEnum.FADE" tag="td" v-for="(col, colId) in headers" :key="colId" class="text-slate-300 py-1 px-2 first:pl-3" :class="[textColor(row[col.name]!, col.type)]">
+                    <span v-if="!isDataLoading[rowId]![col.name]" :key="row[col.name]!">{{ formatText(row[col.name]!, col.type) }}</span>
+                    <AppLoader v-else size="20" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" />
+                </TransitionGroup>
+            </tr>
+            <tr v-else class="w-full border-b-2 border-b-slate-800 table table-fixed">
+                <td class="text-slate-300 py-1 px-2 first:pl-3">
+                    <AppLoader size="20" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" />
+                </td>
             </tr>
         </tbody>
     </table>
 </template>
 
 <script setup lang="ts">
+import { TransitionEnum } from '@enums/TransitionEnum';
 import { TableDataEnum } from '@enums/table/TableDataEnum';
 import type { TableDataInterface } from '@interfaces/table/TableDataInterface';
 import type { TableHeaderInterface } from '@interfaces/table/TableHeaderInterface';
+import type { Ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import AppLoader from './AppLoader.vue';
+import { LoaderEnum } from '@enums/loader/LoaderEnum';
 
-defineProps<{
+const props = defineProps<{
     headers: TableHeaderInterface[];
     data: TableDataInterface['data'][];
 }>();
+
+const fillDataLoadingArray = (arr: TableDataInterface['data'][]): Record<string, boolean>[] => {
+    return arr.map((row) => {
+        const loadingStates: Record<string, boolean> = {};
+        for(const key in row) {
+            loadingStates[key] = false;
+        }
+        return loadingStates;
+    });
+};
+const loadingTime = 1500;
+const cryptoData = computed(() => props.data);
+const isTableLoading = ref(false);
+const isDataLoading = ref(fillDataLoadingArray(cryptoData.value));
+
+const setTableLoadingState = async (state: Ref<boolean>): Promise<void> => {
+    state.value = true;
+    let timer: NodeJS.Timeout | number = -1;
+    await new Promise((resolve) => {
+        timer = setTimeout(() => {
+            state.value = false;
+            resolve('');
+        }, loadingTime);
+    });
+    clearTimeout(timer);
+};
+
+const setDataLoadingState = async (rowIndex: number, key: string): Promise<void> => {
+    isDataLoading.value[rowIndex]![key] = true;
+    let timer: NodeJS.Timeout | number = -1;
+    await new Promise((resolve) => {
+        timer = setTimeout(() => {
+            isDataLoading.value[rowIndex]![key] = false;
+            resolve('');
+        }, loadingTime);
+    });
+    clearTimeout(timer);
+};
+
+watch(cryptoData, (newArray, oldArray) => {
+    isDataLoading.value = fillDataLoadingArray(newArray);
+    if(newArray.length !== oldArray.length) setTableLoadingState(isTableLoading);
+    else {
+        newArray.forEach((row, rowIndex) => {
+            for(const key in row) {
+                if(row[key] !== oldArray[rowIndex]![key]) setDataLoadingState(rowIndex, key);
+            }
+        });
+    }
+}, { deep: true });
 
 const textColor = (value: number | string, type: TableDataEnum): string => {
     let res = '';
