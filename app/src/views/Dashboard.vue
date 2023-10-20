@@ -3,19 +3,23 @@
         <template #left>
             <div class="flex flex-col justify-stretch w-auto h-full overflow-x-hidden overflow-y-auto scrollbar">
                 <div class="flex flex-col lg:flex-row border-b-2 border-slate-800 h-full">
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                    <div
+                        class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttest" />
                     </div>
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                    <div
+                        class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="tteste" />
                     </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row h-full">
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                    <div
+                        class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 border-r-slate-800 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttestee" />
                     </div>
-                    <div class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
+                    <div
+                        class="flex py-4 px-3 items-center justify-center w-full lg:w-1/2 border-2 border-slate-900 hover:border-blue-700 hover:border-2 transition duration-[200ms]">
                         <AppChart id="ttesteee" />
                     </div>
                 </div>
@@ -46,6 +50,7 @@ import type { TableHeaderInterface } from '@interfaces/table/TableHeaderInterfac
 import type { TableDataInterface } from '@interfaces/table/TableDataInterface';
 import { TableDataEnum } from '@enums/table/TableDataEnum';
 import AppChart from '@components/AppChart.vue';
+import { ref } from 'vue';
 
 const headers: TableHeaderInterface[] = [
     { label: 'Symbol', name: 'symbol', type: TableDataEnum.STRING },
@@ -54,19 +59,23 @@ const headers: TableHeaderInterface[] = [
     { label: 'Chg%', name: 'chgP', type: TableDataEnum.PERCENTAGE }
 ];
 
-const data: TableDataInterface['data'][] = [
-    { symbol: 'TWTR qsd qsdioj sd', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 0, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: -1 },
-    { symbol: 'TWTR', last: 68.16, chg: -0.01, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
-    { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 }
-];
+const data = ref<TableDataInterface['data'][]>([]);
+
+setTimeout(() => {
+    data.value = [
+        { symbol: 'TWTR qsd qsdioj sd', last: 31.97, chg: 1.35, chgP: 1.99 },
+        { symbol: 'TWTR', last: -8.22, chg: 0, chgP: 1.99 },
+        { symbol: 'TWTR', last: -7.05, chg: 6.56, chgP: 1.99 },
+        { symbol: 'TWTR', last: 76, chg: 1.33, chgP: 12.05 },
+        { symbol: 'TWTR', last: 2.87, chg: 31, chgP: 1.99 },
+        { symbol: 'TWTR', last: -5.98, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 23.83, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 },
+        { symbol: 'TWTR', last: 68.16, chg: 1.33, chgP: 1.99 }
+    ];
+}, 1000);
 </script>
