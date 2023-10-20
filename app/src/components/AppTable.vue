@@ -9,14 +9,14 @@
         </thead>
         <tbody class="w-full overflow-auto max-h-80 block scrollbar">
             <tr v-if="!isTableLoading" v-for="(row, rowId) in data" :key="rowId" class="w-full border-b-2 border-b-slate-800 table table-fixed">
-                <TransitionGroup :name="TransitionEnum.FADE" tag="td" v-for="(col, colId) in headers" :key="colId" class="text-slate-300 py-1 px-2 first:pl-3" :class="[textColor(row[col.name]!, col.type)]">
-                    <span v-if="!isDataLoading[rowId]![col.name]" :key="row[col.name]!">{{ formatText(row[col.name]!, col.type) }}</span>
+                <TransitionGroup :name="TransitionEnum.FADE" tag="td" v-for="(col, colId) in headers" :key="colId" class="text-slate-300 py-1 px-2 first:pl-3">
+                    <span :class="[textColor(row[col.name]!, col.type)]" v-if="!isDataLoading[rowId]![col.name]" :key="row[col.name]!">{{ formatText(row[col.name]!, col.type) }}</span>
                     <AppLoader v-else size="20" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" />
                 </TransitionGroup>
             </tr>
             <tr v-else class="w-full border-b-2 border-b-slate-800 table table-fixed">
-                <td class="text-slate-300 py-1 px-2 first:pl-3">
-                    <AppLoader size="20" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" />
+                <td class="text-slate-300 py-1 px-2 first:pl-3 text-center">
+                    <AppLoader size="9" :type="LoaderEnum.DOTS" color="bg-slate-500" />
                 </td>
             </tr>
         </tbody>
@@ -47,9 +47,8 @@ const fillDataLoadingArray = (arr: TableDataInterface['data'][]): Record<string,
         return loadingStates;
     });
 };
-const loadingTime = 1500;
 const cryptoData = computed(() => props.data);
-const isTableLoading = ref(false);
+const isTableLoading = ref(true);
 const isDataLoading = ref(fillDataLoadingArray(cryptoData.value));
 
 const setTableLoadingState = async (state: Ref<boolean>): Promise<void> => {
@@ -59,7 +58,7 @@ const setTableLoadingState = async (state: Ref<boolean>): Promise<void> => {
         timer = setTimeout(() => {
             state.value = false;
             resolve('');
-        }, loadingTime);
+        }, 1000);
     });
     clearTimeout(timer);
 };
@@ -71,7 +70,7 @@ const setDataLoadingState = async (rowIndex: number, key: string): Promise<void>
         timer = setTimeout(() => {
             isDataLoading.value[rowIndex]![key] = false;
             resolve('');
-        }, loadingTime);
+        }, 500);
     });
     clearTimeout(timer);
 };
