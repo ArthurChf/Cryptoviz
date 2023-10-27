@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from '@app/app.controller';
-import { AppService } from '@app/app.service';
-import { DatabaseModule } from '@libs/database/src';
-import { OnlineScrapperModule } from '@app/online-scrapper/online-scrapper.module';
-import { RssFeedModule } from '@app/online-scrapper/rss-feed/rss-feed.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { OnlineScrapperModule } from './online-scrapper/online-scrapper.module';
+import { DatabaseModule } from "@libs/database/src";
 
 @Module({
-    imports: [DatabaseModule, RssFeedModule, OnlineScrapperModule],
+    imports: [OnlineScrapperModule, DatabaseModule],
     controllers: [AppController],
     providers: [AppService]
 })
