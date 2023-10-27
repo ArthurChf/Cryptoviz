@@ -53,6 +53,7 @@ export class RssFeedService {
         }
     ];
     async read(): Promise<number> {
+        // @ts-ignore
         const parser: Parser<CustomFeed, CustomItem> = new Parser({
             customFields: {
                 feed: ['foo'],
