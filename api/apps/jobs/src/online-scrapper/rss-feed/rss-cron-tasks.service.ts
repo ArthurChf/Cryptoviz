@@ -6,6 +6,7 @@ import { RssFeedService } from './rss-feed.service';
 export class RssCronTasks {
     constructor(private readonly rssFeedService: RssFeedService) { }
     private readonly logger = new Logger(RssCronTasks.name);
+    // Date du cron à modifier
     @Cron('*/3 * * * *')
     async trigger(): Promise<number> {
         this.logger.debug('Triggering RSS feed update');
