@@ -29,12 +29,12 @@
             <div class="border-b-2 border-slate-800">
                 <AppTable :headers="headers" :data="data" />
             </div>
-            <AppIcon :name="IconEnum.STATUS_SUCCESS" class="h-7 w-7 fill-teal-500" />
+            <!-- <AppIcon :name="IconEnum.STATUS_SUCCESS" class="h-7 w-7 fill-teal-500" />
             <AppIcon :name="IconEnum.STATUS_ERROR" class="h-7 w-7 fill-red-500" />
             <AppIcon :name="IconEnum.STATUS_NEUTRAL" class="h-7 w-7 fill-slate-500" />
             <AppIcon :name="IconEnum.ADD" class="h-7 w-7 fill-neutral-500" />
             <AppIcon :name="IconEnum.MORE" class="h-7 w-7 fill-neutral-500" />
-            <AppLoader size="24" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" />
+            <AppLoader size="24" :type="LoaderEnum.CIRCULAR" color="stroke-slate-400" /> -->
         </template>
     </DashboardLayout>
 </template>
