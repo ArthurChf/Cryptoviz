@@ -27,10 +27,7 @@
       "@app/*": [
         "./src/*"
       ],
-      "@monorepo/database": [
-        "libs/database/src/index.ts"
-      ],
-      "@monorepo/entities": [
+      "@app/entities": [
         "libs/entities/src/index.ts"
       ],
       "@app/utils": [
