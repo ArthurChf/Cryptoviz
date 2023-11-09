@@ -21,7 +21,7 @@ export class BinanceApiService implements OnModuleInit {
     }
 
     subscribeToTicker(ws: WebSocket, symbols: string[]) {
-        const formattedPairs: string[] = symbols.map(pair => `${pair}@miniTicker`);
+        const formattedPairs: string[] = symbols.map(pair => `${pair}@ticker`);
         console.log(formattedPairs);
          const subscribeMessage: string = JSON.stringify({
             method: "SUBSCRIBE",

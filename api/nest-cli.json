@@ -8,15 +8,6 @@
     "tsConfigPath": "apps/jobs/tsconfig.app.json"
   },
   "projects": {
-    "database": {
-      "type": "library",
-      "root": "libs/database",
-      "entryFile": "index",
-      "sourceRoot": "libs/database/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/database/tsconfig.lib.json"
-      }
-    },
     "entities": {
       "type": "library",
       "root": "libs/entities",
@@ -26,13 +17,13 @@
         "tsConfigPath": "libs/entities/tsconfig.lib.json"
       }
     },
-    "jobs": {
+    "scrapper": {
       "type": "application",
-      "root": "apps/jobs",
+      "root": "apps/scrapper",
       "entryFile": "main",
-      "sourceRoot": "apps/jobs/src",
+      "sourceRoot": "apps/scrapper/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/jobs/tsconfig.app.json"
+        "tsConfigPath": "apps/scrapper/tsconfig.app.json"
       }
     },
     "utils": {
@@ -42,6 +33,15 @@
       "sourceRoot": "libs/utils/src",
       "compilerOptions": {
         "tsConfigPath": "libs/utils/tsconfig.lib.json"
+      }
+    },
+    "data": {
+      "type": "application",
+      "root": "apps/data",
+      "entryFile": "main",
+      "sourceRoot": "apps/data/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/data/tsconfig.app.json"
       }
     }
   },
