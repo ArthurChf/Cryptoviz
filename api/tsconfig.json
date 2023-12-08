@@ -35,6 +35,12 @@
       ],
       "@app/utils/*": [
         "libs/utils/src/*"
+      ],
+      "@app/kakfa": [
+        "libs/kakfa/src"
+      ],
+      "@app/kakfa/*": [
+        "libs/kakfa/src/*"
       ]
     }
   },

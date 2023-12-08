@@ -23,6 +23,7 @@
     "test:e2e": "jest --config apps/scrapper/test/jest-e2e.json"
   },
   "dependencies": {
+    "@kafkajs/confluent-schema-registry": "^3.3.0",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.1",
@@ -32,6 +33,7 @@
     "@nestjs/typeorm": "^10.0.0",
     "axios": "^1.5.0",
     "dotenv": "^16.3.1",
+    "kafkajs": "^2.2.4",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rss-parser": "^3.13.0",
@@ -86,7 +88,8 @@
       "@app/(.*)$": [
         "<rootDir>/src/$1"
       ],
-      "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
+      "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1",
+      "^@app/kakfa(|/.*)$": "<rootDir>/libs/kakfa/src/$1"
     },
     "roots": [
       "<rootDir>/apps/",

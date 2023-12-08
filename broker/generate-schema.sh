@@ -6,6 +6,10 @@ until $(curl --output /dev/null --silent --head --fail http://schema-registry:80
 done
 
 curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+    --data '{"schema": "{\"type\": \"array\",\"items\": {\"type\": \"record\",\"name\": \"CryptoTicker\",\"fields\": [{\"name\": \"test\", \"type\":\"string\"}]}}"}' \
+    http://schema-registry:8081/subjects/test/versions
+
+curl -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" \
     --data '{"schema": "{\"type\": \"array\",\"items\": {\"type\": \"record\",\"name\": \"News\",\"fields\": [{\"name\": \"link\", \"type\": \"string\"},{\"name\": \"title\", \"type\": \"string\"},{\"name\": \"resume\", \"type\": \"string\"},{\"name\": \"pubDate\", \"type\": \"string\"},{\"name\": \"creator\", \"type\": \"string\"},{\"name\": \"source\", \"type\": \"string\"}]}}"}' \
     http://schema-registry:8081/subjects/news-value/versions
 

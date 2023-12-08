@@ -1,6 +1,7 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import { WebSocket } from "ws";
 import { getPairs } from "@app/utils";
+import { tickerMapper } from "@libs/entities/src/scrapper-online/BinanceTicker";
 
 @Injectable()
 export class BinanceApiService implements OnModuleInit {
@@ -22,7 +23,6 @@ export class BinanceApiService implements OnModuleInit {
 
     subscribeToTicker(ws: WebSocket, symbols: string[]) {
         const formattedPairs: string[] = symbols.map(pair => `${pair}@ticker`);
-        console.log(formattedPairs);
          const subscribeMessage: string = JSON.stringify({
             method: "SUBSCRIBE",
             params: formattedPairs,
@@ -34,8 +34,10 @@ export class BinanceApiService implements OnModuleInit {
     listenToTicker(ws: WebSocket) {
         ws.on('message', (data: string) => {
             const response: any = JSON.parse(data);
-            if (response?.e !== '24hrMiniTicker') return;
-            this.cryptoStats.set(response.s, response);
+            if (response?.e !== '24hrTicker') return;
+            const ticker = tickerMapper(response);
+            this.cryptoStats.set(response.s, ticker);
+            console.log(this.cryptoStats);
         });
     }
 
