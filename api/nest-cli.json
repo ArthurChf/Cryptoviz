@@ -43,6 +43,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/data/tsconfig.app.json"
       }
+    },
+    "kakfa": {
+      "type": "library",
+      "root": "libs/kakfa",
+      "entryFile": "index",
+      "sourceRoot": "libs/kakfa/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/kakfa/tsconfig.lib.json"
+      }
     }
   },
   "monorepo": true,

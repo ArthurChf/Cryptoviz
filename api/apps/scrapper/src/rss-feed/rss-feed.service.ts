@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as Parser from 'rss-parser';
-import { RSSNews } from '@libs/entities/src';
+import Parser from 'rss-parser';
+import { RSSNews, newsMapper } from '@libs/entities/src';
 
 interface CustomFeed { foo: string }
 interface CustomItem { bar: number }
@@ -64,49 +64,22 @@ export class RssFeedService {
             }
         });
 
-        // Stockez les articles existants dans un set pour une vérification rapide
-        const existingArticles = new Set(
-            await RSSNews.createQueryBuilder('news')
-                .select(['news.title', 'news.pubDate'])
-                .getMany()
-                .then(news => news.map(n => `${n.title}|${n.pubDate}`))
-        );
-
-        const news: Partial<RSSNews>[] = [];
-
+        const news: RSSNews[] = [];
         for (const data of this.urls) {
             try {
                 this.logger.log(`Reading RSS feed from ${data.name}`);
                 const feed = await parser.parseURL(data.url);
-
-                for (const item of feed.items) {
-                    const uniqueIdentifier = `${item.title}|${item.pubDate}`;
-                    if (!existingArticles.has(uniqueIdentifier)) {
-                        news.push({
-                            title: item.title,
-                            link: item.link,
-                            source: data.name,
-                            resume: item.contentSnippet,
-                            creator: item.creator,
-                            pubDate: item.pubDate
-                        });
-                        existingArticles.add(uniqueIdentifier); // Ajoutez-le pour éviter de le reconsidérer lors du prochain cycle
-                    }
-                }
+                feed.items.map((item) => {
+                    news.push(newsMapper(item, data.name));
+                });
             } catch (error) {
                 this.logger.error(`Error reading RSS feed from ${data.name} at URL ${data.url}: ${error.message}`);
             }
-
             await new Promise(resolve => {
                 setTimeout(resolve, 6000);
             });
         }
-
-        this.logger.log(`Writing ${news.length} news to database`);
-        if (news.length > 0) {
-            await RSSNews.createQueryBuilder('news').insert().into(RSSNews).values(news).execute();
-        }
-        this.logger.log(`Wrote ${news.length} news to database`);
+        this.logger.log(`Send ${news.length} news to kafka`);
         return 1;
     }
 }
