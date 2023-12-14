@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Kafka } from "kafkajs";
-import {BinanceTicker, RSSNews} from "@app/entities";
-import { SchemaRegisteryService } from "./schema-registery.service";
+import { Kafka } from 'kafkajs';
+import type { BinanceTicker, RSSNews } from '@/libs/entities/src';
+import { SchemaRegisteryService } from './schema-registery.service';
 
 @Injectable()
 export class KakfaService {
-    private kafka = new Kafka({
-        brokers: ['localhost:9092'],
+    private readonly kafka = new Kafka({
+        brokers: ['localhost:9092']
     });
 
-    private producer = this.kafka.producer();
+    private readonly producer = this.kafka.producer();
 
-    constructor(private readonly schemaRegisteryService: SchemaRegisteryService) {
+    public constructor(private readonly schemaRegisteryService: SchemaRegisteryService) {
         this.connect();
     }
 
@@ -26,19 +26,19 @@ export class KakfaService {
             topics: [{
                 topic,
                 numPartitions: 1,
-                replicationFactor: 1,
-            }],
+                replicationFactor: 1
+            }]
         });
         await admin.disconnect();
     }
 
-    async sendMessage(topic: string, topicId: number, message: RSSNews[] | BinanceTicker[] | any[]) {
+    public async sendMessage(topic: string, topicId: number, message: RSSNews[] | BinanceTicker[] | unknown[]) {
         try {
             await this.createTopic(topic);
             const encodedMessage = await this.schemaRegisteryService.checkSchema(topicId, message);
             await this.producer.send({
                 topic,
-                messages: [{ value: encodedMessage }],
+                messages: [{ value: encodedMessage }]
             });
             console.log('Message sent successfully');
         } catch (error) {

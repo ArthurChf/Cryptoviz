@@ -7,13 +7,13 @@ export interface RSSNews {
     source: string;
 }
 
-export function newsMapper(item: any, source: string): RSSNews {
+export function newsMapper(item: unknown, source: string): RSSNews {
     return {
         title: item.title,
         link: item.link,
         pubDate: item.pubDate,
         resume: item.contentSnippet,
         creator: item.creator,
-        source,
-    }
+        source
+    };
 }

@@ -35,7 +35,7 @@ const pairs = [
     'floki-try',
     'auction-usdt',
     'auction-busd',
-    'auction-btc',
+    'auction-btc'
 ];
 
 const cryptocurrencies = [
@@ -47,7 +47,7 @@ const cryptocurrencies = [
     'pepe',
     'trx',
     'floki',
-    'auction',
+    'auction'
 ];
 
 export function getCryptocurrencies(): string[] {
@@ -56,6 +56,6 @@ export function getCryptocurrencies(): string[] {
 
 export function getPairs() : string[] {
     return pairs.map((pair) => {
-        return pair.replace('-','');
+        return pair.replace('-', '');
     });
 }

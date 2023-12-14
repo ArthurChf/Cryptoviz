@@ -1,16 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import Parser from 'rss-parser';
-import { RSSNews, newsMapper } from '@libs/entities/src';
+import type { RSSNews } from '@/libs/entities/src';
+import { newsMapper } from '@/libs/entities/src';
 
 interface CustomFeed { foo: string }
 interface CustomItem { bar: number }
 @Injectable()
 export class RssFeedService {
-    constructor() { }
-
     private readonly logger = new Logger(RssFeedService.name);
 
-    urls: { name: string; url: string }[] = [
+    public urls: { name: string; url: string }[] = [
         {
             name: 'coindesk',
             url: 'https://www.coindesk.com/arc/outboundfeeds/rss'
@@ -52,8 +51,7 @@ export class RssFeedService {
             url: 'https://bitcoin.org/en/rss/blog.xml'
         }
     ];
-    async read(): Promise<number> {
-        // @ts-ignore
+    public async read(): Promise<number> {
         const parser: Parser<CustomFeed, CustomItem> = new Parser({
             customFields: {
                 feed: ['foo'],
@@ -65,17 +63,17 @@ export class RssFeedService {
         });
 
         const news: RSSNews[] = [];
-        for (const data of this.urls) {
+        for await (const data of this.urls) {
             try {
                 this.logger.log(`Reading RSS feed from ${data.name}`);
                 const feed = await parser.parseURL(data.url);
-                feed.items.map((item) => {
+                feed.items.forEach((item) => {
                     news.push(newsMapper(item, data.name));
                 });
             } catch (error) {
                 this.logger.error(`Error reading RSS feed from ${data.name} at URL ${data.url}: ${error.message}`);
             }
-            await new Promise(resolve => {
+            await new Promise((resolve) => {
                 setTimeout(resolve, 6000);
             });
         }
