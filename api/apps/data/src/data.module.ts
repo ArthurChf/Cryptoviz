@@ -3,8 +3,8 @@ import { DataController } from './data.controller';
 import { DataService } from './data.service';
 
 @Module({
-  imports: [],
-  controllers: [DataController],
-  providers: [DataService],
+    imports: [],
+    controllers: [DataController],
+    providers: [DataService]
 })
 export class DataModule {}
