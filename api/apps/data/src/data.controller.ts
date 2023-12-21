@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import type { DataService } from '@/apps/data/src/data.service';
+import { DataService } from '@/apps/data/src/data.service';
 
 @Controller()
 export class DataController {
-    private readonly dataService: DataService;
+    constructor(private readonly dataService: DataService) {}
 
     @Get()
     public getHello(): string {

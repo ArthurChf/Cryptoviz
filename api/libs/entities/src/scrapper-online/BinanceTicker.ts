@@ -1,5 +1,5 @@
 interface BinanceTickerDto {
-    s: number;
+    s: string;
     p: string;
     P: string;
     w: string;
@@ -16,7 +16,7 @@ interface BinanceTickerDto {
 }
 
 export interface BinanceTicker {
-    symbol: number;
+    symbol: string;
     price_change: string;
     price_change_percent: string;
     weighted_average_price: string;

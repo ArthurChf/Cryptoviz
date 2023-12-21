@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import Parser from 'rss-parser';
-import type { RSSNews } from '@/libs/entities/src';
+import type { RSSNews, RSSNewsDto } from '@/libs/entities/src';
 import { newsMapper } from '@/libs/entities/src';
 
 interface CustomFeed { foo: string }
@@ -67,7 +67,7 @@ export class RssFeedService {
             try {
                 this.logger.log(`Reading RSS feed from ${data.name}`);
                 const feed = await parser.parseURL(data.url);
-                feed.items.forEach((item) => {
+                (feed.items as unknown as RSSNewsDto[]).forEach((item) => {
                     news.push(newsMapper(item, data.name));
                 });
             } catch (error) {

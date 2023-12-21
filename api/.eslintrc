@@ -25,7 +25,6 @@
         "@typescript-eslint/consistent-type-exports": ["error", { "fixMixedExportsWithInlineTypeSpecifier": false }],
         "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "separate-type-imports", "prefer": "type-imports" }],
         "@typescript-eslint/default-param-last": "error",
-        "@typescript-eslint/explicit-member-accessibility": ["error", { "accessibility": "explicit" }],
         "@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "semi", "requireLast": true } }],
         "@typescript-eslint/method-signature-style": ["error", "method"],
         "@typescript-eslint/no-base-to-string": "error",
@@ -421,9 +420,6 @@
             "error"
         ],
         "no-useless-concat": [
-            "error"
-        ],
-        "no-useless-constructor": [
             "error"
         ],
         "no-useless-escape": [
