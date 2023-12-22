@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { Kafka } from 'kafkajs';
 import type { BinanceTicker, RSSNews } from '@/libs/entities/src';
-import { SchemaRegisteryService } from './schema-registery.service';
+import type { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 
 @Injectable()
-export class KakfaService {
+export class KafkaService {
     private readonly kafka = new Kafka({
-        brokers: ['localhost:9092']
+        brokers: ['localhost:19092']
     });
-
     private readonly producer = this.kafka.producer();
+    private readonly topics: KafkaTopicEnum[] = [];
 
-    public constructor(private readonly schemaRegisteryService: SchemaRegisteryService) {
-        this.connect();
+    public constructor() {
+        this.init();
     }
 
-    private async connect() {
+    private async init() {
         await this.producer.connect();
     }
 
-    public async createTopic(topic: string) {
+    private async createTopic(topic: KafkaTopicEnum) {
         const admin = this.kafka.admin();
         await admin.connect();
         await admin.createTopics({
@@ -29,16 +29,16 @@ export class KakfaService {
                 replicationFactor: 1
             }]
         });
+        this.topics.push(topic);
         await admin.disconnect();
     }
 
-    public async sendMessage(topic: string, topicId: number, message: RSSNews[] | BinanceTicker[] | unknown[]) {
+    public async sendMessage(topic: KafkaTopicEnum, message: BinanceTicker | string) {
         try {
-            await this.createTopic(topic);
-            const encodedMessage = await this.schemaRegisteryService.checkSchema(topicId, message);
+            if (!this.topics.includes(topic)) await this.createTopic(topic);
             await this.producer.send({
                 topic,
-                messages: [{ value: encodedMessage }]
+                messages: [{ value: typeof message === 'string' ? message : JSON.stringify(message) }]
             });
             console.log('Message sent successfully');
         } catch (error) {
