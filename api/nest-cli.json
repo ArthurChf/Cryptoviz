@@ -44,13 +44,13 @@
         "tsConfigPath": "apps/data/tsconfig.app.json"
       }
     },
-    "kakfa": {
+    "kafka": {
       "type": "library",
-      "root": "libs/kakfa",
+      "root": "libs/kafka",
       "entryFile": "index",
-      "sourceRoot": "libs/kakfa/src",
+      "sourceRoot": "libs/kafka/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/kakfa/tsconfig.lib.json"
+        "tsConfigPath": "libs/kafka/tsconfig.lib.json"
       }
     }
   },

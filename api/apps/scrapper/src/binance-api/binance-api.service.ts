@@ -3,13 +3,16 @@ import { Injectable } from '@nestjs/common';
 import { WebSocket } from 'ws';
 import { getPairs } from '@/libs/utils/src';
 import { tickerMapper } from '@/libs/entities/src/scrapper-online/BinanceTicker';
+import { KafkaService } from '@/libs/kafka/src/kafka.service';
+import { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 
 @Injectable()
 export class BinanceApiService implements OnModuleInit {
     private ws: WebSocket;
     private readonly results: unknown[] = [];
     private readonly messageCount: number = 0;
-    private readonly cryptoStats: Map<string, unknown> = new Map<string, unknown>();
+
+    public constructor(private readonly kafkaService: KafkaService) { }
 
     public onModuleInit() {
         this.ws = new WebSocket('wss://stream.binance.com:9443/ws');
@@ -38,8 +41,7 @@ export class BinanceApiService implements OnModuleInit {
             const response = JSON.parse(data);
             if (response?.e !== '24hrTicker') return;
             const ticker = tickerMapper(response);
-            this.cryptoStats.set(response.s, ticker);
-            console.log(this.cryptoStats);
+            this.kafkaService.sendMessage(KafkaTopicEnum.BINANCE_DATA, ticker);
         });
     }
 
