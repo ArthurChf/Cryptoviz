@@ -28,7 +28,18 @@ export class KafkaService {
             topics: [{
                 topic,
                 numPartitions: 1,
-                replicationFactor: 1
+                replicationFactor: 1,
+                configEntries: [
+                    {
+                        name: 'cleanup.policy',
+                        value: 'delete'
+                    },
+                    {
+                        name: 'retention.ms',
+                        // 10 minutes
+                        value: '600000'
+                    }
+                ]
             }]
         });
         this.topics.push(topic);
