@@ -1,17 +1,18 @@
 export interface RSSNewsDto {
     title: string;
     link: string;
-    pubDate: string;
+    isoDate: string;
     contentSnippet: string;
     creator: string;
     source: string;
+    content: string;
 }
 
 export interface RSSNews {
     title: string;
     link: string;
-    pubDate: string;
-    resume: string;
+    isoDate: string;
+    content: string;
     creator: string;
     source: string;
 }
@@ -20,9 +21,9 @@ export function newsMapper(item: RSSNewsDto, source: string): RSSNews {
     return {
         title: item.title,
         link: item.link,
-        pubDate: item.pubDate,
-        resume: item.contentSnippet,
+        isoDate: item.isoDate,
         creator: item.creator,
-        source
+        source,
+        content: item.content
     };
 }
