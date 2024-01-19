@@ -4,13 +4,15 @@ import { RssFeedService } from '@/apps/scrapper/src/rss-feed/rss-feed.service';
 
 @Injectable()
 export class RssCronTasks {
-    constructor(private readonly rssFeedService: RssFeedService) {}
+    constructor(private readonly rssFeedService: RssFeedService) {
+        this.logger.debug('RssCronTasks constructor');
+        this.trigger();
+    }
 
     private readonly logger = new Logger(RssCronTasks.name);
-    // Date du cron à modifier
-    @Cron('*/3 * * * *')
-    public async trigger(): Promise<number> {
+    @Cron('*/30 * * * *')
+    public async trigger(): Promise<void> {
         this.logger.debug('Triggering RSS feed update');
-        return await this.rssFeedService.read();
+        await this.rssFeedService.read();
     }
 }

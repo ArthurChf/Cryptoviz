@@ -41,7 +41,7 @@ export class BinanceApiService implements OnModuleInit {
             const response = JSON.parse(data);
             if (response?.e !== '24hrTicker') return;
             const ticker = tickerMapper(response);
-            this.kafkaService.sendMessage(KafkaTopicEnum.BINANCE_DATA, ticker);
+            this.kafkaService.sendBinanceData(ticker);
         });
     }
 
