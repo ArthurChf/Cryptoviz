@@ -10,7 +10,7 @@ export class RssCronTasks {
     }
 
     private readonly logger = new Logger(RssCronTasks.name);
-    @Cron('0 * * * *')
+    @Cron('*/30 * * * *')
     public async trigger(): Promise<void> {
         this.logger.debug('Triggering RSS feed update');
         await this.rssFeedService.read();

@@ -2,17 +2,18 @@ import { Injectable, Logger } from '@nestjs/common';
 import Parser from 'rss-parser';
 import type { RSSNews, RSSNewsDto } from '@/libs/entities/src';
 import { newsMapper } from '@/libs/entities/src';
-import { writeFile } from 'fs/promises';
-import { writeFileSync } from 'fs';
+import { KafkaService } from '@/libs/kafka/src/kafka.service';
+import { urls } from '@/apps/scrapper/src/rss-feed/urls';
 
 interface CustomFeed { foo: string }
 interface CustomItem { bar: number }
+
 @Injectable()
 export class RssFeedService {
     private readonly parser: Parser<CustomFeed, CustomItem>;
     private readonly logger = new Logger(RssFeedService.name);
 
-    constructor() {
+    constructor(private readonly kafkaService: KafkaService) {
         this.parser = new Parser({
             customFields: {
                 feed: ['foo'],
@@ -34,61 +35,13 @@ export class RssFeedService {
         }
     }
 
-    public urls: { name: string; url: string }[] = [
-        {
-            url: 'https://coinjournal.net/fr/actualites/category/analyse/feed/',
-            name: 'coinjournal-analyse'
-        },
-        {
-            url: 'https://www.newsbtc.com/feed/',
-            name: 'newsbtc'
-        },
-        {
-            url: 'https://www.cryptopolitan.com/feed/',
-            name: 'cryptopolitan'
-        },
-        {
-            url: 'https://cryptopotato.com/feed/',
-            name: 'cryptopotato'
-        },
-        {
-            url: 'https://coincodecap.com/category/news/feed/gn',
-            name: 'coincodecap'
-        },
-        {
-            name: 'alexablockchain',
-            url: 'https://alexablockchain.com/feed/'
-        },
-        {
-            name: 'airdropalert',
-            url: 'https://blogs.airdropalert.com/feed/'
-        },
-        {
-            name: 'decrypt',
-            url: 'https://decrypt.co/feed'
-        },
-        {
-            name: 'ethereumworldnews',
-            url: 'https://en.ethereumworldnews.com/feed/'
-        },
-        {
-            name: 'blockchain',
-            url: 'https://Blockchain.News/RSS?key=0HM0B8QFN3GEO'
-        },
-        {
-            name: 'coinregwatch',
-            url: 'https://coinregwatch.com/feed/'
-        },
-        {
-            name: 'cryptoslate',
-            url: 'https://cryptoslate.com/feed/'
-        }
-    ];
+
     public async read(): Promise<void> {
-        const newsPromises = this.urls.map(async (feed) => this.parseFeed(feed.url, feed.name));
+        const newsPromises = urls.map(async (feed) => this.parseFeed(feed.url, feed.name));
         try {
             const allNews = await Promise.all(newsPromises);
             const flattenedNews = allNews.flat();
+            this.kafkaService.sendRssNews(flattenedNews);
             this.logger.log(`Send ${flattenedNews.length} news to kafka`);
         } catch (error) {
             this.logger.error(`Error in processing RSS Feeds: ${error.message}`);
