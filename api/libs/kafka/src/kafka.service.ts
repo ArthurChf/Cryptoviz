@@ -58,16 +58,16 @@ export class KafkaService {
         }
     }
 
-    public async sendBinanceData(message: BinanceTicker | string) {
+    public async sendBinanceData(message: string) {
         try {
             if (!this.topics.includes(KafkaTopicEnum.BINANCE_DATA)) await this.createTopic(KafkaTopicEnum.BINANCE_DATA);
             await this.binanceProducer.send({
                 topic: KafkaTopicEnum.BINANCE_DATA,
-                messages: [{ value: typeof message === 'string' ? message : JSON.stringify(message) }]
+                messages: [{ value: message }]
             });
             console.log('Message sent successfully');
         } catch (e) {
-            console.log('Failed to send rss feed', e);
+            console.log('Failed to send binance data', e);
         }
     }
 }

@@ -40,7 +40,7 @@ export class BinanceApiService implements OnModuleInit {
         ws.on('message', (data: string) => {
             const response = JSON.parse(data);
             if (response?.e !== '24hrTicker') return;
-            const ticker = tickerMapper(response);
+            const ticker = JSON.stringify(tickerMapper(response));
             this.kafkaService.sendBinanceData(ticker);
         });
     }
