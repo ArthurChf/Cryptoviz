@@ -1,11 +1,10 @@
 version: '3.8'
-name: redpanda
 services:
   broker:
     container_name: broker
     image: docker.redpanda.com/redpandadata/redpanda:v23.2.21
     networks:
-      - redpanda_network
+      - broker_network
     restart: unless-stopped
     command:
       - redpanda
@@ -28,11 +27,12 @@ services:
     - '18082:18082'
     - '19092:19092'
     - '19644:9644'
-  ui:
-    container_name: ui
+
+  broker-ui:
+    container_name: broker-ui
     image: docker.redpanda.com/redpandadata/console:v2.3.8
     networks:
-      - redpanda_network
+      - broker_network
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     environment:
@@ -52,8 +52,42 @@ services:
     depends_on:
       - broker
 
+  scrapper:
+    networks:
+      - broker_network
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: ./dockerfiles/Dockerfile.Scrapper
+    ports:
+      - '3001:3001'
+    depends_on:
+      - broker
+
+  data:
+    networks:
+      - broker_network
+    restart: unless-stopped
+    build:
+      context: ./api
+      dockerfile: ./dockerfiles/Dockerfile.Data
+    ports:
+      - '3000:3000'
+    depends_on:
+      - broker
+
+  python-scripts:
+    networks:
+      - broker_network
+    restart: unless-stopped
+    build:
+      context: ./python-scripts
+      dockerfile: Dockerfile.Scripts
+    depends_on:
+      - broker
+
 networks:
-  redpanda_network:
+  broker_network:
     driver: bridge
 
 volumes:
