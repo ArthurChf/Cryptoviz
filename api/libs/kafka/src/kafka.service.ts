@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Kafka } from 'kafkajs';
-import type { BinanceTicker, RSSNews } from '@/libs/entities/src';
+import { Kafka, KafkaJSError, KafkaJSNumberOfRetriesExceeded, logLevel } from 'kafkajs';
+import type { RSSNews } from '@/libs/entities/src';
 import { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 
 @Injectable()
 export class KafkaService {
     private readonly kafka = new Kafka({
-        brokers: ['localhost:19092']
+        brokers: ['broker-1:9092', 'broker-2:9092'],
+        logLevel: logLevel.NOTHING
     });
     private readonly binanceProducer = this.kafka.producer();
     private readonly rssfeedProducer = this.kafka.producer();
@@ -16,19 +17,47 @@ export class KafkaService {
         this.init();
     }
 
+    private handleError(error: unknown, from: string) {
+        if (error instanceof KafkaJSNumberOfRetriesExceeded) {
+            console.error(`${from} | Connexion Kafka - nombre de tentatives atteint`, error);
+        } else if (error instanceof KafkaJSError) {
+            console.error(`${from} | Erreur de connexion Kafka`, error);
+        } else {
+            console.error(`${from} | Erreur Kafka inconnue`, error);
+        }
+    }
+
     private async init() {
-        await this.binanceProducer.connect();
-        await this.rssfeedProducer.connect();
+        try {
+            await this.binanceProducer.connect();
+            await this.rssfeedProducer.connect();
+        } catch (error) {
+            this.handleError(error, 'INIT');
+        }
     }
 
     private async createTopic(topic: KafkaTopicEnum) {
         const admin = this.kafka.admin();
         await admin.connect();
+        const clusterInfo = await admin.describeCluster();
+        const numBrokers = clusterInfo.brokers.length;
+
         await admin.createTopics({
             topics: [{
                 topic,
                 numPartitions: 1,
-                replicationFactor: 1
+                replicationFactor: numBrokers,
+                configEntries: [
+                    {
+                        name: 'cleanup.policy',
+                        value: 'delete'
+                    },
+                    {
+                        name: 'retention.ms',
+                        // 10 minutes
+                        value: '600000'
+                    }
+                ]
             }]
         });
         this.topics.push(topic);
@@ -43,20 +72,20 @@ export class KafkaService {
                 messages: [{ value: JSON.stringify(messages) }]
             });
         } catch (e) {
-            console.log('Failed to send rss feed', e);
+            this.handleError(e, 'RSS News');
         }
     }
 
-    public async sendBinanceData(message: BinanceTicker | string) {
+    public async sendBinanceData(message: string) {
         try {
             if (!this.topics.includes(KafkaTopicEnum.BINANCE_DATA)) await this.createTopic(KafkaTopicEnum.BINANCE_DATA);
             await this.binanceProducer.send({
                 topic: KafkaTopicEnum.BINANCE_DATA,
-                messages: [{ value: typeof message === 'string' ? message : JSON.stringify(message) }]
+                messages: [{ value: message }]
             });
             console.log('Message sent successfully');
         } catch (e) {
-            console.log('Failed to send rss feed', e);
+            this.handleError(e, 'Binance Data');
         }
     }
 }
