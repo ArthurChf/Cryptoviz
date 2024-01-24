@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Kafka } from 'kafkajs';
-import type { BinanceTicker, RSSNews } from '@/libs/entities/src';
+import type { RSSNews } from '@/libs/entities/src';
 import { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 
 @Injectable()
 export class KafkaService {
     private readonly kafka = new Kafka({
-        brokers: ['localhost:19092']
+        brokers: ['localhost:19092', 'localhost:29092']
     });
     private readonly binanceProducer = this.kafka.producer();
     private readonly rssfeedProducer = this.kafka.producer();
@@ -28,7 +28,7 @@ export class KafkaService {
             topics: [{
                 topic,
                 numPartitions: 1,
-                replicationFactor: 1,
+                replicationFactor: 2,
                 configEntries: [
                     {
                         name: 'cleanup.policy',
