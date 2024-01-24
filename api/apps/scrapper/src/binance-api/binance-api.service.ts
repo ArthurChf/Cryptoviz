@@ -4,13 +4,10 @@ import { WebSocket } from 'ws';
 import { getPairs } from '@/libs/utils/src';
 import { tickerMapper } from '@/libs/entities/src/scrapper-online/BinanceTicker';
 import { KafkaService } from '@/libs/kafka/src/kafka.service';
-import { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 
 @Injectable()
 export class BinanceApiService implements OnModuleInit {
     private ws: WebSocket;
-    private readonly results: unknown[] = [];
-    private readonly messageCount: number = 0;
 
     public constructor(private readonly kafkaService: KafkaService) { }
 
@@ -37,12 +34,19 @@ export class BinanceApiService implements OnModuleInit {
     }
 
     public listenToTicker(ws: WebSocket) {
+        let ticker = '';
+        let response = null;
+
         ws.on('message', (data: string) => {
-            const response = JSON.parse(data);
+            response = JSON.parse(data);
             if (response?.e !== '24hrTicker') return;
-            const ticker = JSON.stringify(tickerMapper(response));
-            this.kafkaService.sendBinanceData(ticker);
+            ticker = JSON.stringify(tickerMapper(response));
+            this.sendBinanceData(ticker);
         });
+    }
+
+    public async sendBinanceData(data: string) {
+        this.kafkaService.sendBinanceData(data);
     }
 
     public logError(ws: WebSocket) {
