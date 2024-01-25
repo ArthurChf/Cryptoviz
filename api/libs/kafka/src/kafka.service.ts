@@ -54,8 +54,8 @@ export class KafkaService {
                     },
                     {
                         name: 'retention.ms',
-                        // 10 minutes
-                        value: '600000'
+                        // 5 minutes
+                        value: '300000'
                     }
                 ]
             }]
@@ -66,9 +66,14 @@ export class KafkaService {
 
     public async sendRssNews(messages: RSSNews[]) {
         try {
-            if (!this.topics.includes(KafkaTopicEnum.RSS_FEED)) await this.createTopic(KafkaTopicEnum.RSS_FEED);
+            if (!this.topics.includes(KafkaTopicEnum.RSS_FEED_BACKUP)) await this.createTopic(KafkaTopicEnum.RSS_FEED_BACKUP);
+            if (!this.topics.includes(KafkaTopicEnum.RSS_FEED_PROCESSING)) await this.createTopic(KafkaTopicEnum.RSS_FEED_PROCESSING);
             await this.rssfeedProducer.send({
-                topic: KafkaTopicEnum.RSS_FEED,
+                topic: KafkaTopicEnum.RSS_FEED_BACKUP,
+                messages: [{ value: JSON.stringify(messages) }]
+            });
+            await this.rssfeedProducer.send({
+                topic: KafkaTopicEnum.RSS_FEED_PROCESSING,
                 messages: [{ value: JSON.stringify(messages) }]
             });
         } catch (e) {
@@ -78,9 +83,14 @@ export class KafkaService {
 
     public async sendBinanceData(message: string) {
         try {
-            if (!this.topics.includes(KafkaTopicEnum.BINANCE_DATA)) await this.createTopic(KafkaTopicEnum.BINANCE_DATA);
+            if (!this.topics.includes(KafkaTopicEnum.BINANCE_DATA_BACKUP)) await this.createTopic(KafkaTopicEnum.BINANCE_DATA_BACKUP);
+            if (!this.topics.includes(KafkaTopicEnum.BINANCE_DATA_PROCESSING)) await this.createTopic(KafkaTopicEnum.BINANCE_DATA_PROCESSING);
             await this.binanceProducer.send({
-                topic: KafkaTopicEnum.BINANCE_DATA,
+                topic: KafkaTopicEnum.BINANCE_DATA_BACKUP,
+                messages: [{ value: message }]
+            });
+            await this.binanceProducer.send({
+                topic: KafkaTopicEnum.BINANCE_DATA_PROCESSING,
                 messages: [{ value: message }]
             });
             console.log('Message sent successfully');
