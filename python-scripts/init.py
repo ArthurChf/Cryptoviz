@@ -17,14 +17,14 @@ def signal_handler(signum, frame):
     print('Signal d\'arrêt reçu, fermeture du processus')
     
     process_binance_processing.terminate()
-    process_binance_backup.terminate()
+    """process_binance_backup.terminate()
     process_rss_feed_processing.terminate()
-    process_rss_feed_backup.terminate()
+    process_rss_feed_backup.terminate()"""
     
     process_binance_processing.join()
-    process_binance_backup.join()
+    """process_binance_backup.join()
     process_rss_feed_processing.join()
-    process_rss_feed_backup.join()
+    process_rss_feed_backup.join()"""
     
     sys.exit(0)
     
@@ -33,7 +33,8 @@ def create_consumer(topic):
         'bootstrap.servers': 'broker-1:9092,broker-2:9092',
         'group.id': topic,
         'auto.offset.reset': 'earliest',
-        'enable.auto.commit': False
+        'enable.auto.commit': False,
+        'fetch.min.bytes': 30000    
     }
     return Consumer(consumer_config)
             
@@ -52,7 +53,7 @@ def worker_topic_processing(topic):
             else:
                 print(msg.error())
                 pass
-        #Appel fonction traitement
+        process_data(msg.value())
         consumer.commit(asynchronous=False)  
     except KafkaException as e:
         print(f'Error while consuming {topic}: {e}')
@@ -87,6 +88,14 @@ def insert_data(data):
         # Stock dans mongodb
     except Exception as e:
         print(f'Error while inserting data: {e}')
+        
+def process_data(data):
+    try:
+        print(data)
+        # processing des données
+    except Exception as e:
+        print(f'Error while processing data: {e}')
+        
 
 if __name__ == "__main__":
     
@@ -94,16 +103,17 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
     # Création de processus pour chaque topic
     process_binance_processing = multiprocessing.Process(target=worker_topic_processing, args=(Topic.BINANCE_DATA_PROCESSING.value,))
-    process_binance_backup = multiprocessing.Process(target=worker_topic_backup, args=(Topic.BINANCE_DATA_BACKUP.value,))
+    """process_binance_backup = multiprocessing.Process(target=worker_topic_backup, args=(Topic.BINANCE_DATA_BACKUP.value,))
     process_rss_feed_processing = multiprocessing.Process(target=worker_topic_processing, args=(Topic.RSS_FEED_PROCESSING.value,))
-    process_rss_feed_backup = multiprocessing.Process(target=worker_topic_backup, args=(Topic.RSS_FEED_BACKUP.value,))
+    process_rss_feed_backup = multiprocessing.Process(target=worker_topic_backup, args=(Topic.RSS_FEED_BACKUP.value,))"""
 
     # Démarrage des processus
     process_binance_processing.start()
-    process_binance_backup.start()
+    """process_binance_backup.start()
     process_rss_feed_processing.start()
-    process_rss_feed_backup.start()
+    process_rss_feed_backup.start()"""
 
+    """
     while True:
             if not process_binance_processing.is_alive():
                 process_binance_processing = multiprocessing.Process(target=worker_topic_processing, args=(Topic.BINANCE_DATA_PROCESSING.value,))
@@ -120,4 +130,4 @@ if __name__ == "__main__":
             if not process_rss_feed_backup.is_alive():
                 process_rss_feed_backup = multiprocessing.Process(target=worker_topic_backup, args=(Topic.RSS_FEED_BACKUP.value,))
                 process_rss_feed_backup.start()
-        
+    """
