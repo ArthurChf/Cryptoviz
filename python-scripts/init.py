@@ -1,6 +1,6 @@
 import multiprocessing
-import threading
 import signal
+import json
 import sys
 
 from enum import Enum
@@ -30,7 +30,7 @@ def signal_handler(signum, frame):
     
 def create_consumer(topic):
     consumer_config = {
-        'bootstrap.servers': 'broker-1:9092,broker-2:9092',
+        'bootstrap.servers': 'broker-1:9092,broker-2:9092,broker-3:9092',
         'group.id': topic,
         'auto.offset.reset': 'earliest',
         'enable.auto.commit': False,
@@ -42,23 +42,51 @@ def worker_topic_processing(topic):
     consumer = create_consumer(topic)
     try:
         consumer.subscribe([topic])
-
-        #while True:
-        msg = consumer.poll(timeout=1.0)
+        msg = consumer.poll()
+        
         if msg is None: 
             pass
         if msg.error():
             if msg.error().code() == KafkaError._PARTITION_EOF:
-                pass
-            else:
                 print(msg.error())
                 pass
-        process_data(msg.value())
-        consumer.commit(asynchronous=False)  
+        else :
+            try:
+                msg = json.loads(msg.value().decode('utf-8'))
+                if topic == Topic.BINANCE_DATA_PROCESSING.value:
+                    process_binance_data(msg)
+                else:
+                    process_rss_feed_data(msg)
+            except json.decoder.JSONDecodeError:
+                print('Unable to decode message to JSON: %s', msg.value())
+        
+        consumer.commit(asynchronous=False)
+              
     except KafkaException as e:
         print(f'Error while consuming {topic}: {e}')
     finally:
         consumer.close()  
+    
+    """
+    try:
+        consumer.subscribe([topic])
+
+        while True:
+            msg = consumer.poll()
+            if msg is None: 
+                pass
+            if msg.error():
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    pass
+                else:
+                    process_data(msg.value())
+                    pass
+            consumer.commit(asynchronous=False)  
+    except KafkaException as e:
+        print(f'Error while consuming {topic}: {e}')
+    finally:
+        consumer.close()    
+    """   
 
 def worker_topic_backup(topic):
     consumer = create_consumer(topic)
@@ -89,8 +117,17 @@ def insert_data(data):
     except Exception as e:
         print(f'Error while inserting data: {e}')
         
-def process_data(data):
+def process_binance_data(data):
     try:
+        print('-----------------Processing Binance data-----------------')
+        print(f'Symbole : {data["symbol"]}')
+        # processing des données
+    except Exception as e:
+        print(f'Error while processing data: {e}')
+        
+def process_rss_feed_data(data):
+    try:
+        print('-----------------Processing RSS feed data-----------------')
         print(data)
         # processing des données
     except Exception as e:

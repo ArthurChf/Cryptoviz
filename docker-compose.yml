@@ -161,7 +161,6 @@ services:
   python-scripts:
     networks:
       - broker_network
-    restart: unless-stopped
     build:
       context: ./python-scripts
       dockerfile: Dockerfile.Scripts
