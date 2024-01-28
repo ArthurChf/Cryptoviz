@@ -1,17 +1,13 @@
 <template>
-    <div :id="id" class="w-full h-[350px]"></div>
+    <div id="chart" class="w-full h-[70vh] min-h-[500px]"></div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import * as echarts from 'echarts';
 
-const props = defineProps<{
-    id: string;
-}>();
-
 onMounted(() => {
-    const chartElement = document.getElementById(props.id);
+    const chartElement = document.getElementById('chart');
     const chart = echarts.init(chartElement, 'dark');
     new ResizeObserver(() => {
         chart.resize();
@@ -28,6 +24,12 @@ onMounted(() => {
         data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]!));
     }
     const option: echarts.EChartsOption = {
+        grid: {
+            top: 60,
+            right: 60,
+            bottom: 60,
+            left: 60
+        },
         backgroundColor: 'transparent',
         tooltip: {
             trigger: 'axis',
@@ -65,7 +67,8 @@ onMounted(() => {
             {
                 name: 'Fake Data',
                 type: 'line',
-                symbol: 'none',
+                symbol: 'circle',
+                symbolSize: 9,
                 sampling: 'lttb',
                 itemStyle: {
                     color: '#184fce'
