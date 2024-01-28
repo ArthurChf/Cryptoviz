@@ -67,7 +67,8 @@ onMounted(() => {
             {
                 name: 'Fake Data',
                 type: 'line',
-                symbol: 'none',
+                symbol: 'circle',
+                symbolSize: 9,
                 sampling: 'lttb',
                 itemStyle: {
                     color: '#184fce'
