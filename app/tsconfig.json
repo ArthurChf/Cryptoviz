@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "allowJs": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "alwaysStrict": true,
@@ -16,15 +17,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": false,
         "paths": {
-            "@assets/*": ["./src/assets/*"],
-            "@components/*": ["./src/components/*"],
-            "@composables/*": ["./src/composables/*"],
-            "@enums/*": ["./src/enums/*"],
-            "@layouts/*": ["./src/layouts/*"],
-            "@router/*": ["./src/router/*"],
-            "@stores/*": ["./src/stores/*"],
-            "@interfaces/*": ["./src/interfaces/*"],
-            "@views/*": ["./src/views/*"]
+            "@/*": ["./src/*"]
         },
         "resolveJsonModule": true,
         "skipLibCheck": true,
@@ -34,16 +27,18 @@
         "strictNullChecks": true,
         "strictPropertyInitialization": false,
         "target": "ESNext",
+        "types": ["vite/client"],
         "useUnknownInCatchVariables": true
     },
-    "exclude": [
-        "node_modules",
-        "dist"
-    ],
     "include": [
         "./**/*.ts",
-        "./**/*.js",
         "./**/*.vue",
-        "./.eslintrc.js"
+        "./.eslintrc"
+    ],
+    "exclude": [
+        ".output",
+        ".data",
+        "dist",
+        "node_modules"
     ]
 }
