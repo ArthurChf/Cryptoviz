@@ -1,5 +1,20 @@
 version: '3.8'
 services:
+
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - broker_network
+    volumes:
+      - mongo:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: epitech
+      MONGO_INITDB_ROOT_PASSWORD: cryptoviz
+
+
   broker-1:
     container_name: broker-1
     image: docker.redpanda.com/redpandadata/redpanda:v23.3.2
@@ -116,3 +131,5 @@ networks:
 volumes:
   broker-1: null
   broker-2: null
+  broker-3: null
+  mongo: null
