@@ -12,14 +12,20 @@
                             <AppIcon :name="IconEnum.ARROW_DOWN" size="32" color="text-title/90 group-hover:text-title/70 transition duration-200" />
                         </div>
                         <div class="flex items-center gap-4">
-                            <span class="text-subtitle text-4xl font-bold">1,077.83 €</span>
-                            <span class="flex items-center gap-1 border border-1 rounded-2xl border-active text-active font-bold text-sm px-2 py-1 mt-1"><AppIcon size="17" :name="IconEnum.ARROW_RIGHT_UP" /> 1,47 %</span>
+                            <Transition :name="TransitionEnum.FADE_SLIDE" mode="out-in">
+                                <span class="text-subtitle text-4xl font-bold" :key="currencyValue">{{ currencyValue }}</span>
+                            </Transition>
+                            <Transition :name="TransitionEnum.FADE" mode="out-in">
+                                <span class="flex items-center gap-1 border border-1 rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currencyGrowthRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']" :key="currencyGrowthRate"><AppIcon size="17" :name="currencyGrowthRate >= 0 ? IconEnum.ARROW_RIGHT_UP : IconEnum.ARROW_RIGHT_DOWN" /> {{ currencyGrowthRate }} %</span>
+                            </Transition>
                         </div>
                     </div>
                     <div class="flex items-center gap-16">
                         <div class="flex flex-col gap-2" v-for="item in statItems">
                             <h3 class="text-sm text-title font-semibold">{{ item.title }}</h3>
-                            <span class="text-xl font-semibold text-subtitle">{{ item.value }}</span>
+                            <Transition :name="TransitionEnum.FADE_SLIDE" mode="out-in">
+                                <span class="text-xl font-semibold text-subtitle" :key="item.value">{{ item.value }}</span>
+                            </Transition>
                         </div>
                     </div>
                 </div>
@@ -38,7 +44,11 @@
 import AppContainer from '@/components/AppContainer.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import { IconEnum } from '@/enums/IconEnum';
+import { TransitionEnum } from '@/enums/TransitionEnum';
 import { ref } from 'vue';
+
+const currencyValue = ref('1,077.83 €');
+const currencyGrowthRate = ref(1.47);
 
 const statItems = ref([
     {

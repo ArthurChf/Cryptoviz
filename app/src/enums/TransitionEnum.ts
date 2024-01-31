@@ -1,3 +1,4 @@
 export enum TransitionEnum {
-    FADE = 'fade'
+    FADE = 'fade',
+    FADE_SLIDE = 'fadeSlide'
 }

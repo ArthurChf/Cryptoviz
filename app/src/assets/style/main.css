@@ -29,6 +29,19 @@ html {
     opacity: 1;
 }
 
+.fadeSlide-enter-active,
+.fadeSlide-leave-active {
+    transition: transform 0.15s, opacity 0.15s;
+}
+.fadeSlide-enter-from {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+.fadeSlide-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
 @layer utilities {
     .animate-loader-circular-rotate {
         animation: animation-loader-circular-rotate 1s linear infinite;
