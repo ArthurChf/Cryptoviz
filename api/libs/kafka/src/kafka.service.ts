@@ -6,7 +6,7 @@ import { KafkaTopicEnum } from '@/libs/kafka/src/topic.enum';
 @Injectable()
 export class KafkaService {
     private readonly kafka = new Kafka({
-        brokers: ['broker-1:9092', 'broker-2:9092'],
+        brokers: ['broker-1:9092', 'broker-2:9092', 'broker-3:9092'],
         logLevel: logLevel.NOTHING
     });
     private readonly binanceProducer = this.kafka.producer();

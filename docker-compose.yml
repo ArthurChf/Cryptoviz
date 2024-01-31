@@ -82,6 +82,34 @@ services:
       - 29644:9644
     depends_on:
       - broker-1
+  
+  broker-3:
+    container_name: broker-3
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.2
+    networks:
+      - broker_network
+    restart: unless-stopped
+    command:
+      - redpanda start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:29092
+      - --advertise-kafka-addr internal://broker-3:9092,external://localhost:29092
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:28082
+      - --advertise-pandaproxy-addr internal://broker-3:8082,external://localhost:28082
+      - --rpc-addr broker-3:33145
+      - --advertise-rpc-addr broker-3:33145
+      - --smp 1
+      - --memory 1G
+      - --mode dev-container
+      - --default-log-level=debug
+      - --seeds broker-1:33145
+    volumes:
+      - broker-3:/var/lib/redpanda/data
+    ports:
+      - 38082:38082
+      - 39092:39092
+      - 39644:9644
+    depends_on:
+      - broker-1
 
   broker-ui:
     container_name: broker-ui
@@ -104,6 +132,7 @@ services:
     depends_on:
       - broker-1
       - broker-2
+      - broker-3
 
   scrapper:
     networks:
@@ -132,7 +161,6 @@ services:
   python-scripts:
     networks:
       - broker_network
-    restart: unless-stopped
     build:
       context: ./python-scripts
       dockerfile: Dockerfile.Scripts
