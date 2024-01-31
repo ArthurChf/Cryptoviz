@@ -1,5 +1,5 @@
 <template>
-    <div class="layout lg:h-full bg-slate-900 flex flex-col lg:flex-row">
+    <div class="h-full bg-background flex w-full">
         <slot />
     </div>
 </template>

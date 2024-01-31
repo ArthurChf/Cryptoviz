@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+    <symbol id="ARROW_DOWN" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 15.0006L7.75732 10.758L9.17154 9.34375L12 12.1722L14.8284 9.34375L16.2426 10.758L12 15.0006Z"></path>
+    </symbol>
+
+    <symbol id="ARROW_RIGHT_DOWN" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M14.5895 16.0032L5.98291 7.39664L7.39712 5.98242L16.0037 14.589V7.00324H18.0037V18.0032H7.00373V16.0032H14.5895Z"></path>
+    </symbol>
+
+    <symbol id="ARROW_RIGHT_UP" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+    </symbol>
+</svg>

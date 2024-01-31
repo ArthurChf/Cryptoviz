@@ -7,10 +7,11 @@ export default {
     theme: {
         colors: {
             'title': '#fdfeff',
-            'subtitle': '#48494e',
+            'subtitle': '#c3c3c3',
             'background': '#131720',
             'container': '#161d27',
-            'active': '#10b569'
+            'active': '#10b569',
+            'inactive': '#d92a2a'
         },
         transitionDuration: {
             '200': '200ms'
