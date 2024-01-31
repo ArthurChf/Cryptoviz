@@ -18,12 +18,13 @@ onMounted(() => {
     const date = [];
     const data = [Math.random() * 300];
 
-    for(let i = 1; i < 300; i++) {
+    for (let i = 1; i < 300; i++) {
         const now = new Date(base += oneDay);
         date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
         data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]!));
     }
     const option: echarts.EChartsOption = {
+        animation: false,
         grid: {
             top: 60,
             right: 60,
@@ -33,14 +34,33 @@ onMounted(() => {
         backgroundColor: 'transparent',
         tooltip: {
             trigger: 'axis',
+            show: true,
             axisPointer: {
-                type: 'cross'
-            }
+                type: 'line',
+                lineStyle: {
+                    type: 'solid',
+                    color: '#0eb064',
+                    width: 70,
+                    opacity: 0.1
+                }
+            },
+            formatter(params) {
+                const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
+                const name = chartData.name;
+                const val = chartData.value as number;
+                const colorBullet = val < 100 ? 'red' : 'green';
+                const str =
+                `<span style="background-color:${
+                    colorBullet
+                }; width: 10px; height: 10px; display: inline-block; border-radius: 50%"></span>` +
+                `<span style="color: white">Date : ${name}<br>Valeur : ${val}</span>`;
+                return str;
+            },
+            backgroundColor: 'rgba(50,50,50,0.3)',
+            borderColor: 'transparent',
+            extraCssText: 'backdrop-filter: blur(10px)'
         },
         title: {
-            show: false
-        },
-        toolbox: {
             show: false
         },
         xAxis: {
@@ -50,38 +70,59 @@ onMounted(() => {
         },
         yAxis: {
             type: 'value',
-            boundaryGap: [0, '100%']
+            boundaryGap: [0, '100%'],
+            min: 0,
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    type: 'solid',
+                    color: 'rgba(0, 0, 0, 0.3)'
+                }
+            }
         },
         dataZoom: [
             {
                 type: 'inside',
+                zoomLock: false,
                 start: 0,
                 end: 100
             },
             {
-                start: 0,
-                end: 100
+                type: 'slider',
+                show: false
             }
         ],
         series: [
             {
-                name: 'Fake Data',
+                name: 'Crypto',
                 type: 'line',
                 symbol: 'circle',
-                symbolSize: 9,
-                sampling: 'lttb',
+                symbolSize: 13,
+                showSymbol: false,
+                smooth: true,
                 itemStyle: {
-                    color: '#184fce'
+                    color: 'white',
+                    borderColor: 'green',
+                    borderWidth: 6
+                },
+                lineStyle: {
+                    color: '#0eb064',
+                    width: 3,
+                    type: 'solid',
+                    cap: 'round',
+                    join: 'bevel',
+                    shadowColor: '#0eb064',
+                    shadowBlur: 5
                 },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                         {
                             offset: 0,
-                            color: '#11237a'
+                            color: '#0eb064'
                         },
                         {
                             offset: 1,
-                            color: '#0d1226'
+                            color: 'transparent'
                         }
                     ])
                 },
