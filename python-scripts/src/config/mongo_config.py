@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne
 
 class MongoConfig:
     def __init__(self, host, port, username, password, database):
@@ -18,13 +18,13 @@ class MongoConfig:
         return MongoClient(self.get_uri(), self.port)
     
     def insert_one(self, collection_name, document):
-        collection = self.get_collection(collection_name)
+        collection = self.database[collection_name]
         return collection.insert_one(document).inserted_id
     
     def upsert_many(self, collection_name, documents):
-        collection = self.get_collection(collection_name)
+        collection = self.database[collection_name]
         operations = [
-            collection.update_one(
+            UpdateOne(
                 {'author': doc['author'], 'title': doc['title']},
                 {'$set': doc},
                 upsert=True
