@@ -1,4 +1,4 @@
-import { PeriodSelectorEnum } from '@enums/period-selector/PeriodSelectorEnum';
+import { PeriodSelectorEnum } from '@/enums/period-selector/PeriodSelectorEnum';
 import { defineStore } from 'pinia';
 
 interface AppStore {

@@ -1,10 +1,8 @@
-import { RouteEnum } from '@enums/RouteEnum';
-import Dashboard from '@views/Dashboard.vue';
+import { RouteEnum } from '@/enums/RouteEnum';
 
 export const mainRoutes = [
     {
-        component: Dashboard,
-        name: 'dashboard',
+        component: async () => import('@/views/Dashboard.vue'),
         path: RouteEnum.DASHBOARD
     }
 ];
