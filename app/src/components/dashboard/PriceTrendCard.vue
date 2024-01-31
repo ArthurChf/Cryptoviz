@@ -1,8 +1,11 @@
 <template>
-    <div id="chart" class="w-full h-[70vh] min-h-[500px]"></div>
+    <AppContainer>
+        <div id="chart" class="w-full h-[70vh] min-h-[500px]"></div>
+    </AppContainer>
 </template>
 
 <script setup lang="ts">
+import AppContainer from '@/components/AppContainer.vue';
 import { onMounted } from 'vue';
 import * as echarts from 'echarts';
 
@@ -13,16 +16,10 @@ onMounted(() => {
         chart.resize();
     }).observe(chartElement as HTMLElement);
 
-    let base = +new Date(1968, 9, 3);
-    const oneDay = 24 * 3600 * 1000;
-    const date = [];
-    const data = [Math.random() * 300];
 
-    for (let i = 1; i < 300; i++) {
-        const now = new Date(base += oneDay);
-        date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-        data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]!));
-    }
+    const months = ['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04'];
+    const values = [12, 53, 47, 39];
+
     const option: echarts.EChartsOption = {
         animation: false,
         grid: {
@@ -39,26 +36,38 @@ onMounted(() => {
                 type: 'line',
                 lineStyle: {
                     type: 'solid',
-                    color: '#0eb064',
+                    color: '#10b569',
                     width: 70,
                     opacity: 0.1
                 }
             },
             formatter(params) {
                 const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
-                const name = chartData.name;
-                const val = chartData.value as number;
-                const colorBullet = val < 100 ? 'red' : 'green';
-                const str =
-                `<span style="background-color:${
-                    colorBullet
-                }; width: 10px; height: 10px; display: inline-block; border-radius: 50%"></span>` +
-                `<span style="color: white">Date : ${name}<br>Valeur : ${val}</span>`;
+                const date = chartData.name;
+                const value = chartData.value as number;
+                const bulletColor = value < 40 ? '#d92a2a' : '#10b569';
+                const str = `
+                    <div class="flex items-center justify-between text-xs gap-16">
+                        <span class="font-semibold text-title">${date}</span>
+                        <span class="font-medium text-subtitle">10:00</span>
+                    </div>
+                    <br />
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-1">
+                            <span style="background-color:${bulletColor};" class="w-3 h-3 mr-1 inline-block rounded-full"></span>
+                            <span class="font-medium text-xs text-subtitle">Prix: </span>
+                            <span class="font-semibold text-xs text-title">${value} €</span>
+                        </div>
+                    </div>
+                `;
                 return str;
             },
-            backgroundColor: 'rgba(50,50,50,0.3)',
+            backgroundColor: 'rgba(19, 23, 32, 0.7)',
             borderColor: 'transparent',
-            extraCssText: 'backdrop-filter: blur(10px)'
+            borderRadius: 10,
+            padding: [12, 15],
+            shadowColor: 'transparent',
+            extraCssText: 'backdrop-filter: blur(5px)'
         },
         title: {
             show: false
@@ -66,7 +75,17 @@ onMounted(() => {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: date
+            data: months,
+            axisLabel: {
+                color: '#adadad'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#1d2632',
+                    width: 1,
+                    type: 'solid'
+                }
+            }
         },
         yAxis: {
             type: 'value',
@@ -76,8 +95,11 @@ onMounted(() => {
                 show: true,
                 lineStyle: {
                     type: 'solid',
-                    color: 'rgba(0, 0, 0, 0.3)'
+                    color: '#1d2632'
                 }
+            },
+            axisLabel: {
+                color: '#adadad'
             }
         },
         dataZoom: [
@@ -97,28 +119,28 @@ onMounted(() => {
                 name: 'Crypto',
                 type: 'line',
                 symbol: 'circle',
-                symbolSize: 13,
+                symbolSize: 11,
                 showSymbol: false,
                 smooth: true,
                 itemStyle: {
                     color: 'white',
-                    borderColor: 'green',
-                    borderWidth: 6
+                    borderColor: '#1c9d61',
+                    borderWidth: 5
                 },
                 lineStyle: {
-                    color: '#0eb064',
+                    color: '#10b569',
                     width: 3,
                     type: 'solid',
                     cap: 'round',
                     join: 'bevel',
-                    shadowColor: '#0eb064',
-                    shadowBlur: 5
+                    shadowColor: '#10b569',
+                    shadowBlur: 1
                 },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                         {
                             offset: 0,
-                            color: '#0eb064'
+                            color: '#10b569'
                         },
                         {
                             offset: 1,
@@ -126,7 +148,7 @@ onMounted(() => {
                         }
                     ])
                 },
-                data
+                data: values
             }
         ]
     };
