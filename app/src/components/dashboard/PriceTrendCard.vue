@@ -10,11 +10,11 @@
 
 <script setup lang="ts">
 import AppContainer from '@/components/AppContainer.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
 import AppPeriodSelector from '@/components/AppPeriodSelector.vue';
 
-const chart = ref<echarts.ECharts>();
+const chart = shallowRef<echarts.ECharts>();
 
 const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
 const prices = ref([12, 53, 47, 39, 54, 49, 68]);
