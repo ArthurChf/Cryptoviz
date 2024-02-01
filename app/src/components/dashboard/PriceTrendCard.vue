@@ -10,21 +10,43 @@
 
 <script setup lang="ts">
 import AppContainer from '@/components/AppContainer.vue';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as echarts from 'echarts';
 import AppPeriodSelector from '@/components/AppPeriodSelector.vue';
 
+const chart = ref<echarts.ECharts>();
+
+const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
+const prices = ref([12, 53, 47, 39, 54, 49, 68]);
+const hours = ref(['08:00:00', '10:30:00', '05:32:00', '15:45:00', '09:00:00', '18:30:00', '20:00:00']);
+
+const updateChartData = () => {
+    const randomPrice = prices.value[Math.floor(Math.random() * prices.value.length)]!;
+    const randomMonth = months.value[Math.floor(Math.random() * months.value.length)]!;
+    const randomHour = hours.value[Math.floor(Math.random() * hours.value.length)]!;
+    prices.value.push(randomPrice);
+    months.value.push(randomMonth);
+    hours.value.push(randomHour);
+
+    chart.value!.setOption({
+        xAxis: {
+            data: months.value
+        },
+        series: [
+            {
+                data: prices.value
+            }
+        ]
+    });
+};
+
 onMounted(() => {
-    const chartElement = document.getElementById('chart');
-    const chart = echarts.init(chartElement, 'dark');
+    const chartElement = document.getElementById('chart') as HTMLElement;
+    chart.value = echarts.init(chartElement, 'dark');
+
     new ResizeObserver(() => {
-        chart.resize();
-    }).observe(chartElement as HTMLElement);
-
-
-    const months = ['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07'];
-    const prices = [12, 53, 47, 39, 54, 49, 68];
-    const hours = ['08:00:00', '10:30:00', '05:32:00', '15:45:00', '09:00:00', '18:30:00', '20:00:00'];
+        chart.value!.resize();
+    }).observe(chartElement);
 
     const option: echarts.EChartsOption = {
         animation: false,
@@ -51,7 +73,7 @@ onMounted(() => {
                 const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
                 const month = chartData.name;
                 const value = chartData.value as number;
-                const hour = hours[chartData.dataIndex]!;
+                const hour = hours.value[chartData.dataIndex]!;
                 const bulletColor = value < 40 ? '#d92a2a' : '#10b569';
 
                 const str = `
@@ -84,7 +106,7 @@ onMounted(() => {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: months,
+            data: months.value,
             axisLabel: {
                 color: '#adadad',
                 margin: 40,
@@ -163,11 +185,11 @@ onMounted(() => {
                         }
                     ])
                 },
-                data: prices
+                data: prices.value
             }
         ]
     };
 
-    option && chart.setOption(option);
+    option && chart.value!.setOption(option);
 });
 </script>
