@@ -9,6 +9,7 @@
         "lint": "eslint . --ext .vue,.js,.ts"
     },
     "dependencies": {
+        "@formkit/auto-animate": "^0.8.1",
         "dayjs": "^1.11.10",
         "echarts": "^5.4.3",
         "pinia": "^2.0.36",
