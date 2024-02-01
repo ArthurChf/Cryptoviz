@@ -1,5 +1,9 @@
 <template>
     <AppContainer>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <h2 class="text-2xl text-title font-bold">Price Trend</h2>
+            <AppPeriodSelector />
+        </div>
         <div id="chart" class="w-full h-[70vh] min-h-[500px]"></div>
     </AppContainer>
 </template>
@@ -8,6 +12,7 @@
 import AppContainer from '@/components/AppContainer.vue';
 import { onMounted } from 'vue';
 import * as echarts from 'echarts';
+import AppPeriodSelector from '@/components/AppPeriodSelector.vue';
 
 onMounted(() => {
     const chartElement = document.getElementById('chart');
@@ -17,8 +22,9 @@ onMounted(() => {
     }).observe(chartElement as HTMLElement);
 
 
-    const months = ['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04'];
-    const values = [12, 53, 47, 39];
+    const months = ['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07'];
+    const prices = [12, 53, 47, 39, 54, 49, 68];
+    const hours = ['08:00:00', '10:30:00', '05:32:00', '15:45:00', '09:00:00', '18:30:00', '20:00:00'];
 
     const option: echarts.EChartsOption = {
         animation: false,
@@ -43,20 +49,23 @@ onMounted(() => {
             },
             formatter(params) {
                 const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
-                const date = chartData.name;
+                const month = chartData.name;
                 const value = chartData.value as number;
+                const hour = hours[chartData.dataIndex]!;
                 const bulletColor = value < 40 ? '#d92a2a' : '#10b569';
+
                 const str = `
-                    <div class="flex items-center justify-between text-xs gap-16">
-                        <span class="font-semibold text-title">${date}</span>
-                        <span class="font-medium text-subtitle">10:00</span>
-                    </div>
-                    <br />
-                    <div class="flex flex-col gap-1">
-                        <div class="flex items-center gap-1">
-                            <span style="background-color:${bulletColor};" class="w-3 h-3 mr-1 inline-block rounded-full"></span>
-                            <span class="font-medium text-xs text-subtitle">Prix: </span>
-                            <span class="font-semibold text-xs text-title">${value} €</span>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between text-md gap-16">
+                            <span class="font-semibold text-title">${month}</span>
+                            <span class="font-medium text-subtitle">${hour}</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <div class="flex items-center gap-1">
+                                <span style="background-color:${bulletColor};" class="w-3 h-3 mr-1 inline-block rounded-full"></span>
+                                <span class="font-medium text-md text-subtitle">Prix: </span>
+                                <span class="font-semibold text-md text-title">${value} €</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -77,7 +86,10 @@ onMounted(() => {
             boundaryGap: false,
             data: months,
             axisLabel: {
-                color: '#adadad'
+                color: '#adadad',
+                margin: 40,
+                fontWeight: 'bold',
+                fontSize: 13
             },
             axisLine: {
                 lineStyle: {
@@ -89,7 +101,7 @@ onMounted(() => {
         },
         yAxis: {
             type: 'value',
-            boundaryGap: [0, '100%'],
+            boundaryGap: [0, '50%'],
             min: 0,
             splitLine: {
                 show: true,
@@ -99,7 +111,10 @@ onMounted(() => {
                 }
             },
             axisLabel: {
-                color: '#adadad'
+                color: '#adadad',
+                margin: 40,
+                fontWeight: 'bold',
+                fontSize: 13
             }
         },
         dataZoom: [
@@ -148,7 +163,7 @@ onMounted(() => {
                         }
                     ])
                 },
-                data: values
+                data: prices
             }
         ]
     };
