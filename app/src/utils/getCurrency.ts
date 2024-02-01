@@ -3,43 +3,43 @@ import type { Currency } from '@/interfaces/Currency';
 const currencies = {
     BTC: {
         name: 'Bitcoin',
-        image: ''
+        image: 'currencies/btc.png'
     },
     ETH: {
         name: 'Ethereum',
-        image: ''
+        image: 'currencies/eth.png'
     },
     BNB: {
         name: 'BNB',
-        image: ''
+        image: 'currencies/bnb.png'
     },
     SOL: {
         name: 'Solana',
-        image: ''
+        image: 'currencies/sol.png'
     },
     XRP: {
         name: 'XRP',
-        image: ''
+        image: 'currencies/xrp.png'
     },
     ADA: {
         name: 'Cardano',
-        image: ''
+        image: 'currencies/ada.png'
     },
     AVAX: {
         name: 'Avalanche',
-        image: ''
+        image: 'currencies/avax.png'
     },
     MATIC: {
         name: 'Polygon',
-        image: ''
+        image: 'currencies/matic.png'
     },
     UNI: {
         name: 'Uniswap',
-        image: ''
+        image: 'currencies/uni.png'
     },
     UNKNOWN: {
         name: 'UNKNOWN',
-        image: ''
+        image: 'currencies/unknown.png'
     }
 };
 
