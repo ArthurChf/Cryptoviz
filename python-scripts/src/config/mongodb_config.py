@@ -1,6 +1,6 @@
 from pymongo import MongoClient, UpdateOne
 
-class MongoConfig:
+class MongoDBConfig:
     def __init__(self, host, port, username, password, database):
         self.host = host
         self.port = port
