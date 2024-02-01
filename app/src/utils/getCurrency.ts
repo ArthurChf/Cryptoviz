@@ -42,8 +42,9 @@ const currencies = {
         image: ''
     }
 };
-type CurrencyCode = keyof typeof currencies;
 
-export const getCurrency = (currency: CurrencyCode): Currency => {
-    return currencies[currency] ?? currencies['UNKNOWN'];
+export type CurrencyCode = keyof typeof currencies;
+
+export const getCurrency = (currencyCode: CurrencyCode): Currency => {
+    return currencies[currencyCode] ?? currencies['UNKNOWN'];
 };
