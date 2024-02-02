@@ -1,12 +1,12 @@
 <template>
-    <img :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px`" :class="{ loaded: !imageLoading }" @load="imageLoading = false" @loading="imageLoading = true" />
+    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px`" :class="{ loaded: !imageLoading }" @load="imageLoading = false" @loading="imageLoading = true" />
 </template>
 
 <script setup lang="ts">
 import { useLazyLoad } from '@/composables/useLazyLoad';
 import { useAppStore } from '@/stores/appStore';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps<{
     size: string;
@@ -14,19 +14,23 @@ const props = defineProps<{
 }>();
 
 const { displayedImagesCount } = storeToRefs(useAppStore());
-const imageId = `img${displayedImagesCount.value}`;
+const imageId = `img${displayedImagesCount.value++}`;
 
 const imageSrc = ref('');
 const imageLoading = ref(true);
 
 const loadImage = (path: string) => {
-    imageSrc.value = new URL(`../assets/images/${path}`, import.meta.url).href;
+    if (path.length) imageSrc.value = new URL(`../assets/images/${path}`, import.meta.url).href;
 };
+const { observe, unobserve } = useLazyLoad(() => {
+    loadImage(props.name);
+});
 
 onMounted(() => {
-    useLazyLoad(document.getElementById(imageId), () => {
-        loadImage(props.name);
-    });
+    if (props.name) observe(document.getElementById(imageId));
+});
+onUnmounted(() => {
+    if (props.name) unobserve(document.getElementById(imageId));
 });
 </script>
 
