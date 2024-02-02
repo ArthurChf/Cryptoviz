@@ -4,8 +4,9 @@
             <div class="flex flex-col gap-2">
                 <div class="group cursor-pointer inline-flex w-fit items-center">
                     <div class="flex items-center gap-3">
-                        <h1 class="text-title font-bold text-2xl group-hover:text-title/80 transition duration-200">Bitcoin</h1>
-                        <span class="text-subtitle text-sm font-medium mt-1 group-hover:text-subtitle/80 transition duration-200">BTC</span>
+                        <AppImage size="10" :name="selectedCurrency.image" />
+                        <h1 class="text-title font-bold text-2xl group-hover:text-title/80 transition duration-200">{{ selectedCurrency.name }}</h1>
+                        <span class="text-subtitle text-sm font-medium mt-1 group-hover:text-subtitle/80 transition duration-200">{{ selectedCurrency.symbol }}</span>
                     </div>
                     <AppIcon :name="IconEnum.ARROW_DOWN" size="32" color="text-title/90 group-hover:text-title/70 transition duration-200" />
                 </div>
@@ -36,6 +37,12 @@ import AppIcon from '@/components/AppIcon.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
 import { ref } from 'vue';
+import AppImage from '@/components/AppImage.vue';
+import { storeToRefs } from 'pinia';
+import { useCurrencyStore } from '@/stores/currencyStore';
+
+const currencyStore = useCurrencyStore();
+const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
 
 const currencyValue = ref('1,077.83 €');
 const currencyGrowthRate = ref(1.47);

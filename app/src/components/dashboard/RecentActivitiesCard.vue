@@ -11,7 +11,7 @@
                 </tr>
                 <tr v-for="transaction in lastTransactions" :key="transaction.id" class="transition duration-200 hover:bg-background">
                     <td class="flex items-center gap-4 py-5 pl-3 font-medium text-subtitle">
-                        <AppImage :name="getCurrency(transaction.currencySymbol).image" size="35" />
+                        <AppImage :name="currencyStore.getCurrency(transaction.currencySymbol).image" size="35" />
                         <span>{{ transaction.currencyName }}</span>
                     </td>
                     <td class="text-left py-5 font-medium text-title">{{ transaction.amount }}</td>
@@ -28,9 +28,10 @@ import AppContainer from '@/components/AppContainer.vue';
 import { ref } from 'vue';
 import { useAutoAnimate } from '@formkit/auto-animate/vue';
 import type { Transaction } from '@/interfaces/Transaction';
-import { getCurrency } from '@/utils/getCurrency';
 import AppImage from '@/components/AppImage.vue';
+import { useCurrencyStore } from '@/stores/currencyStore';
 
+const currencyStore = useCurrencyStore();
 const [recentActivitiesTable] = useAutoAnimate();
 
 const lastTransactions = ref<Transaction[]>([
