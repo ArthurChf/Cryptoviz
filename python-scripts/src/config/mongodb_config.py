@@ -19,13 +19,13 @@ class MongoDBConfig:
     
     def insert_one(self, collection_name, document):
         collection = self.database[collection_name]
-        return collection.insert_one(document).inserted_id
+        return collection.insert_one(document)
     
     def upsert_many(self, collection_name, documents):
         collection = self.database[collection_name]
         operations = [
             UpdateOne(
-                {'author': doc['author'], 'title': doc['title']},
+                {'author': doc['author'], 'title': doc['title'], 'createdAt': doc['createdAt'], 'link': doc['link']},
                 {'$set': doc},
                 upsert=True
             ) for doc in documents

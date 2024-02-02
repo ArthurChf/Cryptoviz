@@ -15,9 +15,9 @@ class KafkaConsumer:
         }
         return Consumer(consumer_config)
 
-    def consume(self, timeout=1.0):
+    def consume(self):
         try:
-            msg = self.consumer.poll(timeout)
+            msg = self.consumer.poll()
             if msg is None:
                 return None
             if msg.error():

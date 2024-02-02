@@ -1,4 +1,11 @@
 import clickhouse_connect
+from enum import Enum
+import uuid
+
+class ClickHouseTableEnum(Enum):
+    CRYPTO_DATA = 'crypto_data'
+    NEWS_DATA = 'news_data'
+    CRYPTO_NEWS = 'crypto_news'
 
 class ClickHouseConfig:
     def __init__(self, host, port, username, database):
@@ -8,69 +15,132 @@ class ClickHouseConfig:
         self.database = database
         self.client = clickhouse_connect.get_client(host=self.host, port=self.port, username=self.username, database = self.database)
         self.binanceSchema = """
-                                (
+                                CREATE TABLE crypto_data (
                                     id UUID DEFAULT generateUUIDv4(),
                                     symbol String,
-                                    event_time UInt64,
-                                    total_traded_base_asset_volume String,
-                                    last_trade_id UInt64,
-                                    price_change String,
-                                    last_price String,
-                                    high_price String,
-                                    low_price String,
-                                    total_number_of_trades UInt64,
-                                    last_quantity String
+                                    coin String,
+                                    reference String,
+                                    createdAt UInt64,
+                                    totalTradedBaseAssetVolume String,
+                                    lastTradeId UInt64,
+                                    priceChange String,
+                                    lastPrice String,
+                                    highPrice String,
+                                    lowPrice String,
+                                    totalNumberOfTrades UInt64,
+                                    lastQuantity String
                                 ) ENGINE = MergeTree()
                                 ORDER BY (event_time, symbol)
                                 """
 
         self.newsSchema = """
-                                (
+                                CREATE TABLE news_data (
                                     id UUID DEFAULT generateUUIDv4(),
                                     title String,
                                     author String,
-                                    publishedAt String,
+                                    link String,
+                                    createdAt String,
+                                    content String,
                                     sentiment Int32,
-                                    cryptocurrency String,
+                                    Version UInt64 DEFAULT now()
+                                ) ENGINE = ReplacingMergeTree(Version)
+                                ORDER BY (title, author, publishedAt)
+                         """
+        self.cryptoNewsSchema = """
+                                CREATE TABLE crypto_news (
+                                    id UUID DEFAULT generateUUIDv4(),
+                                    symbol String,
+                                    news_data_id UUID,
                                     Version UInt64 DEFAULT now()
                                 ) ENGINE = ReplacingMergeTree(Version)
                                 ORDER BY (title, author, publishedAt)
                          """
                                 
     
-    def ensure_table_exists(self, table_name, table_schema):
+    def ensure_table_exists(self, table_name):
         if not self.does_table_exist(table_name):
-            create_table_query = f"CREATE TABLE {table_name} {table_schema}"
+            if table_name == ClickHouseTableEnum.CRYPTO_DATA.value:
+                create_table_query = f"{self.binanceSchema}"
+            if table_name == ClickHouseTableEnum.NEWS_DATA.value:
+                create_table_query = f"{self.newsSchema}"
+            if table_name == ClickHouseTableEnum.CRYPTO_NEWS.value:
+                create_table_query = f"{self.cryptoNewsSchema}"
             self.client.query(create_table_query)
 
     def does_table_exist(self, table_name):
         check_query = f"EXISTS TABLE {table_name}"
-        result = self.client.query(check_query)  # Utilisez execute pour exécuter la requête
+        result = self.client.query(check_query)
         return result.result_rows[0][0] == 1
 
     
     def insert_one(self, data):
-        self.ensure_table_exists('crypto_data', self.binanceSchema)
-        # Utilisation de placeholders pour les paramètres
-        placeholders = ', '.join(['%s'] * len(data[0]))  # Crée un placeholder pour chaque colonne dans data
-        query = f"INSERT INTO crypto_data (symbol, event_time, total_traded_base_asset_volume, last_trade_id, price_change, last_price, high_price, low_price, total_number_of_trades, last_quantity) VALUES ({placeholders})"
-        return self.client.query(query, data[0])  # Assurez-vous de passer un tuple ou une liste
+        self.ensure_table_exists(ClickHouseTableEnum.CRYPTO_DATA.value)
+        query = """
+                INSERT INTO crypto_data (
+                    symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
+                    lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity
+                ) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """
+        # values = (
+        #             data["symbol"],
+        #             data["coin"],
+        #             data["reference"],
+        #             data["createdAt"],
+        #             data["total_traded_base_asset_volume"],
+        #             data["last_trade_id"],
+        #             data["price_change"],
+        #             data["last_price"],
+        #             data["high_price"],
+        #             data["low_price"],
+        #             data["total_number_of_trades"]
+        #             data["last_quantity"]
+        #         )
+
+        return self.client.query(query, data)
 
 
     def insert_many(self, data):
-        self.ensure_table_exists('news_data', self.newsSchema)
+        self.ensure_table_exists(ClickHouseTableEnum.NEWS_DATA.value)
+        self.ensure_table_exists(ClickHouseTableEnum.CRYPTO_NEWS.value)
+        
+        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES (%s, %s, %s, %s, %s, %s, %s) "
+        crypto_news_query = "INSERT INTO crypto_news ( symbol, news_data ) VALUE (%s, %s)"
+        
+        news_values = []
+        crypto_news_values = []
+        
+        for item in data:
+            news_id = uuid.uuid4()
+            news_values.append(
+                (
+                    news_id, 
+                    item['title'], 
+                    item['author'], 
+                    item['link'], 
+                    item['createdAt'], 
+                    item['content'], 
+                    item['sentiment']
+                )
+            )
+            for symbol in item['currencies']:
+                crypto_news_values.append(
+                    (
+                        symbol,
+                        news_id
+                    )
+                )
+        
+        try:
+            if len(news_values) > 0:
+                self.client.query(news_query, news_values)
 
-        # Un placeholder pour chaque valeur dans une ligne de données
-        single_row_placeholders = '(' + ', '.join(['%s'] * len(data[0])) + ')'
+            if crypto_news_values:
+                self.client.query(crypto_news_query, crypto_news_values)
+            
+        except Exception as e:
+            print(f"Une erreur est survenue: {e}")
 
-        # Répéter les placeholders pour chaque ligne de données
-        all_rows_placeholders = ', '.join([single_row_placeholders] * len(data))
+        
 
-        # Construire la requête avec tous les placeholders
-        query = f"INSERT INTO news_data (title, author, publishedAt, sentiment, cryptocurrency) VALUES {all_rows_placeholders}"
-
-        # Aplatir la liste des données pour correspondre aux placeholders
-        flat_data = [item for sublist in data for item in sublist]
-
-        # Exécuter la requête avec les données aplaties
-        self.client.query(query, flat_data)
+        
