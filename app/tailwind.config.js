@@ -15,6 +15,9 @@ export default {
         },
         transitionDuration: {
             '200': '200ms'
+        },
+        zIndex: {
+            'sidebar': '999'
         }
     }
 };

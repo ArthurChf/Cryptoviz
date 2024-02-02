@@ -1,3 +1,4 @@
 export enum RouteEnum {
-    DASHBOARD = '/'
+    DASHBOARD = '/',
+    NEWS = '/news'
 }

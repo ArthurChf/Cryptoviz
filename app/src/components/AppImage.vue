@@ -1,5 +1,5 @@
 <template>
-    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px`" :class="{ loaded: !imageLoading }" @load="imageLoading = false" @loading="imageLoading = true" />
+    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px; height: max-content;`" :class="{ loaded: !imageLoading }" @load="imageLoading = false" @loading="imageLoading = true" />
 </template>
 
 <script setup lang="ts">
@@ -36,10 +36,10 @@ onUnmounted(() => {
 
 <style>
 img {
-    filter: blur(10px);
-    transition: filter 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 img.loaded {
-    filter: blur(0);
+    opacity: 1;
 }
 </style>
