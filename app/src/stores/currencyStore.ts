@@ -1,15 +1,10 @@
 import { defineStore } from 'pinia';
 import type { Currency } from '@/interfaces/Currency';
-
-const defaultCurrency: Currency = {
-    name: '',
-    symbol: '',
-    image: ''
-};
+import { getDefaultCurrency } from '@/utils/getDefaultCurrency';
 
 export const useCurrencyStore = defineStore('currency', {
     state: () => ({
-        selectedCurrency: defaultCurrency,
+        selectedCurrency: getDefaultCurrency(),
         currencies: [] as Currency[]
     }),
     actions: {
@@ -18,9 +13,14 @@ export const useCurrencyStore = defineStore('currency', {
         },
         setSelectedCurrency(currency: Currency) {
             this.selectedCurrency = currency;
+            localStorage.setItem('selected_currency', JSON.stringify(currency));
         },
         getCurrency(currencySymbol: string): Currency {
-            return this.currencies.find((currency) => currency.symbol === currencySymbol) ?? defaultCurrency;
+            return this.currencies.find((currency) => currency.symbol === currencySymbol) ?? {
+                name: '',
+                symbol: '',
+                image: ''
+            };
         }
     },
     getters: {

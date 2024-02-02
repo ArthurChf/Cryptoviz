@@ -486,12 +486,6 @@
                 "allowElseIf": true
             }
         ],
-        "no-empty": [
-            "error",
-            {
-                "allowEmptyCatch": false
-            }
-        ],
         "no-empty-pattern": [
             "error"
         ],
