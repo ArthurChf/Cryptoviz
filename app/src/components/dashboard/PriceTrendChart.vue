@@ -1,13 +1,13 @@
 <template>
-    <div id="chart" class="w-full h-[70vh] min-h-[500px]"></div>
+    <div :id="priceTrendChartId" class="w-full h-[70vh] min-h-[500px]"></div>
 </template>
-
 
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
 
 const chart = shallowRef<echarts.ECharts>();
+const priceTrendChartId = 'priceTrendChart';
 
 const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
 const prices = ref([12, 53, 47, 39, 54, 49, 68]);
@@ -34,8 +34,8 @@ const updateChartData = () => {
 };
 
 onMounted(() => {
-    const chartElement = document.getElementById('chart') as HTMLElement;
-    chart.value = echarts.init(chartElement, 'dark');
+    const chartElement = document.getElementById(priceTrendChartId) as HTMLElement;
+    chart.value = echarts.init(chartElement);
 
     new ResizeObserver(() => {
         chart.value!.resize();

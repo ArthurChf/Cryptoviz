@@ -1,5 +1,5 @@
 <template>
-    <div class="sticky top-0 h-screen z-sidebar shadow-lg bg-container py-6 flex shrink-0 flex-col gap-11">
+    <div class="sticky top-0 h-screen z-sidebar shadow-lg bg-container py-6 flex shrink-0 flex-col gap-11 w-[252px]">
         <div class="flex items-center mx-9 gap-4 h-[51px]">
             <AppImage size="45" name="logo.png" />
             <span class="font-bold text-title/80 text-2xl">CryptoViz</span>
