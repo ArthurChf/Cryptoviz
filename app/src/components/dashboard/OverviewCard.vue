@@ -3,12 +3,14 @@
         <div class="flex gap-8 justify-between flex-wrap">
             <div class="flex flex-col gap-3">
                 <div class="group cursor-pointer inline-flex w-fit items-center">
-                    <div class="flex items-center gap-3">
-                        <AppImage size="30" :name="selectedCurrency.image" />
-                        <h1 class="font-bold text-2xl transition duration-200" :class="selectedCurrency.name ? 'text-title group-hover:text-title/80' : 'text-subtitle/80 group-hover:text-subtitle/60'">{{ selectedCurrency.name ? selectedCurrency.name : 'Select currency' }}</h1>
-                        <span v-if="selectedCurrency.symbol" class="text-sm font-medium mt-1 transition duration-200 text-subtitle group-hover:text-subtitle/80">{{ selectedCurrency.symbol }}</span>
-                    </div>
-                    <AppIcon :name="IconEnum.ARROW_DOWN" size="32" class="transition duration-200" :class="selectedCurrency.name ? 'text-title/90 group-hover:text-title/70' : 'text-subtitle/70 group-hover:text-subtitle/50'" />
+                    <AppTooltip text="Select a currency" position="right">
+                        <div class="flex items-center gap-3">
+                            <AppImage size="30" :name="selectedCurrency.image" />
+                            <h1 class="font-bold text-2xl transition duration-200" :class="selectedCurrency.name ? 'text-title group-hover:text-title/80' : 'text-subtitle/80 group-hover:text-subtitle/60'">{{ selectedCurrency.name ? selectedCurrency.name : 'Select currency' }}</h1>
+                            <span v-if="selectedCurrency.symbol" class="text-sm font-medium mt-1 transition duration-200 text-subtitle group-hover:text-subtitle/80">{{ selectedCurrency.symbol }}</span>
+                            <AppIcon :name="IconEnum.ARROW_DOWN" size="20" class="transition duration-200" :class="selectedCurrency.name ? 'text-title/90 group-hover:text-title/70' : 'text-subtitle/70 group-hover:text-subtitle/50'" />
+                        </div>
+                    </AppTooltip>
                 </div>
                 <div class="flex items-center gap-4">
                     <Transition :name="TransitionEnum.FADE_SLIDE" mode="out-in">
@@ -34,6 +36,7 @@
 <script setup lang="ts">
 import AppContainer from '@/components/AppContainer.vue';
 import AppIcon from '@/components/AppIcon.vue';
+import AppTooltip from '@/components/AppTooltip.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
 import { ref } from 'vue';
