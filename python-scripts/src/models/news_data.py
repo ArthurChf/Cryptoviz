@@ -20,3 +20,5 @@ class NewsData:
         self.sentiment = sentiment
         self.createdAt = createdAt
         self.currencies = currencies
+        
+    

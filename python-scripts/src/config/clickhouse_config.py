@@ -1,6 +1,5 @@
 import clickhouse_connect
 from enum import Enum
-import uuid
 
 class ClickHouseTableEnum(Enum):
     CRYPTO_DATA = 'crypto_data'
@@ -20,7 +19,7 @@ class ClickHouseConfig:
                                     symbol String,
                                     coin String,
                                     reference String,
-                                    createdAt UInt64,
+                                    createdAt DateTime64(3, 'Europe/London'),
                                     totalTradedBaseAssetVolume String,
                                     lastTradeId UInt64,
                                     priceChange String,
@@ -30,7 +29,7 @@ class ClickHouseConfig:
                                     totalNumberOfTrades UInt64,
                                     lastQuantity String
                                 ) ENGINE = MergeTree()
-                                ORDER BY (event_time, symbol)
+                                ORDER BY (createdAt, symbol)
                                 """
 
         self.newsSchema = """
@@ -39,12 +38,12 @@ class ClickHouseConfig:
                                     title String,
                                     author String,
                                     link String,
-                                    createdAt String,
+                                    createdAt DateTime64(3, 'Europe/London'),
                                     content String,
                                     sentiment Int32,
                                     Version UInt64 DEFAULT now()
                                 ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (title, author, publishedAt)
+                                ORDER BY (title, author, createdAt, link)
                          """
         self.cryptoNewsSchema = """
                                 CREATE TABLE crypto_news (
@@ -53,7 +52,7 @@ class ClickHouseConfig:
                                     news_data_id UUID,
                                     Version UInt64 DEFAULT now()
                                 ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (title, author, publishedAt)
+                                ORDER BY (symbol, news_data_id)
                          """
                                 
     
@@ -80,23 +79,8 @@ class ClickHouseConfig:
                     symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
                     lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity
                 ) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, toDateTime64(%s, 3), %s, %s, %s, %s, %s, %s, %s, %s)
                 """
-        # values = (
-        #             data["symbol"],
-        #             data["coin"],
-        #             data["reference"],
-        #             data["createdAt"],
-        #             data["total_traded_base_asset_volume"],
-        #             data["last_trade_id"],
-        #             data["price_change"],
-        #             data["last_price"],
-        #             data["high_price"],
-        #             data["low_price"],
-        #             data["total_number_of_trades"]
-        #             data["last_quantity"]
-        #         )
-
         return self.client.query(query, data)
 
 
@@ -104,26 +88,23 @@ class ClickHouseConfig:
         self.ensure_table_exists(ClickHouseTableEnum.NEWS_DATA.value)
         self.ensure_table_exists(ClickHouseTableEnum.CRYPTO_NEWS.value)
         
-        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES (%s, %s, %s, %s, %s, %s, %s) "
-        crypto_news_query = "INSERT INTO crypto_news ( symbol, news_data ) VALUE (%s, %s)"
-        
         news_values = []
         crypto_news_values = []
         
         for item in data:
-            news_id = uuid.uuid4()
+            news_id = str(item[0])
             news_values.append(
                 (
                     news_id, 
-                    item['title'], 
-                    item['author'], 
-                    item['link'], 
-                    item['createdAt'], 
-                    item['content'], 
-                    item['sentiment']
+                    item[1], 
+                    item[2], 
+                    item[3], 
+                    item[4], 
+                    item[5],
+                    item[6]
                 )
             )
-            for symbol in item['currencies']:
+            for symbol in item[7]:
                 crypto_news_values.append(
                     (
                         symbol,
@@ -131,12 +112,40 @@ class ClickHouseConfig:
                     )
                 )
         
+        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES "
+        
+        values_placeholders = []
+
+        for row in news_values:
+            placeholders = ["%s"] * len(row)
+            placeholders[4] = "toDateTime64(%s, 3)"
+            values_placeholders.append("({})".format(", ".join(placeholders)))
+
+        news_query += ", ".join(values_placeholders)
+        flattened_news_values = [item for sublist in news_values for item in sublist]
+        
+        crypto_news_values_union = " UNION ALL ".join([
+            "SELECT '{}' AS symbol, '{}' AS news_data_id".format(el[0], el[1])
+            for el in crypto_news_values
+        ])
+        crypto_news_query = f"""
+        INSERT INTO crypto_news (symbol, news_data_id)
+        SELECT symbol, news_data_id
+        FROM (
+            SELECT * 
+            FROM ({crypto_news_values_union}) 
+            WHERE news_data_id IN (
+                SELECT id FROM news_data
+            )
+        ) AS subquery
+        """
+        
         try:
             if len(news_values) > 0:
-                self.client.query(news_query, news_values)
+                self.client.query(news_query, flattened_news_values)
 
             if crypto_news_values:
-                self.client.query(crypto_news_query, crypto_news_values)
+                self.client.query(crypto_news_query)
             
         except Exception as e:
             print(f"Une erreur est survenue: {e}")

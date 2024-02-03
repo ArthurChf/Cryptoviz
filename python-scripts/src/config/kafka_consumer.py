@@ -1,4 +1,4 @@
-from confluent_kafka import Consumer, KafkaError, KafkaException
+from confluent_kafka import Consumer
 
 class KafkaConsumer:
     def __init__(self, topic):

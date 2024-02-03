@@ -18,7 +18,7 @@ class MongoDBConfigTest(unittest.TestCase):
     
     def test_upsert_many(self):
         mongo_config = MongoDBConfig('localhost', 27017, 'epitech', 'cryptoviz', 'test')
-        documents = [{'author': 'john doe', 'title': 'terre'}, {'author': 'john doe', 'title': 'feu'}, {'author': 'john doe', 'title': 'terre'}]
+        documents = [{'author': 'john doe', 'title': 'terre', 'publishedAt': '2024-01-01'}, {'author': 'john doe', 'title': 'feu', 'publishedAt': '2024-01-01'}, {'author': 'john doe', 'title': 'terre', 'publishedAt': '2024-01-01'}]
         self.assertIsNotNone(mongo_config.upsert_many('news-test', documents))
     
     if __name__ == '__main__':
