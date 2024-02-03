@@ -1,7 +1,9 @@
 <template>
-    <svg class="select-none inline-flex shrink-0" :style="`height: ${size}px; width: ${size}px`">
-        <use :href="`${Icons}#${name}`" />
-    </svg>
+    <div class="select-none inline-flex shrink-0">
+        <svg :style="`height: ${size}px; width: ${size}px; transform: scale(2.5);`">
+            <use :href="`${Icons}#${name}`" />
+        </svg>
+    </div>
 </template>
 
 <script setup lang="ts">
