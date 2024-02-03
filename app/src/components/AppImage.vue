@@ -1,5 +1,5 @@
 <template>
-    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px; height: max-content;`" :class="{ loaded: !imageLoading }" @load="imageLoading = false" @loading="imageLoading = true" />
+    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px; height: max-content;`" class="transition duration-200" :class="imageLoading ? 'opacity-0' : 'opacity-100'" @load="imageLoading = false" />
 </template>
 
 <script setup lang="ts">
@@ -33,13 +33,3 @@ onUnmounted(() => {
     if (props.name) unobserve(document.getElementById(imageId));
 });
 </script>
-
-<style>
-img {
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-img.loaded {
-    opacity: 1;
-}
-</style>
