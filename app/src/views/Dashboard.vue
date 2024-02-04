@@ -5,15 +5,15 @@
             <PriceTrendCard />
             <RecentActivitiesCard />
         </div>
-        <div class="flex flex-col gap-[24px]" style="width: 350px;">
+        <div class="flex flex-col gap-8" style="width: 350px;">
             <FearGreedCard />
-            <AppContainer>2</AppContainer>
+            <NewsFeedCard />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import AppContainer from '@/components/AppContainer.vue';
+import NewsFeedCard from '@/components/dashboard/NewsFeedCard.vue';
 import FearGreedCard from '@/components/dashboard/FearGreedCard.vue';
 import OverviewCard from '@/components/dashboard/OverviewCard.vue';
 import PriceTrendCard from '@/components/dashboard/PriceTrendCard.vue';

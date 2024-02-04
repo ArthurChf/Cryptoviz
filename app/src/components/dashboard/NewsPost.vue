@@ -1,0 +1,48 @@
+<template>
+    <div class="flex flex-col gap-3 bg-background py-4 px-5 rounded-xl cursor-pointer transition duration-200 border-2 border-background hover:bg-background/40 hover:border-subtitle/5">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <AppImage :name="`news_sources/${source}.webp`" size="28" class="rounded-full shadow-lg" />
+                    <AppTooltip :text="capitalize(source)" position="bottom" :show="isSourceTruncated">
+                        <span class="font-bold text-title text-md">{{ formatSource(source) }}</span>
+                    </AppTooltip>
+                </div>
+                <div class="flex items-center gap-2 rounded-lg border py-1 px-2 text-xs font-semibold" :class="isBullish ? 'border-active text-active' : 'border-inactive text-inactive'">
+                    <AppIcon :name="isBullish ? IconEnum.ARROW_RIGHT_UP : IconEnum.ARROW_RIGHT_DOWN" size="8" />
+                    <span>{{ isBullish ? 'Bullish' : 'Bearish' }}</span>
+                </div>
+            </div>
+            <span class="text-xs font-light text-subtitle">{{ date }}</span>
+        </div>
+        <h3 class="text-md text-title">{{ title }}</h3>
+    </div>
+</template>
+
+<script setup lang="ts">
+import AppImage from '@/components/AppImage.vue';
+import AppTooltip from '@/components/AppTooltip.vue';
+import AppIcon from '@/components/AppIcon.vue';
+import { computed, ref } from 'vue';
+import { IconEnum } from '@/enums/IconEnum';
+import { capitalize } from '@/utils/formatString';
+
+const props = defineProps<{
+    source: string;
+    sentiment: number;
+    title: string;
+    date: string;
+}>();
+
+const isBullish = computed(() => props.sentiment >= 50);
+
+const isSourceTruncated = ref(false);
+const formatSource = (source: string) => {
+    let res = source;
+    if (source.length > 14) {
+        res = `${source.substring(0, 14)}...`;
+        isSourceTruncated.value = true;
+    }
+    return capitalize(res);
+};
+</script>
