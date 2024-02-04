@@ -26,7 +26,7 @@
     </AppModal>
     <AppContainer class="!px-4 !py-5">
         <h2 class="px-3 text-2xl text-title font-bold">News Feed</h2>
-        <div v-if="selectedCurrency.name" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]">
+        <div v-if="selectedCurrency.name" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
             <NewsPost v-for="news in newsList" :key="news.id" :sentiment="news.sentiment" :date="news.date" :source="news.source" :title="news.title" @click="selectNews(news)" />
         </div>
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />
@@ -46,9 +46,12 @@ import { capitalize } from '@/utils/formatString';
 import AppImage from '@/components/AppImage.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import { IconEnum } from '@/enums/IconEnum';
+import { useAutoAnimate } from '@formkit/auto-animate/vue';
 
 const currencyStore = useCurrencyStore();
 const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+
+const [newsFeedPosts] = useAutoAnimate();
 
 const newsList = ref<News[]>([
     {
@@ -102,6 +105,24 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     }
 ]);
+
+
+const lastId = ref(1245);
+const maxDisplayedNews = 30;
+
+const appendNews = () => {
+    newsList.value.unshift({
+        id: `${lastId.value++}`,
+        source: 'cryptoslate',
+        sentiment: 12,
+        title: 'Lorem ipsum dolor sit amet',
+        date: 'February 04, 2024 at 12:08 AM',
+        content: 'Test contenu',
+        author: 'Mrs Jones',
+        link: 'http://google.fr'
+    });
+    if (newsList.value.length === maxDisplayedNews + 1) newsList.value.pop();
+};
 
 const isNewsDetailOpened = ref(false);
 const selectedNews = reactive<News>({

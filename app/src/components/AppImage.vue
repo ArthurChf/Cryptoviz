@@ -6,7 +6,7 @@
 import { useLazyLoad } from '@/composables/useLazyLoad';
 import { useAppStore } from '@/stores/appStore';
 import { storeToRefs } from 'pinia';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const props = defineProps<{
     size: string;
@@ -29,7 +29,7 @@ const { observe, unobserve } = useLazyLoad(() => {
 onMounted(() => {
     if (props.name) observe(document.getElementById(imageId));
 });
-onUnmounted(() => {
+onBeforeUnmount(() => {
     if (props.name) unobserve(document.getElementById(imageId));
 });
 </script>
