@@ -1,11 +1,19 @@
 <template>
+    <CurrencySelectionModal v-model="isCurrencySelectionModalOpened">
+        <template #title>Select a Currency</template>
+        <template #content>
+            <div class="flex flex-col gap-8">
+                <p>Test</p>
+            </div>
+        </template>
+    </CurrencySelectionModal>
     <AppContainer>
         <div class="flex gap-8 justify-between flex-wrap pr-4">
             <div class="flex flex-col gap-3">
-                <div class="group cursor-pointer inline-flex w-fit items-center">
+                <div class="group cursor-pointer inline-flex w-fit items-center" @click="selectCurrency">
                     <AppTooltip text="Select a currency" position="right">
                         <div class="flex items-center gap-3">
-                            <AppImage size="30" :name="selectedCurrency.image" />
+                            <AppImage size="30" :name="selectedCurrency.image" :key="selectedCurrency.image" />
                             <h1 class="font-bold text-2xl transition duration-200" :class="selectedCurrency.name ? 'text-title group-hover:text-title/80' : 'text-subtitle/80 group-hover:text-subtitle/60'">{{ selectedCurrency.name ? selectedCurrency.name : 'Select currency' }}</h1>
                             <span v-if="selectedCurrency.symbol" class="text-sm font-medium mt-1 transition duration-200 text-subtitle group-hover:text-subtitle/80">({{ selectedCurrency.symbol }})</span>
                             <AppIcon :name="IconEnum.ARROW_DOWN" size="16" class="transition duration-200" :class="selectedCurrency.name ? 'text-title/90 group-hover:text-title/70' : 'text-subtitle/70 group-hover:text-subtitle/50'" />
@@ -36,6 +44,7 @@
 <script setup lang="ts">
 import AppContainer from '@/components/AppContainer.vue';
 import AppIcon from '@/components/AppIcon.vue';
+import CurrencySelectionModal from '@/components/dashboard/CurrencySelectionModal.vue';
 import AppTooltip from '@/components/AppTooltip.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
@@ -49,6 +58,11 @@ const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
 
 const currencyValue = ref('$1,077.83');
 const currencyGrowthRate = ref(1.47);
+
+const isCurrencySelectionModalOpened = ref(false);
+const selectCurrency = () => {
+    isCurrencySelectionModalOpened.value = true;
+};
 
 const statItems = ref([
     {

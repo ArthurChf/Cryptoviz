@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center w-full rounded-xl transition duration-200 focus-within:bg-background/70 border-2 focus-within:border-subtitle/5" :class="disabled ? 'text-subtitle/30 bg-background/20 border-background/80' : 'text-title bg-background border-background'">
+    <div class="flex items-center w-full rounded-xl transition duration-200 focus-within:bg-background/70 border focus-within:border-subtitle/5" :class="disabled ? 'text-subtitle/30 bg-background/20 border-background/80' : 'text-title bg-background border-background'">
         <AppIcon :name="IconEnum.SEARCH" size="9" class="ml-5" />
         <input type="text" ref="searchInputEl" :disabled="disabled" v-model="searchValue" class="ml-4 mr-3 outline-none bg-[transparent] w-full py-3" :placeholder="placeholder" :class="disabled ? 'placeholder:text-subtitle/30 text-subtitle/80' : 'placeholder:text-subtitle/70 text-title'" @keyup.enter="enter" />
         <Transition :name="TransitionEnum.FADE" mode="out-in">
@@ -51,6 +51,7 @@ const changeValue = () => {
 };
 const clearSearch = () => {
     searchValue.value = '';
+    focusInput();
 };
 const enter = () => {
     if (!props.disabled && !props.loading) emit('enter', searchValue.value);

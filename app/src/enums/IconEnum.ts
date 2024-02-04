@@ -5,5 +5,6 @@ export enum IconEnum {
     DASHBOARD = 'DASHBOARD',
     NEWS = 'NEWS',
     CLOSE = 'CLOSE',
-    SEARCH = 'SEARCH'
+    SEARCH = 'SEARCH',
+    CHECK = 'CHECK'
 }

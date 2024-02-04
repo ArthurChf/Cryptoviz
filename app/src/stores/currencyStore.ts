@@ -12,7 +12,7 @@ export const useCurrencyStore = defineStore('currency', {
             this.currencies = currencies;
         },
         setSelectedCurrency(currency: Currency) {
-            this.selectedCurrency = currency;
+            Object.assign(this.selectedCurrency, currency);
             localStorage.setItem('selected_currency', JSON.stringify(currency));
         },
         getCurrency(currencySymbol: string): Currency {
