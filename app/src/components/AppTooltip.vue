@@ -1,17 +1,20 @@
 <template>
-    <div class="group relative inline-block">
+    <div class="group relative inline-block w-fit">
         <slot />
-        <span class="z-tooltip animate-tooltip hidden absolute pointer-events-none text-title text-center py-2 px-3 rounded-lg bg-background border border-2 border-subtitle/5 shadow-xl w-max group-hover:inline-flex" :class="`tooltip--${position}`">{{ text }}</span>
+        <span v-show="show" class="z-tooltip animate-tooltip hidden absolute pointer-events-none text-title text-center py-2 px-3 rounded-lg bg-background border-2 border-subtitle/5 shadow-xl w-max group-hover:inline-flex" :class="`tooltip--${position}`">{{ text }}</span>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     text: string;
     position: 'top' | 'right' | 'bottom' | 'left';
-}>();
+    show?: boolean;
+}>(), {
+    show: true
+});
 
 const translateProperty = computed(() => {
     if (props.position === 'top') return 'translate(-50%, -100%)';

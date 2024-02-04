@@ -11,7 +11,7 @@ import AppContainer from '@/components/AppContainer.vue';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { storeToRefs } from 'pinia';
 import AppLoader from '@/components/AppLoader.vue';
-import FearGreedChart from './FearGreedChart.vue';
+import FearGreedChart from '@/components/dashboard/FearGreedChart.vue';
 
 const currencyStore = useCurrencyStore();
 const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
