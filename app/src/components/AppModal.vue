@@ -1,7 +1,7 @@
 <template>
     <Teleport to="body">
         <Transition :name="TransitionEnum.MODAL_POPUP" mode="out-in">
-            <div class="will-change-transform fixed flex flex-col gap-7 p-5 rounded-2xl shadow-xl bg-container border border-subtitle/5 shadow-lg top-[50vh] min-w-[250px] left-[50vw] translate-x-[-50%] translate-y-[-50%] w-[80%] max-w-[800px] z-modal" v-if="isOpened">
+            <div class="will-change-transform fixed flex flex-col gap-7 p-7 rounded-2xl shadow-xl bg-container border border-subtitle/5 shadow-lg top-[50vh] min-w-[250px] left-[50vw] translate-x-[-50%] translate-y-[-50%] w-[80%] max-w-[800px] z-modal" v-if="isOpened">
                 <div class="flex justify-between gap-7">
                     <h2 class="text-2xl text-title font-semibold break-word hyphens-auto"><slot name="title" /></h2>
                     <AppTooltip text="Close" position="top">

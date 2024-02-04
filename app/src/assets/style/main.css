@@ -75,11 +75,11 @@ html {
 @keyframes modalPopup {
     0% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(0.97);
+        transform: translate(-50%, -50%) scale(0.98);
     }
     40% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.03);
+        transform: translate(-50%, -50%) scale(1.02);
     }
     100% {
         opacity: 1;
