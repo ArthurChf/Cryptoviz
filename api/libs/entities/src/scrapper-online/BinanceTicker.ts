@@ -1,52 +1,79 @@
 interface BinanceTickerDto {
-    s: string;
-    p: string;
-    P: string;
-    w: string;
-    c: string;
-    Q: string;
-    b: string;
-    B: string;
-    a: string;
-    A: string;
-    o: string;
-    h: string;
-    l: string;
-    n: number;
+  e: string;
+  E: number;
+  s: string;
+  p: string;
+  P: string;
+  w: string;
+  x: string;
+  c: string;
+  Q: string;
+  b: string;
+  B: string;
+  a: string;
+  A: string;
+  o: string;
+  h: string;
+  l: string;
+  v: string;
+  q: string;
+  O: number;
+  C: number;
+  F: number;
+  L: number;
+  n: number;
 }
 
 export interface BinanceTicker {
+    eventType: string;
+    eventTime: number;
     symbol: string;
-    price_change: string;
-    price_change_percent: string;
-    weighted_average_price: string;
-    last_price: string;
-    last_quantity: string;
-    best_bid_price: string;
-    best_bid_quantity: string;
-    best_ask_price: string;
-    best_ask_quantity: string;
-    open_price: string;
-    high_price: string;
-    low_price: string;
-    total_number_of_trades: number;
+    priceChange: string;
+    priceChangPercent: string;
+    weightedAveragePrice: string;
+    lastPrice: string;
+    lastQuantity: string;
+    bestBidPrice: string;
+    bestBidQuantity: string;
+    bestAskPrice: string;
+    bestAskQuantity: string;
+    openPrice: string;
+    highPrice: string;
+    lowPrice: string;
+    totalNumberOfTrades: number;
+    totalTradedBaseAssetVolume: string;
+    totalTradedQuoteAssetVolume: string;
+    statisticsOpenTime: number;
+    statisticsCloseTime: number;
+    firstTradeId?: number;
+    lastTradeId?: number;
+    firstTrade: string;
 }
 
 export function tickerMapper(data: BinanceTickerDto): BinanceTicker {
     return {
         symbol: data.s,
-        price_change: data.p,
-        price_change_percent: data.P,
-        weighted_average_price: data.w,
-        last_price: data.c,
-        last_quantity: data.Q,
-        best_bid_price: data.b,
-        best_bid_quantity: data.B,
-        best_ask_price: data.a,
-        best_ask_quantity: data.A,
-        open_price: data.o,
-        high_price: data.h,
-        low_price: data.l,
-        total_number_of_trades: data.n
+        eventType: data.e,
+        eventTime: data.E,
+        statisticsOpenTime: data.O,
+        statisticsCloseTime: data.C,
+        firstTradeId: data.F,
+        lastTradeId: data.L,
+        firstTrade: data.x,
+        totalTradedBaseAssetVolume: data.v,
+        totalTradedQuoteAssetVolume: data.q,
+        priceChange: data.p,
+        priceChangPercent: data.P,
+        weightedAveragePrice: data.w,
+        lastPrice: data.c,
+        lastQuantity: data.Q,
+        bestBidPrice: data.b,
+        bestBidQuantity: data.B,
+        bestAskPrice: data.a,
+        bestAskQuantity: data.A,
+        openPrice: data.o,
+        highPrice: data.h,
+        lowPrice: data.l,
+        totalNumberOfTrades: data.n
     };
 }
