@@ -1,5 +1,5 @@
 <template>
-    <div class="group relative inline-block w-fit">
+    <div class="group relative inline-block w-fit h-fit">
         <slot />
         <span v-show="show" class="z-tooltip animate-tooltip hidden absolute pointer-events-none text-title text-center py-2 px-3 rounded-lg bg-background border-2 border-subtitle/5 shadow-xl w-max group-hover:inline-flex" :class="`tooltip--${position}`">{{ text }}</span>
     </div>

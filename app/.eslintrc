@@ -382,10 +382,6 @@
         "for-direction": [
             "error"
         ],
-        "func-call-spacing": [
-            "error",
-            "never"
-        ],
         "function-call-argument-newline": [
             "error",
             "consistent"

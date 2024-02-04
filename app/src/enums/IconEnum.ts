@@ -4,5 +4,6 @@ export enum IconEnum {
     ARROW_RIGHT_UP = 'ARROW_RIGHT_UP',
     DASHBOARD = 'DASHBOARD',
     NEWS = 'NEWS',
-    CLOSE = 'CLOSE'
+    CLOSE = 'CLOSE',
+    SEARCH = 'SEARCH'
 }
