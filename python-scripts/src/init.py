@@ -7,6 +7,8 @@ from enum import Enum
 
 from confluent_kafka import Consumer, KafkaError, KafkaException
 
+from src.config.kafka_consumer import KafkaConsumer
+
 class Topic(Enum):
     BINANCE_DATA_PROCESSING = 'BINANCE_DATA_PROCESSING'
     BINANCE_DATA_BACKUP = 'BINANCE_DATA_BACKUP'
@@ -27,38 +29,20 @@ def signal_handler(signum, frame):
     process_rss_feed_backup.join()"""
     
     sys.exit(0)
-    
-def create_consumer(topic):
-    consumer_config = {
-        'bootstrap.servers': 'broker-1:9092,broker-2:9092,broker-3:9092',
-        'group.id': topic,
-        'auto.offset.reset': 'earliest',
-        'enable.auto.commit': False,
-        'fetch.min.bytes': 30000    
-    }
-    return Consumer(consumer_config)
             
 def worker_topic_processing(topic):
-    consumer = create_consumer(topic)
+    consumer = KafkaConsumer(topic)
+    message = consumer.consume()
     try:
         consumer.subscribe([topic])
         msg = consumer.poll()
-        
-        if msg is None: 
-            pass
-        if msg.error():
-            if msg.error().code() == KafkaError._PARTITION_EOF:
-                print(msg.error())
-                pass
-        else :
-            try:
-                msg = json.loads(msg.value().decode('utf-8'))
-                if topic == Topic.BINANCE_DATA_PROCESSING.value:
-                    process_binance_data(msg)
-                else:
-                    process_rss_feed_data(msg)
+        if message:
+            print(f"Message reçu: {message.value()}")
+            try :
+                json_message = json.loads(message.value().decode('utf-8'))
             except json.decoder.JSONDecodeError:
-                print('Unable to decode message to JSON: %s', msg.value())
+                print('Unable to decode message to JSON: %s', message.value())
+            consumer.commit()
         
         consumer.commit(asynchronous=False)
               
