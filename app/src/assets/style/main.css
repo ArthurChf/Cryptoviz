@@ -41,6 +41,49 @@ html {
     transform: translateY(10px);
 }
 
+
+.modalOverlayFade-enter-active,
+.modalOverlayFade-leave-active {
+    transition-duration: 0.2s;
+}
+.modalOverlayFade-leave-active {
+    transition-delay: 0.2s;
+}
+.modalOverlayFade-enter-from,
+.modalOverlayFade-leave-to {
+    opacity: 0;
+}
+.modalOverlayFade-enter-to,
+.modalOverlayFade-leave-from {
+    opacity: 1;
+}
+
+.modalPopup-enter-active,
+.modalPopup-leave-active {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    animation-name: modalPopup;
+}
+
+.modalPopup-leave-active {
+    animation-direction: reverse;
+}
+
+@keyframes modalPopup {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.97);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.03);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
 @layer utilities {
     .animate-loader-circular-rotate {
         animation: animation-loader-circular-rotate 1s linear infinite;

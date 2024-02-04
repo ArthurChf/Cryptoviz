@@ -3,5 +3,6 @@ export enum IconEnum {
     ARROW_RIGHT_DOWN = 'ARROW_RIGHT_DOWN',
     ARROW_RIGHT_UP = 'ARROW_RIGHT_UP',
     DASHBOARD = 'DASHBOARD',
-    NEWS = 'NEWS'
+    NEWS = 'NEWS',
+    CLOSE = 'CLOSE'
 }

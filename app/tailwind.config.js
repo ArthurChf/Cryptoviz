@@ -18,7 +18,9 @@ export default {
         },
         zIndex: {
             'tooltip': '900',
-            'sidebar': '850'
+            'modal': '850',
+            'modal-overlay': '800',
+            'sidebar': '750'
         }
     }
 };
