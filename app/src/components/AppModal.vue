@@ -1,8 +1,8 @@
 <template>
     <Teleport to="body">
         <Transition :name="TransitionEnum.MODAL_POPUP" mode="out-in">
-            <div class="will-change-transform fixed flex flex-col gap-6 p-5 rounded-2xl shadow-xl bg-container border border-subtitle/5 shadow-lg top-[50vh] min-w-[250px] left-[50vw] translate-x-[-50%] translate-y-[-50%] w-[80%] max-w-[600px] z-modal" v-if="isOpened">
-                <div class="flex items-center justify-between gap-7">
+            <div class="will-change-transform fixed flex flex-col gap-7 p-5 rounded-2xl shadow-xl bg-container border border-subtitle/5 shadow-lg top-[50vh] min-w-[250px] left-[50vw] translate-x-[-50%] translate-y-[-50%] w-[80%] max-w-[800px] z-modal" v-if="isOpened">
+                <div class="flex justify-between gap-7">
                     <h2 class="text-2xl text-title font-semibold break-word hyphens-auto"><slot name="title" /></h2>
                     <AppTooltip text="Close" position="top">
                         <div class="flex items-center justify-center bg-background text-title p-[13px] rounded-xl transition duration-200 cursor-pointer border-2 border-background hover:border-subtitle/5 hover:bg-background/80" @click="closeModal">
@@ -24,9 +24,14 @@ import { IconEnum } from '@/enums/IconEnum';
 import AppTooltip from '@/components/AppTooltip.vue';
 import { TransitionEnum } from '@/enums/TransitionEnum';
 import AppIcon from '@/components/AppIcon.vue';
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 
 const isOpened = defineModel<boolean>();
+
+watch(isOpened, () => {
+    if (isOpened.value) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'auto';
+});
 
 const closeModal = (): void => {
     isOpened.value = false;

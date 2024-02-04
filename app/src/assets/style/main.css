@@ -11,6 +11,10 @@ main {
     height: 100%;
 }
 
+::selection {
+    @apply bg-active/40;
+}
+
 html {
     font-family: 'Inter', Arial, sans-serif;
 }
@@ -40,7 +44,6 @@ html {
     opacity: 0;
     transform: translateY(10px);
 }
-
 
 .modalOverlayFade-enter-active,
 .modalOverlayFade-leave-active {
