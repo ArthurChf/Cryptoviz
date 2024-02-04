@@ -78,7 +78,7 @@ onMounted(() => {
                         <div class="flex flex-col gap-1">
                             <div class="flex items-center gap-1">
                                 <span style="background-color:${bulletColor};" class="w-3 h-3 mr-1 inline-block rounded-full"></span>
-                                <span class="font-medium text-md text-subtitle">Prix: </span>
+                                <span class="font-medium text-md text-subtitle">Price: </span>
                                 <span class="font-semibold text-md text-title">${value} €</span>
                             </div>
                         </div>

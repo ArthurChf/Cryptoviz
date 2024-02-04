@@ -1,5 +1,5 @@
 <template>
-    <AppContainer class="h-auto max-h-[295px]">
+    <AppContainer class="h-auto max-h-[295px] overflow-hidden">
         <h2 class="text-2xl text-title font-bold">Fear & Greed</h2>
         <FearGreedChart v-if="selectedCurrency.name" />
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />

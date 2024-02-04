@@ -1,7 +1,5 @@
-import type { CurrencyCode } from '@/utils/getCurrency';
-
 export interface Transaction {
-    currencySymbol: CurrencyCode;
+    currencySymbol: string;
     currencyName: string;
     amount: string;
     id: string;

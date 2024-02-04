@@ -1,7 +1,7 @@
 <template>
     <div class="group relative inline-block">
         <slot />
-        <span class="animate-tooltip hidden absolute pointer-events-none text-title text-center py-2 px-3 rounded-lg bg-background border border-2 border-subtitle/5 shadow-xl w-max group-hover:inline-flex" :class="`tooltip--${position}`">{{ text }}</span>
+        <span class="z-tooltip animate-tooltip hidden absolute pointer-events-none text-title text-center py-2 px-3 rounded-lg bg-background border border-2 border-subtitle/5 shadow-xl w-max group-hover:inline-flex" :class="`tooltip--${position}`">{{ text }}</span>
     </div>
 </template>
 
@@ -56,12 +56,12 @@ const transformOriginProperty = computed(() => {
     0% {
         opacity: 0;
         transform-origin: v-bind(transformOriginProperty);
-        transform: scale(0.95) v-bind(translateProperty);
+        transform: scale(0.97) v-bind(translateProperty);
     }
     40% {
         opacity: 1;
         transform-origin: v-bind(transformOriginProperty);
-        transform: scale(1.05) v-bind(translateProperty);
+        transform: scale(1.03) v-bind(translateProperty);
     }
     100% {
         opacity: 1;

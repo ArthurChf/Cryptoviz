@@ -17,7 +17,8 @@ export default {
             '200': '200ms'
         },
         zIndex: {
-            'sidebar': '999'
+            'tooltip': '900',
+            'sidebar': '850'
         }
     }
 };

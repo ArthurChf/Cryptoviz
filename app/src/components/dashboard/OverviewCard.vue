@@ -1,6 +1,6 @@
 <template>
     <AppContainer>
-        <div class="flex gap-8 justify-between flex-wrap">
+        <div class="flex gap-8 justify-between flex-wrap pr-4">
             <div class="flex flex-col gap-3">
                 <div class="group cursor-pointer inline-flex w-fit items-center">
                     <AppTooltip text="Select a currency" position="right">
