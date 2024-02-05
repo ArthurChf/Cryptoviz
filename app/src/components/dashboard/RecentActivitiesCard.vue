@@ -1,0 +1,18 @@
+<template>
+    <AppContainer class="gap-9">
+        <h2 class="text-2xl text-title font-bold">Recent Activities</h2>
+        <RecentActivitiesTable v-if="selectedCurrency.name" />
+        <AppLoader v-else class="self-center stroke-subtitle" size="35" />
+    </AppContainer>
+</template>
+
+<script setup lang="ts">
+import AppContainer from '@/components/AppContainer.vue';
+import { useCurrencyStore } from '@/stores/currencyStore';
+import { storeToRefs } from 'pinia';
+import RecentActivitiesTable from '@/components/dashboard/RecentActivitiesTable.vue';
+import AppLoader from '@/components/AppLoader.vue';
+
+const currencyStore = useCurrencyStore();
+const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+</script>
