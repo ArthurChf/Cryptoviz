@@ -33,7 +33,7 @@ const navLinks = ref([
         to: RouteEnum.DASHBOARD
     },
     {
-        name: 'News',
+        name: 'Live prices',
         icon: IconEnum.NEWS,
         to: RouteEnum.NEWS
     }

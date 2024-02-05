@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center w-full rounded-xl transition duration-200 focus-within:bg-background/70 border focus-within:border-subtitle/5" :class="disabled ? 'text-subtitle/30 bg-background/20 border-background/80' : 'text-title bg-background border-background'">
         <AppIcon :name="IconEnum.SEARCH" size="9" class="ml-5" />
-        <input type="text" ref="searchInputEl" :disabled="disabled" v-model="searchValue" class="ml-4 mr-3 outline-none bg-[transparent] w-full py-3" :placeholder="placeholder" :class="disabled ? 'placeholder:text-subtitle/30 text-subtitle/80' : 'placeholder:text-subtitle/70 text-title'" @keyup.enter="enter" />
+        <input type="text" ref="searchInputEl" :disabled="disabled" v-model="searchValue" class="ml-5 mr-3 outline-none bg-[transparent] w-full py-3" :placeholder="placeholder" :class="disabled ? 'placeholder:text-subtitle/30 text-subtitle/80' : 'placeholder:text-subtitle/70 text-title'" @keyup.enter="enter" />
         <Transition :name="TransitionEnum.FADE" mode="out-in">
             <AppTooltip v-if="searchValue.length && !loading" text="Clear" position="right" @click="clearSearch">
                 <div class="flex items-center justify-center bg-container p-2 mr-3 rounded-xl transition duration-200 cursor-pointer border-2 border-container hover:border-subtitle/5 hover:bg-container/80">
