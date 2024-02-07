@@ -29,7 +29,10 @@ class KafkaConsumer:
             return None
 
     def commit(self):
-        self.consumer.commit(asynchronous=False)
+        self.consumer.commit(asynchronous=True)
+        
+    def subscribe(self, topics):
+        self.consumer.subscribe(topics)
 
     def close(self):
         self.consumer.close()

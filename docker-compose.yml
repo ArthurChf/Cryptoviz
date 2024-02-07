@@ -1,6 +1,5 @@
 version: '3.8'
 services:
-
   mongo:
     image: mongo
     restart: always
@@ -13,22 +12,21 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: epitech
       MONGO_INITDB_ROOT_PASSWORD: cryptoviz
-
     
   clickhouse:
+    container_name: clickhouse
     image: yandex/clickhouse-server
     ports:
      - "8123:8123"
      - "9000:9000"
      - "9009:9009"
-     
     ulimits:
       nproc: 65535
       nofile:
         soft: 262144
         hard: 262144
-
-
+    networks:
+      - broker_network
 
   broker-1:
     container_name: broker-1
@@ -166,7 +164,8 @@ services:
       dockerfile: Dockerfile.Scripts
     depends_on:
       - broker-ui
-
+      - clickhouse
+    
 networks:
   broker_network:
     driver: bridge
