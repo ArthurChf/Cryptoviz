@@ -33,7 +33,12 @@ const navLinks = ref([
         to: RouteEnum.DASHBOARD
     },
     {
-        name: 'Live prices',
+        name: 'Market Overview',
+        icon: IconEnum.ANALYTICS,
+        to: RouteEnum.MARKET
+    },
+    {
+        name: 'News',
         icon: IconEnum.NEWS,
         to: RouteEnum.NEWS
     }
