@@ -13,7 +13,8 @@ class EtlNewsProcess(ETLProcess):
 
     def transform(self, data):
         transformed_data = transform_news_data(data)
-        self.load(transformed_data.toTuple())
+        
+        # self.load()
     
     def load(self, data):
         self.clickhouse.insert_many(data)
