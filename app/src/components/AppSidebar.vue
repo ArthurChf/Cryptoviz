@@ -5,7 +5,7 @@
             <span class="font-bold text-title text-2xl">CryptoViz</span>
         </div>
         <div class="flex flex-col items-center gap-3 mx-4">
-            <RouterLink v-for="link in navLinks" :key="link.to" :to="link.to" class="group flex items-center gap-5 transition duration-200 hover:bg-background w-full py-4 px-6 rounded-2xl font-medium" :class="isCurrentRoute(link.to) ? 'bg-background' : 'bg-transparent'">
+            <RouterLink v-for="link in navLinks" :key="link.to" :to="link.to" class="group flex items-center gap-5 transition duration-200 hover:bg-background w-full py-4 px-6 rounded-lg font-medium" :class="isCurrentRoute(link.to) ? 'bg-background' : 'bg-transparent'">
                 <AppIcon class="transition duration-200" :class="isCurrentRoute(link.to) ? 'text-active/60' : 'text-title/80 group-hover:text-title/60'" size="11" :name="link.icon" />
                 <span class="text-md transition duration-200" :class="isCurrentRoute(link.to) ? 'text-active' : 'text-title group-hover:text-title/80'">{{ link.name }}</span>
             </RouterLink>
