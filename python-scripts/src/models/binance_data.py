@@ -25,3 +25,19 @@ class CryptoData:
         self.lowPrice = lowPrice
         self.totalNumberOfTrades = totalNumberOfTrades
         self.lastQuantity = lastQuantity
+    
+    def toTuple(self):
+        return (
+            self.symbol,
+            self.coin,
+            self.reference,
+            self.createdAt,
+            self.totalTradedBaseAssetVolume,
+            self.lastTradeId,
+            self.priceChange,
+            self.lastPrice,
+            self.highPrice,
+            self.lowPrice,
+            self.totalNumberOfTrades,
+            self.lastQuantity
+        )

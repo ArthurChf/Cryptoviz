@@ -1,4 +1,4 @@
-from src.process.binance.binance_transform import transform_binance_data
+from src.process.binance.etl_binance_transform import transform_binance_data
 import unittest
 
 class BinanceTransformTest(unittest.TestCase):

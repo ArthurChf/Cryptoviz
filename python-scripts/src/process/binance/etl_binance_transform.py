@@ -4,6 +4,7 @@ from utils.cryptodata import crypto_pairs
 def transform_binance_data(data):
     symbol = str(data['symbol']).lower()
     pair = crypto_pairs[symbol]
+    eventTime = data['eventTime'] / 1000.0
     if(pair is None):
         print(f"Pair not found for {data['symbol']}")
         return
@@ -13,7 +14,7 @@ def transform_binance_data(data):
         data['symbol'],
         coin,
         reference,
-        data['eventTime'],
+        eventTime,
         data['totalTradedBaseAssetVolume'],
         data['lastTradeId'],
         data['priceChange'],
