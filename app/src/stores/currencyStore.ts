@@ -22,10 +22,5 @@ export const useCurrencyStore = defineStore('currency', {
                 image: ''
             };
         }
-    },
-    getters: {
-        getSelectedCurrency: (state) => {
-            return state.selectedCurrency;
-        }
     }
 });

@@ -14,5 +14,5 @@ import RecentActivitiesTable from '@/components/dashboard/RecentActivitiesTable.
 import AppLoader from '@/components/AppLoader.vue';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 </script>

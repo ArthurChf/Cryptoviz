@@ -7,10 +7,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import type { TooltipPosition } from '@/types/TooltipPosition';
 
 const props = withDefaults(defineProps<{
     text: string;
-    position: 'top' | 'right' | 'bottom' | 'left';
+    position: TooltipPosition;
     show?: boolean;
 }>(), {
     show: true

@@ -18,5 +18,5 @@ import AppLoader from '@/components/AppLoader.vue';
 import PriceTrendChart from '@/components/dashboard/PriceTrendChart.vue';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 </script>

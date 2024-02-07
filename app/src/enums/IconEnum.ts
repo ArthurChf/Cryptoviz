@@ -6,5 +6,6 @@ export enum IconEnum {
     NEWS = 'NEWS',
     CLOSE = 'CLOSE',
     SEARCH = 'SEARCH',
-    CHECK = 'CHECK'
+    CHECK = 'CHECK',
+    ANALYTICS = 'ANALYTICS'
 }
