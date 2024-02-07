@@ -93,6 +93,7 @@ class ClickHouseConfig:
         
         for item in data:
             news_id = str(item[0])
+            
             news_values.append(
                 (
                     news_id, 
