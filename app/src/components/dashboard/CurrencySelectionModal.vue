@@ -44,7 +44,7 @@ import type { Currency } from '@/interfaces/Currency';
 import { IconEnum } from '@/enums/IconEnum';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 
 const isOpened = defineModel<boolean>();
 const searchValue = ref('');

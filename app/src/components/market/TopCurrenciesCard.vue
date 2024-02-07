@@ -18,7 +18,7 @@ import { ref } from 'vue';
 import type { TopCurrency } from '@/interfaces/TopCurrency';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 
 const topCurrencies = ref<TopCurrency[]>([
     {

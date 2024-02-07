@@ -49,7 +49,7 @@ import { IconEnum } from '@/enums/IconEnum';
 import { useAutoAnimate } from '@formkit/auto-animate/vue';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 
 const [newsFeedPosts] = useAutoAnimate();
 

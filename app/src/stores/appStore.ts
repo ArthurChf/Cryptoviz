@@ -10,10 +10,5 @@ export const useAppStore = defineStore('app', {
         selectPeriod(period: PeriodSelectorEnum): void {
             this.selectedPeriod = period;
         }
-    },
-    getters: {
-        getSelectedPeriod: (state) => {
-            return state.selectedPeriod;
-        }
     }
 });

@@ -1,12 +1,5 @@
 <template>
-    <CurrencySelectionModal v-model="isCurrencySelectionModalOpened">
-        <template #title>Select a Currency</template>
-        <template #content>
-            <div class="flex flex-col gap-8">
-                <p>Test</p>
-            </div>
-        </template>
-    </CurrencySelectionModal>
+    <CurrencySelectionModal v-model="isCurrencySelectionModalOpened" />
     <AppContainer>
         <div class="flex gap-8 justify-between flex-wrap pr-4">
             <div class="flex flex-col gap-3">
@@ -54,7 +47,7 @@ import { storeToRefs } from 'pinia';
 import { useCurrencyStore } from '@/stores/currencyStore';
 
 const currencyStore = useCurrencyStore();
-const { getSelectedCurrency: selectedCurrency } = storeToRefs(currencyStore);
+const { selectedCurrency } = storeToRefs(currencyStore);
 
 const currencyValue = ref('$1,077.83');
 const currencyGrowthRate = ref(1.47);
