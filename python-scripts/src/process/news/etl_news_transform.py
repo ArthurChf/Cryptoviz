@@ -1,6 +1,7 @@
 import pandas as pda
 import textblob as blob
 import html 
+import uuid
 from utils.cryptodata import cryptocurrencies_keys
 
 def _analyze_content_sentiment(data):
@@ -26,12 +27,21 @@ def _extract_cryptocurrency_symbols(data):
 def _generate_dataframe_from_news(data):
     return pda.DataFrame(data)
 
+def _reorder_dataframe_columns(dataframe):
+    columns = ['id', 'title', 'author', 'link', 'createdAt', 'content', 'sentiment', 'cryptocurrencies']
+    return dataframe[columns]
+
+    
+
 def transform_news_data(data):
     news_dataframe = _generate_dataframe_from_news(data)
     news_dataframe['sentiment'] = news_dataframe['content'].apply(_analyze_content_sentiment)
     news_dataframe['cryptocurrencies'] = news_dataframe['content'].apply(_extract_cryptocurrency_symbols)
     news_dataframe['createdAt'] = pda.to_datetime(news_dataframe['createdAt'])
     news_dataframe['createdAt'] = news_dataframe['createdAt'].apply(lambda x: x.timestamp())
+    news_dataframe['id'] = news_dataframe.apply(lambda _: uuid.uuid4(), axis=1)
     news_df_filtered = news_dataframe[news_dataframe['cryptocurrencies'].apply(lambda x: len(x) > 0)]
+    # Reorgniser les colonnes
+    news_df_filtered = _reorder_dataframe_columns(news_df_filtered)
     return news_df_filtered.itertuples(index=False, name=None)
 

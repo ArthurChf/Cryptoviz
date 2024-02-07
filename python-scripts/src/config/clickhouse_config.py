@@ -34,7 +34,7 @@ class ClickHouseConfig:
 
         self.newsSchema = """
                                 CREATE TABLE news_data (
-                                    id UUID DEFAULT generateUUIDv4(),
+                                    id UUID,
                                     title String,
                                     author String,
                                     link String,
@@ -43,16 +43,16 @@ class ClickHouseConfig:
                                     sentiment Int32,
                                     Version UInt64 DEFAULT now()
                                 ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (title, author, createdAt, link)
+                                ORDER BY (link, createdAt, sentiment, title, author, content)
                          """
         self.cryptoNewsSchema = """
                                 CREATE TABLE crypto_news (
                                     id UUID DEFAULT generateUUIDv4(),
                                     symbol String,
-                                    news_data_id UUID,
+                                    title String,
                                     Version UInt64 DEFAULT now()
                                 ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (symbol, news_data_id)
+                                ORDER BY (symbol, title)
                          """
                                 
     
@@ -91,6 +91,9 @@ class ClickHouseConfig:
         news_values = []
         crypto_news_values = []
         
+        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES ( %s, %s, %s, %s, toDateTime64(%s, 3), %s, %s )"
+
+        
         for item in data:
             news_id = str(item[0])
             
@@ -105,51 +108,25 @@ class ClickHouseConfig:
                     item[6]
                 )
             )
+            self.client.query(news_query, (
+                    news_id, 
+                    item[1], 
+                    item[2], 
+                    item[3], 
+                    item[4], 
+                    item[5],
+                    item[6]
+                ))
             for symbol in item[7]:
                 crypto_news_values.append(
                     (
                         symbol,
-                        news_id
+                        item[1]
                     )
                 )
         
-        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES "
-        
-        values_placeholders = []
-
-        for row in news_values:
-            placeholders = ["%s"] * len(row)
-            placeholders[4] = "toDateTime64(%s, 3)"
-            values_placeholders.append("({})".format(", ".join(placeholders)))
-
-        news_query += ", ".join(values_placeholders)
-        flattened_news_values = [item for sublist in news_values for item in sublist]
-        
-        crypto_news_values_union = " UNION ALL ".join([
-            "SELECT '{}' AS symbol, '{}' AS news_data_id".format(el[0], el[1])
-            for el in crypto_news_values
-        ])
-        crypto_news_query = f"""
-        INSERT INTO crypto_news (symbol, news_data_id)
-        SELECT symbol, news_data_id
-        FROM (
-            SELECT * 
-            FROM ({crypto_news_values_union}) 
-            WHERE news_data_id IN (
-                SELECT id FROM news_data
-            )
-        ) AS subquery
-        """
-        
-        try:
-            if len(news_values) > 0:
-                self.client.query(news_query, flattened_news_values)
-
-            if crypto_news_values:
-                self.client.query(crypto_news_query)
-            
-        except Exception as e:
-            print(f"Une erreur est survenue: {e}")
+        for el in crypto_news_values:
+            self.client.query(f"INSERT INTO crypto_news (symbol, title) VALUES ('{el[0]}', '{el[1]}')")
 
         
 

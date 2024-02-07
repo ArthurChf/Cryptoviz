@@ -33,5 +33,11 @@ class NewsTransformTest(unittest.TestCase):
         news_tuple = list(transform_news_data(data))
         self.assertGreater(len(news_tuple), 0)
         pass
-
+    
+    def test_insert_data(self):
+        data = getSamples()
+        news_tuple = list(transform_news_data(data))
+        client = ClickHouseConfig('localhost', 8123, 'default', 'default')
+        client.insert_many(news_tuple)
+        pass
 
