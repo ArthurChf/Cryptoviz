@@ -15,6 +15,7 @@ class ETLProcess(ABC):
     @abstractmethod
     def extract(self):
         consumer = KafkaConsumer(self.topic)
+        # Tant qu'on a de la donnée à consommer, on continue
         try:
             consumer.subscribe([self.topic])
             while True:

@@ -1,5 +1,6 @@
 import clickhouse_connect
 from enum import Enum
+from src.models.crypto_news_data import CryptoNewsData
 
 class ClickHouseTableEnum(Enum):
     CRYPTO_DATA = 'crypto_data'
@@ -31,6 +32,7 @@ class ClickHouseConfig:
                                 ) ENGINE = MergeTree()
                                 ORDER BY (createdAt, symbol)
                             """
+        # Les deux schémas suivant utilisent le moteur de stockage ReplacingMergeTree afin de gérer les doublons
         self.newsSchema = """
                                 CREATE TABLE news (
                                     id String,
@@ -71,7 +73,7 @@ class ClickHouseConfig:
     def insert_one(self, data):
         self.ensure_table_exists(ClickHouseTableEnum.CRYPTO_DATA.value)
         query = """
-                INSERT INTO crypto_data (
+                INSERT INTO crypto (
                     symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
                     lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity
                 ) 
@@ -102,14 +104,13 @@ class ClickHouseConfig:
                 )
             )
             for symbol in item[7]:
+                crypto_news_value = CryptoNewsData(news_id, symbol)
                 crypto_news_values.append(
-                    (
-                        news_id,
-                        symbol
-                    )
+                    crypto_news_value.getTuple()
                 )
         
-        news_query = "INSERT INTO news_data ( id, title, author, link, createdAt, content, sentiment ) VALUES "
+        # On construit la requête d'insertion pour les news et on envoie dans une seule requête
+        news_query = "INSERT INTO news ( id, title, author, link, createdAt, content, sentiment ) VALUES "
         
         values_placeholders = []
 
@@ -121,6 +122,7 @@ class ClickHouseConfig:
         news_query += ", ".join(values_placeholders)
         flattened_news_values = [item for sublist in news_values for item in sublist]
         
+        # Avant d'insérer, on vérifie que les news existent dans la table news
         crypto_news_values_union = " UNION ALL ".join([
             "SELECT '{}' AS news_data_id, '{}' AS symbol".format(el[0], el[1])
             for el in crypto_news_values
@@ -132,7 +134,7 @@ class ClickHouseConfig:
             SELECT * 
             FROM ({crypto_news_values_union}) 
             WHERE news_data_id IN (
-                SELECT id FROM news_data
+                SELECT id FROM news
             )
         ) AS subquery
         """
