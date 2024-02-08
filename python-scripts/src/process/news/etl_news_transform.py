@@ -1,8 +1,8 @@
 import pandas as pda
 import textblob as blob
 import html 
-import uuid
 from utils.cryptodata import cryptocurrencies_keys
+import hashlib
 
 def _analyze_content_sentiment(data):
     content = html.unescape(data)
@@ -31,7 +31,9 @@ def _reorder_dataframe_columns(dataframe):
     columns = ['id', 'title', 'author', 'link', 'createdAt', 'content', 'sentiment', 'cryptocurrencies']
     return dataframe[columns]
 
-    
+def _generate_id(title, link, author):
+    key = f"{title}{link}{author}"
+    return hashlib.sha256(key.encode()).hexdigest()
 
 def transform_news_data(data):
     news_dataframe = _generate_dataframe_from_news(data)
@@ -39,7 +41,7 @@ def transform_news_data(data):
     news_dataframe['cryptocurrencies'] = news_dataframe['content'].apply(_extract_cryptocurrency_symbols)
     news_dataframe['createdAt'] = pda.to_datetime(news_dataframe['createdAt'])
     news_dataframe['createdAt'] = news_dataframe['createdAt'].apply(lambda x: x.timestamp())
-    news_dataframe['id'] = news_dataframe.apply(lambda _: uuid.uuid4(), axis=1)
+    news_dataframe['id'] = news_dataframe.apply(lambda x: _generate_id(x['title'], x['link'], x['author']), axis=1)
     news_df_filtered = news_dataframe[news_dataframe['cryptocurrencies'].apply(lambda x: len(x) > 0)]
     # Reorgniser les colonnes
     news_df_filtered = _reorder_dataframe_columns(news_df_filtered)
