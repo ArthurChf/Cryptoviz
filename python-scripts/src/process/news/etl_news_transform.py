@@ -10,6 +10,7 @@ def _analyze_content_sentiment(data):
     if content is None or content == "":
         return 0
     sentiment_polarity = blob_content.sentiment.polarity
+    # Normaliser la valeur de la polarité pour avoir une note entre 0 et 100, 0 étant négatif, 50 neutre et 100 positif
     normalize_sentiment = (sentiment_polarity + 1) * 50
     return normalize_sentiment
 
@@ -19,9 +20,11 @@ def _extract_cryptocurrency_symbols(data):
         return []
     blob_content = blob.TextBlob(content.lower())
     found_symbols = set()
+    # On utilise un set pour éviter les doublons
     for word in blob_content.words:
         if word in cryptocurrencies_keys:
             found_symbols.add(cryptocurrencies_keys[word])
+    # On convertir le set en liste pour pouvoir l'utiliser dans le dataframe
     return list(found_symbols)
 
 def _generate_dataframe_from_news(data):
@@ -32,6 +35,7 @@ def _reorder_dataframe_columns(dataframe):
     return dataframe[columns]
 
 def _generate_id(title, link, author):
+    # On génère un id unique pour chaque news en utilisant le titre, le lien et l'auteur, afin d'éviter les doublons
     key = f"{title}{link}{author}"
     return hashlib.sha256(key.encode()).hexdigest()
 

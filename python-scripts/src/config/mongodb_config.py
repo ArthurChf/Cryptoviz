@@ -23,6 +23,7 @@ class MongoDBConfig:
     
     def upsert_many(self, collection_name, documents):
         collection = self.database[collection_name]
+        # Insère un document s'il n'existe pas, sinon le met à jour (éviter les doublons)
         operations = [
             UpdateOne(
                 {'author': doc['author'], 'title': doc['title'], 'createdAt': doc['createdAt'], 'link': doc['link']},
