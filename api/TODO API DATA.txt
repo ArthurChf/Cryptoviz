@@ -1,28 +1,12 @@
 - ws (events) :
-    1 - crypto:get_currency_data
     2 - crypto:get_price_trend
     3 - crypto:get_transactions
     4 - crypto:get_fear_greed
     5 - crypto:get_news (envoyer au fur et à mesure)
     6 - crypto:get_all_currencies_data
 
-    - config:update_currency (symbol string)
-    - config:update_period (enum)
-
-- http (routes) :
-    1 - get currency data
-    2 - get price trend
-    3 - get transactions by currency (param max)
-    4 - get fear and greed
-    5 - get news by currency (param max)
-    6 - get all currencies data
-
-    - get all news (param max)
-    - get all currencies (optional query search)
 
 
---> Chaque route HTTP initie l'envoi de l'event lié (check is init), sauf :
+--> Front : chaque route HTTP initie le listener de l'event lié (check store), sauf :
     - get all news
     - get all currencies
-
---> Tous les events dans un cron (toutes les secondes)
