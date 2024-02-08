@@ -14,7 +14,7 @@ class ClickHouseConfig:
         self.database = database
         self.client = clickhouse_connect.get_client(host=self.host, port=self.port, username=self.username, database = self.database)
         self.binanceSchema = """
-                                CREATE TABLE crypto_data (
+                                CREATE TABLE crypto (
                                     id UUID DEFAULT generateUUIDv4(),
                                     symbol String,
                                     coin String,
@@ -30,31 +30,27 @@ class ClickHouseConfig:
                                     lastQuantity String
                                 ) ENGINE = MergeTree()
                                 ORDER BY (createdAt, symbol)
-                                """
-
+                            """
         self.newsSchema = """
-                                CREATE TABLE news_data (
-                                    id UUID DEFAULT generateUUIDv4(),
+                                CREATE TABLE news (
+                                    id String,
                                     title String,
                                     author String,
                                     link String,
                                     createdAt DateTime64(3, 'Europe/London'),
                                     content String,
-                                    sentiment Int32,
-                                    Version UInt64 DEFAULT now()
-                                ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (title, author, createdAt, link)
+                                    sentiment Int32
+                                ) ENGINE = ReplacingMergeTree
+                                  ORDER BY (id)
                          """
         self.cryptoNewsSchema = """
                                 CREATE TABLE crypto_news (
                                     id UUID DEFAULT generateUUIDv4(),
-                                    symbol String,
-                                    news_data_id UUID,
-                                    Version UInt64 DEFAULT now()
-                                ) ENGINE = ReplacingMergeTree(Version)
-                                ORDER BY (symbol, news_data_id)
+                                    news_data_id String,
+                                    symbol String
+                                ) ENGINE = ReplacingMergeTree
+                                ORDER BY (news_data_id, symbol)
                          """
-                                
     
     def ensure_table_exists(self, table_name):
         if not self.does_table_exist(table_name):
@@ -93,6 +89,7 @@ class ClickHouseConfig:
         
         for item in data:
             news_id = str(item[0])
+            
             news_values.append(
                 (
                     news_id, 
@@ -107,8 +104,8 @@ class ClickHouseConfig:
             for symbol in item[7]:
                 crypto_news_values.append(
                     (
-                        symbol,
-                        news_id
+                        news_id,
+                        symbol
                     )
                 )
         
@@ -125,12 +122,12 @@ class ClickHouseConfig:
         flattened_news_values = [item for sublist in news_values for item in sublist]
         
         crypto_news_values_union = " UNION ALL ".join([
-            "SELECT '{}' AS symbol, '{}' AS news_data_id".format(el[0], el[1])
+            "SELECT '{}' AS news_data_id, '{}' AS symbol".format(el[0], el[1])
             for el in crypto_news_values
         ])
         crypto_news_query = f"""
-        INSERT INTO crypto_news (symbol, news_data_id)
-        SELECT symbol, news_data_id
+        INSERT INTO crypto_news (news_data_id, symbol)
+        SELECT news_data_id, symbol
         FROM (
             SELECT * 
             FROM ({crypto_news_values_union}) 
@@ -139,7 +136,7 @@ class ClickHouseConfig:
             )
         ) AS subquery
         """
-        
+                
         try:
             if len(news_values) > 0:
                 self.client.query(news_query, flattened_news_values)
