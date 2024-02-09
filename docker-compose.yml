@@ -10,8 +10,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: epitech
-      MONGO_INITDB_ROOT_PASSWORD: cryptoviz
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     
   clickhouse:
     container_name: clickhouse
@@ -21,9 +21,9 @@ services:
      - "9000:9000"
      - "9009:9009"
     environment:
-      CLICKHOUSE_DB: cryptoviz
-      CLICKHOUSE_USER: epitech
-      CLICKHOUSE_PASSWORD: admin
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
     ulimits:
       nproc: 65535
       nofile:
@@ -168,6 +168,8 @@ services:
     build:
       context: ./python-scripts
       dockerfile: Dockerfile.Scripts
+    volumes:
+      - .env:/app/.env
     depends_on:
       - broker-ui
       - clickhouse
@@ -182,3 +184,4 @@ volumes:
   broker-3: null
   mongo: null
   clickhouse: null
+  python-scripts: null
