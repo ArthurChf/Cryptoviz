@@ -11,7 +11,7 @@ import { randomUUID } from 'crypto';
 import { Server } from 'ws';
 import { Socket } from '@/apps/data/src/events/socket.interface';
 import { PeriodEnum } from '@/apps/data/src/events/period.enum';
-import { ObservableInput, interval } from 'rxjs';
+import { interval } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 @WebSocketGateway(8080, {
@@ -57,6 +57,47 @@ export class EventsGateway {
     getCurrencyData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getCurrencyData();
+            client.send(res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_price_trend')
+    getPriceTrend(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getPriceTrend();
+            client.send(res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_transactions')
+    getTransactions(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getTransactions();
+            client.send(res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_fear_greed')
+    getFearAndGreed(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getFearAndGreed();
+            client.send(res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_news')
+    getNews(@ConnectedSocket() client: Socket) {
+        // query only the last one found
+        this.loopData(async () => {
+            const res = this.dataService.getNews();
+            client.send(res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_all_currencies_data')
+    getAllCurrenciesData(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getAllCurrenciesData();
             client.send(res);
         }, client.id);
     }
