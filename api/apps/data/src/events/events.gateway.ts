@@ -33,6 +33,13 @@ export class EventsGateway {
         this.memoryService.addClientSubscription(clientId, sub);
     }
 
+    sendResponse(client: Socket, eventName: string, data: unknown) {
+        client.send(JSON.stringify({
+            event: eventName,
+            data
+        }));
+    }
+
     handleConnection(client: Socket) {
         client.id = randomUUID();
         this.memoryService.updateClientSettings(client.id);
@@ -57,7 +64,7 @@ export class EventsGateway {
     getCurrencyData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getCurrencyData();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_currency_data', res);
         }, client.id);
     }
 
@@ -65,7 +72,7 @@ export class EventsGateway {
     getPriceTrend(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getPriceTrend();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_price_trend', res);
         }, client.id);
     }
 
@@ -73,15 +80,15 @@ export class EventsGateway {
     getTransactions(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getTransactions();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_transactions', res);
         }, client.id);
     }
 
-    @SubscribeMessage('crypto:get_fear_greed')
+    @SubscribeMessage('crypto:get_fear_and_greed')
     getFearAndGreed(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getFearAndGreed();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_fear_and_greed', res);
         }, client.id);
     }
 
@@ -90,7 +97,7 @@ export class EventsGateway {
         // query only the last one found
         this.loopData(async () => {
             const res = this.dataService.getNews();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_news', res);
         }, client.id);
     }
 
@@ -98,7 +105,7 @@ export class EventsGateway {
     getAllCurrenciesData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getAllCurrenciesData();
-            client.send(res);
+            this.sendResponse(client, 'crypto:get_all_currencies_data', res);
         }, client.id);
     }
 }

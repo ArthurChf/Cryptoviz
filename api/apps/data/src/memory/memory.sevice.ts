@@ -40,6 +40,7 @@ export class MemoryService {
     }
 
     removeClientSubscriptions(id: string) {
+        if (!this.clientSubscriptions.has(id)) return;
         this.clientSubscriptions.get(id).forEach((s) => {
             s.unsubscribe();
         });
