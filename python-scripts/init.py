@@ -2,6 +2,7 @@ import multiprocessing
 import time
 import sys
 import signal
+from dotenv import load_dotenv
 from clickhouse_connect import get_client
 from enum import Enum
 from src.process.binance.etl_binance_process import EtlBinanceProcess
@@ -72,6 +73,7 @@ def news_data_process():
     news_etl.extract()
     
 if __name__ == "__main__":
+    load_dotenv()
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     check_database_connection()
