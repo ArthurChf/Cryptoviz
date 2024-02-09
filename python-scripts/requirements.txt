@@ -1,6 +1,5 @@
 confluent-kafka==2.3.0
 pymongo==3.9.0
 clickhouse_connect
-pandas==0.25.3
-textblob==0.15.3
-beautifulsoup4==4.8.1
+pandas==2.2.0
+textblob==0.17.1

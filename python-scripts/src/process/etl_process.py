@@ -27,8 +27,7 @@ class ETLProcess(ABC):
                         self.transform(json_message)
                     except json.decoder.JSONDecodeError:
                         print('Unable to decode message to JSON: %s', message.value())
-                
-                consumer.commit()
+                    consumer.commit()
                 
         except KafkaException as e:
             print(f'Error while consuming {self.topic}: {e}')
