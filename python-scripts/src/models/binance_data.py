@@ -3,7 +3,7 @@ class CryptoData:
         assert symbol is not None and symbol != "", "Le symbole ne doit pas être null ou vide"
         assert coin is not None and coin != "", "La pièce ne doit pas être null ou vide"
         assert reference is not None and reference != "", "La référence ne doit pas être null ou vide"
-        assert createdAt is not None and isinstance(createdAt, int), "createdAt doit être un entier représentant un timestamp et non null"
+        assert createdAt is not None and isinstance(createdAt, float), "createdAt doit être un float représentant un timestamp et non null"
         assert totalTradedBaseAssetVolume is not None and totalTradedBaseAssetVolume != "", "totalTradedBaseAssetVolume ne doit pas être null ou vide"
         assert lastTradeId is not None and isinstance(lastTradeId, int), "lastTradeId doit être un entier et non null"
         assert priceChange is not None and priceChange != "", "priceChange ne doit pas être null ou vide"
