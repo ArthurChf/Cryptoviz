@@ -1,7 +1,8 @@
 import multiprocessing
 import time
+import sys
+import signal
 from clickhouse_connect import get_client
-
 from enum import Enum
 from src.process.binance.etl_binance_process import EtlBinanceProcess
 from src.process.news.etl_news_process import EtlNewsProcess
@@ -11,6 +12,17 @@ class Topic(Enum):
     BINANCE_DATA_BACKUP = 'BINANCE_DATA_BACKUP'
     RSS_FEED_PROCESSING = 'RSS_FEED_PROCESSING'
     RSS_FEED_BACKUP = 'RSS_FEED_BACKUP'
+    
+def signal_handler(signum, frame):
+    print('Signal d\'arrêt reçu, fermeture du processus')
+    
+    process_binance.terminate()
+    process_news.terminate()
+    
+    process_binance.join()
+    process_news.join()
+    
+    sys.exit(0)
 
 
 def check_database_connection():
@@ -60,6 +72,8 @@ def news_data_process():
     news_etl.extract()
     
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
     check_database_connection()
     print("Base de données 'cryptoviz' prête. Démarrage des processus.")
     process_binance = multiprocessing.Process(target=binance_data_process)
