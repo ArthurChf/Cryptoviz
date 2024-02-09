@@ -8,6 +8,7 @@ import * as echarts from 'echarts';
 
 const chart = shallowRef<echarts.ECharts>();
 const priceTrendChartId = 'priceTrendChart';
+const maxDisplayedPrices = 7;
 
 const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
 const prices = ref([12, 53, 47, 39, 54, 49, 68]);
@@ -99,6 +100,10 @@ onMounted(() => {
         xAxis: {
             type: 'category',
             boundaryGap: false,
+            min: (value) => {
+                if (value.max < maxDisplayedPrices) return 0;
+                return value.max - maxDisplayedPrices;
+            },
             data: months.value,
             axisLabel: {
                 color: '#adadad',
