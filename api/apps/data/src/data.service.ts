@@ -20,4 +20,10 @@ export class DataService {
     public getAllCurrenciesData() {
         return 'getAllCurrenciesData';
     }
+    public getTopCurrencies() {
+        return 'getTopCurrencies';
+    }
+    public getAllCurrenciesNews() {
+        return 'getAllCurrenciesNews';
+    }
 }

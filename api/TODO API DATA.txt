@@ -1,3 +1,17 @@
---> Front : chaque route HTTP initie le listener de l'event lié (check store), sauf :
-    - get all news
-    - get all currencies
+- useFetchData : remplacer routeName (param) par objet "HttpOptions" {
+    routeName: EventRouteEnum;
+    query: Record<string, string>;
+} ou null
+
+- socketStore : appeler useRequest avec les params
+
+- useRequest : modifier les params
+
+- gerer envois events update currency / period
+
+- utiliser useFetchData partout
+
+
+
+- créer page news
+- page market : fix bug bouton select crypto

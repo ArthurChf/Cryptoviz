@@ -108,4 +108,20 @@ export class EventsGateway {
             this.sendResponse(client, 'crypto:get_all_currencies_data', res);
         }, client.id);
     }
+
+    @SubscribeMessage('crypto:get_top_currencies')
+    getTopCurrencies(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getTopCurrencies();
+            this.sendResponse(client, 'crypto:get_top_currencies', res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_all_currencies_news')
+    getAllCurrenciesNews(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getAllCurrenciesNews();
+            this.sendResponse(client, 'crypto:get_all_currencies_news', res);
+        }, client.id);
+    }
 }
