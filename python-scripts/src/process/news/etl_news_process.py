@@ -5,7 +5,7 @@ from src.process.news.etl_news_transform import transform_news_data
 class EtlNewsProcess(ETLProcess):
     def __init__(self, topic):
         super().__init__(topic)
-        self.clickhouse = ClickHouseConfig('clickhouse', 8123, 'default', 'default')
+        self.clickhouse = ClickHouseConfig('clickhouse', 8123, 'epitech', 'admin', 'cryptoviz')
         
 
     def extract(self):
