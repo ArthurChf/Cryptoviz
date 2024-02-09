@@ -3,17 +3,18 @@ from enum import Enum
 from src.models.crypto_news_data import CryptoNewsData
 
 class ClickHouseTableEnum(Enum):
-    CRYPTO_DATA = 'crypto_data'
-    NEWS_DATA = 'news_data'
+    CRYPTO_DATA = 'crypto'
+    NEWS_DATA = 'news'
     CRYPTO_NEWS = 'crypto_news'
 
 class ClickHouseConfig:
-    def __init__(self, host, port, username, database):
+    def __init__(self, host, port, username, password, database):
         self.host = host
         self.port = port
         self.username = username
+        self.password = password
         self.database = database
-        self.client = clickhouse_connect.get_client(host=self.host, port=self.port, username=self.username, database = self.database)
+        self.client = clickhouse_connect.get_client(host=self.host, port=self.port, username=self.username, password=self.password, database = self.database)
         self.binanceSchema = """
                                 CREATE TABLE crypto (
                                     id UUID DEFAULT generateUUIDv4(),
