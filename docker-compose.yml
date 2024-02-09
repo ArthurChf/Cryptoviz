@@ -168,6 +168,8 @@ services:
     build:
       context: ./python-scripts
       dockerfile: Dockerfile.Scripts
+    volumes:
+      - .env:/app/.env
     depends_on:
       - broker-ui
       - clickhouse
@@ -182,3 +184,4 @@ volumes:
   broker-3: null
   mongo: null
   clickhouse: null
+  python-scripts: null
