@@ -1,11 +1,18 @@
 from src.process.etl_process import ETLProcess
 from src.process.binance.etl_binance_transform import transform_binance_data
 from src.config.clickhouse_config import ClickHouseConfig
+from utils.env_utils import get_env
 
 class EtlBinanceProcess(ETLProcess):
     def __init__(self, topic):
         super().__init__(topic)
-        self.clickhouse = ClickHouseConfig('clickhouse', 8123, 'epitech', 'admin', 'cryptoviz')
+        self.clickhouse = ClickHouseConfig(
+            get_env('CLICKHOUSE_HOST'), 
+            get_env('CLICKHOUSE_PORT'), 
+            get_env('CLICKHOUSE_USER'), 
+            get_env('CLICKHOUSE_PASSWORD'), 
+            get_env('CLICKHOUSE_DB')
+        )
         
 
     def extract(self):
