@@ -1,13 +1,16 @@
 import { defineStore } from 'pinia';
-import type { EventNameEnum } from '@/enums/EventNameEnum';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import type { SocketEventEnum } from '@/enums/SocketEventEnum';
 import { createSocket } from '@/utils/createSocket';
+import { useRequest } from '@/composables/useRequest';
 
 export const useSocketStore = defineStore('socket', {
     state: () => ({
         isSocketInit: false,
         socketConnectionPromise: null as Promise<void> | null,
         socketClient: createSocket(),
-        requestedEvents: new Map() as Map<EventNameEnum, <T>(data: T) => void>
+        requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown) => void>
     }),
     actions: {
         async waitSocketConnection() {
@@ -31,10 +34,12 @@ export const useSocketStore = defineStore('socket', {
 
             return this.socketConnectionPromise;
         },
-        subscribe(eventName: EventNameEnum) {
-            this.socketClient.send(JSON.stringify({
-                event: eventName
-            }));
+        async subscribe(socketOptions: SocketOptions) {
+            const payload = {
+                event: socketOptions.eventName,
+                data: socketOptions.data ?? ''
+            };
+            this.socketClient.send(JSON.stringify(payload));
         },
         init() {
             if (this.isSocketInit) return;
@@ -42,7 +47,7 @@ export const useSocketStore = defineStore('socket', {
             this.isSocketInit = true;
             this.socketClient.addEventListener('message', (event) => {
                 try {
-                    const payload: { event: EventNameEnum; data: unknown } = JSON.parse(event.data);
+                    const payload: { event: SocketEventEnum; data: unknown } = JSON.parse(event.data);
                     if (this.requestedEvents.has(payload.event)) {
                         const callback = this.requestedEvents.get(payload.event)!;
                         callback(payload.data);
@@ -52,10 +57,17 @@ export const useSocketStore = defineStore('socket', {
                 }
             });
         },
-        addEvent(eventName: EventNameEnum, callback: <T>(data: T) => void) {
-            if (!this.requestedEvents.has(eventName)) {
-                this.requestedEvents.set(eventName, callback);
-                this.subscribe(eventName);
+        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions, callback: (data: T) => void) {
+            if (!this.requestedEvents.has(socketOptions.eventName)) {
+                this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
+
+                if (httpOptions) {
+                    const { routeName, queryParams } = httpOptions;
+                    const response = await useRequest<T>(routeName, { query: queryParams, method: 'GET' });
+                    const action = this.requestedEvents.get(socketOptions.eventName)!;
+                    action(response);
+                }
+                this.subscribe(socketOptions);
             }
         }
     }
