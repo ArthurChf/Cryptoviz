@@ -5,17 +5,17 @@ export class DataService {
     public getCurrencyData() {
         return 'getCurrencyData';
     }
-    public getPriceTrend() {
-        return 'getPriceTrend';
+    public getCurrencyPriceTrend() {
+        return 'getCurrencyPriceTrend';
     }
-    public getTransactions() {
-        return 'getTransactions';
+    public getCurrencyTransactions() {
+        return 'getCurrencyTransactions';
     }
     public getFearAndGreed() {
         return 'getFearAndGreed';
     }
-    public getNews() {
-        return 'getNews';
+    public getCurrencyNews() {
+        return 'getCurrencyNews';
     }
     public getAllCurrenciesData() {
         return 'getAllCurrenciesData';
@@ -25,5 +25,8 @@ export class DataService {
     }
     public getAllCurrenciesNews() {
         return 'getAllCurrenciesNews';
+    }
+    public getAllCurrencies() {
+        return 'getAllCurrencies';
     }
 }
