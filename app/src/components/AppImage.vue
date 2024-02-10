@@ -27,9 +27,16 @@ const { observe, unobserve } = useLazyLoad(() => {
 });
 
 onMounted(() => {
-    if (props.name) observe(document.getElementById(imageId));
+    if (props.name) {
+        const element = document.getElementById(imageId);
+        if (element) observe(element);
+        else loadImage(props.name);
+    }
 });
 onBeforeUnmount(() => {
-    if (props.name) unobserve(document.getElementById(imageId));
+    if (props.name) {
+        const element = document.getElementById(imageId);
+        if (element) unobserve(element);
+    }
 });
 </script>
