@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DataService {
+    public getAllCurrencies() {
+        return 'getAllCurrencies';
+    }
     public getCurrencyData() {
         return 'getCurrencyData';
     }
@@ -11,22 +14,22 @@ export class DataService {
     public getCurrencyTransactions() {
         return 'getCurrencyTransactions';
     }
-    public getFearAndGreed() {
-        return 'getFearAndGreed';
+    public getCurrencyFearAndGreed() {
+        return 'getCurrencyFearAndGreed';
     }
     public getCurrencyNews() {
         return 'getCurrencyNews';
     }
-    public getAllCurrenciesData() {
-        return 'getAllCurrenciesData';
-    }
     public getTopCurrencies() {
         return 'getTopCurrencies';
+    }
+    public getAllCurrenciesData() {
+        return 'getAllCurrenciesData';
     }
     public getAllCurrenciesNews() {
         return 'getAllCurrenciesNews';
     }
-    public getAllCurrencies() {
-        return 'getAllCurrencies';
+    public getNewsTrendingCurrencies() {
+        return 'getNewsTrendingCurrencies';
     }
 }

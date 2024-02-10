@@ -70,44 +70,36 @@ export class EventsGateway {
         }, client.id);
     }
 
-    @SubscribeMessage('crypto:get_price_trend')
-    getPriceTrend(@ConnectedSocket() client: Socket) {
+    @SubscribeMessage('crypto:get_currency_price_trend')
+    getCurrencyPriceTrend(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getCurrencyPriceTrend();
-            this.sendResponse(client, 'crypto:get_price_trend', res);
+            this.sendResponse(client, 'crypto:get_currency_price_trend', res);
         }, client.id);
     }
 
-    @SubscribeMessage('crypto:get_transactions')
-    getTransactions(@ConnectedSocket() client: Socket) {
+    @SubscribeMessage('crypto:get_currency_transactions')
+    getCurrencyTransactions(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getCurrencyTransactions();
-            this.sendResponse(client, 'crypto:get_transactions', res);
+            this.sendResponse(client, 'crypto:get_currency_transactions', res);
         }, client.id);
     }
 
-    @SubscribeMessage('crypto:get_fear_and_greed')
-    getFearAndGreed(@ConnectedSocket() client: Socket) {
+    @SubscribeMessage('crypto:get_currency_fear_and_greed')
+    getCurrencyFearAndGreed(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getFearAndGreed();
-            this.sendResponse(client, 'crypto:get_fear_and_greed', res);
+            const res = this.dataService.getCurrencyFearAndGreed();
+            this.sendResponse(client, 'crypto:get_currency_fear_and_greed', res);
         }, client.id);
     }
 
-    @SubscribeMessage('crypto:get_news')
-    getNews(@ConnectedSocket() client: Socket) {
+    @SubscribeMessage('crypto:get_currency_news')
+    getCurrencyNews(@ConnectedSocket() client: Socket) {
         // query only the last one found
         this.loopData(async () => {
             const res = this.dataService.getCurrencyNews();
-            this.sendResponse(client, 'crypto:get_news', res);
-        }, client.id);
-    }
-
-    @SubscribeMessage('crypto:get_all_currencies_data')
-    getAllCurrenciesData(@ConnectedSocket() client: Socket) {
-        this.loopData(async () => {
-            const res = this.dataService.getAllCurrenciesData();
-            this.sendResponse(client, 'crypto:get_all_currencies_data', res);
+            this.sendResponse(client, 'crypto:get_currency_news', res);
         }, client.id);
     }
 
@@ -119,11 +111,27 @@ export class EventsGateway {
         }, client.id);
     }
 
+    @SubscribeMessage('crypto:get_all_currencies_data')
+    getAllCurrenciesData(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getAllCurrenciesData();
+            this.sendResponse(client, 'crypto:get_all_currencies_data', res);
+        }, client.id);
+    }
+
     @SubscribeMessage('crypto:get_all_currencies_news')
     getAllCurrenciesNews(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const res = this.dataService.getAllCurrenciesNews();
             this.sendResponse(client, 'crypto:get_all_currencies_news', res);
+        }, client.id);
+    }
+
+    @SubscribeMessage('crypto:get_news_trending_currencies')
+    getNewsTrendingCurrencies(@ConnectedSocket() client: Socket) {
+        this.loopData(async () => {
+            const res = this.dataService.getNewsTrendingCurrencies();
+            this.sendResponse(client, 'crypto:get_news_trending_currencies', res);
         }, client.id);
     }
 }
