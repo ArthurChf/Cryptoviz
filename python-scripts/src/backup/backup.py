@@ -6,7 +6,7 @@ from src.config.kafka_consumer import KafkaConsumer
 from confluent_kafka import KafkaException
 
 
-class ETLBackup(ABC):
+class Backup(ABC):
     def __init__(self, topic):
         self.topic = topic
         signal.signal(signal.SIGINT, self.signal_handler)

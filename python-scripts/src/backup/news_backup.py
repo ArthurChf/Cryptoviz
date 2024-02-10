@@ -1,8 +1,8 @@
-from src.backup.etl_backup import ETLBackup
+from src.backup.backup import Backup
 from src.config.mongodb_config import MongoDBConfig
 from src.common.env_utils import get_env
 
-class ETLNewsBackup(ETLBackup):
+class NewsBackup(Backup):
     def __init__(self, topic):
         super().__init__(topic)
         self.topic = topic

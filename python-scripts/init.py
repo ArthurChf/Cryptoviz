@@ -7,7 +7,8 @@ from clickhouse_connect import get_client
 from enum import Enum
 from src.process.binance.etl_binance_process import EtlBinanceProcess
 from src.process.news.etl_news_process import EtlNewsProcess
-from src.backup.etl_news_backup import ETLNewsBackup
+from src.backup.news_backup import NewsBackup
+from src.backup.binance_backup import BinanceBackup
 from src.common.env_utils import get_env
 
 class Topic(Enum):
@@ -22,10 +23,12 @@ def signal_handler(signum, frame):
     process_binance.terminate()
     process_news.terminate()
     backup_news.terminate()
+    backup_binance.terminate()
     
     process_binance.join()
     process_news.join()
     backup_news.join()
+    backup_binance.join()
     
     sys.exit(0)
 
@@ -107,8 +110,12 @@ def news_data_process():
     news_etl.extract()
     
 def news_data_backup():
-    news_backup = ETLNewsBackup(Topic.RSS_FEED_BACKUP.value)
+    news_backup = NewsBackup(Topic.RSS_FEED_BACKUP.value)
     news_backup.extract()
+
+def binance_data_backup():
+    binance_backup = BinanceBackup(Topic.BINANCE_DATA_BACKUP.value)
+    binance_backup.extract()
     
 if __name__ == "__main__":
     load_dotenv()
@@ -121,7 +128,9 @@ if __name__ == "__main__":
     process_binance = multiprocessing.Process(target=binance_data_process)
     process_news = multiprocessing.Process(target=news_data_process)
     backup_news = multiprocessing.Process(target=news_data_backup)
+    backup_binance = multiprocessing.Process(target=binance_data_backup)
     
     process_binance.start()
     process_news.start()
     backup_news.start()
+    backup_binance.start()
