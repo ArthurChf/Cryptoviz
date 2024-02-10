@@ -25,7 +25,7 @@ import AppTooltip from '@/components/AppTooltip.vue';
 import AppIcon from '@/components/AppIcon.vue';
 import { computed, ref } from 'vue';
 import { IconEnum } from '@/enums/IconEnum';
-import { capitalize } from '@/utils/formatString';
+import { capitalize, truncate } from '@/utils/formatString';
 
 const props = defineProps<{
     source: string;
@@ -36,13 +36,9 @@ const props = defineProps<{
 
 const isBullish = computed(() => props.sentiment >= 50);
 
-const isSourceTruncated = ref(false);
+const maxSourceLength = 14;
+const isSourceTruncated = computed(() => props.source.length > maxSourceLength);
 const formatSource = (source: string) => {
-    let res = source;
-    if (source.length > 14) {
-        res = `${source.substring(0, 14)}...`;
-        isSourceTruncated.value = true;
-    }
-    return capitalize(res);
+    return capitalize(truncate(source, maxSourceLength));
 };
 </script>

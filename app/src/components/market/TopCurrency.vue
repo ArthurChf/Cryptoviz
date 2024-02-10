@@ -5,8 +5,8 @@
                 <AppImage :name="currency.image" size="65" class="rounded-full shadow-[#000] shadow-md" />
                 <div class="flex flex-col gap-1">
                     <Transition mode="out-in" :name="TransitionEnum.FADE_SLIDE">
-                        <AppTooltip :text="currency.name" position="top" :show="isCurrencyTruncated">
-                            <h3 class="text-3xl font-bold text-title" :key="currency.name">{{ formatCurrency(currency.name) }}</h3>
+                        <AppTooltip :text="currency.name" position="top" :show="isCurrencyNameTruncated">
+                            <h3 class="text-3xl font-bold text-title" :key="currency.name">{{ formatCurrencyName(currency.name) }}</h3>
                         </AppTooltip>
                     </Transition>
                     <Transition mode="out-in" :name="TransitionEnum.FADE_SLIDE">
@@ -43,22 +43,18 @@
 import AppImage from '@/components/AppImage.vue';
 import AppTooltip from '@/components/AppTooltip.vue';
 import { TransitionEnum } from '@/enums/TransitionEnum';
-import { ref } from 'vue';
+import { computed } from 'vue';
 import type { TopCurrency } from '@/interfaces/TopCurrency';
+import { truncate } from '@/utils/formatString';
 
-defineProps<{
+const props = defineProps<{
     currency: TopCurrency;
     index: number;
 }>();
 
-const isCurrencyTruncated = ref(false);
-
-const formatCurrency = (source: string) => {
-    let res = source;
-    if (source.length > 14) {
-        res = `${source.substring(0, 14)}...`;
-        isCurrencyTruncated.value = true;
-    }
-    return res;
+const maxCurrencyNameLength = 14;
+const isCurrencyNameTruncated = computed(() => props.currency.name.length > maxCurrencyNameLength);
+const formatCurrencyName = (currency: string) => {
+    return truncate(currency, maxCurrencyNameLength);
 };
 </script>

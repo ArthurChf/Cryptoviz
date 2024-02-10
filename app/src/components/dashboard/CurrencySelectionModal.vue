@@ -42,6 +42,7 @@ import { useCurrencyStore } from '@/stores/currencyStore';
 import { ref } from 'vue';
 import type { Currency } from '@/interfaces/Currency';
 import { IconEnum } from '@/enums/IconEnum';
+import { truncate } from '@/utils/formatString';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
@@ -79,9 +80,8 @@ const selectCurrency = (currency: Currency) => {
     if (!isSelectedCurrency(currency)) currencyStore.setSelectedCurrency(currency);
 };
 
+const maxCurrencyLength = 9;
 const formatCurrency = (currency: string) => {
-    let res = currency;
-    if (currency.length > 9) res = `${currency.substring(0, 9)}...`;
-    return res;
+    return truncate(currency, maxCurrencyLength);
 };
 </script>
