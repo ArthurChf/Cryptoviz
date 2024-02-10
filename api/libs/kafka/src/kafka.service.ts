@@ -55,7 +55,7 @@ export class KafkaService {
                     {
                         name: 'retention.ms',
                         // 5 minutes
-                        value: '300000'
+                        value: '60000'
                     }
                 ]
             }]
