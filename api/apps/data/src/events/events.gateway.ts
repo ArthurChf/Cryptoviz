@@ -16,7 +16,7 @@ import { concatMap } from 'rxjs/operators';
 
 @WebSocketGateway(8080, {
     cors: {
-        origin: '*'
+        origin: 'http://localhost:5173'
     }
 })
 export class EventsGateway {
@@ -53,11 +53,13 @@ export class EventsGateway {
     @SubscribeMessage('config:update_currency')
     updateCurrency(@MessageBody() currency: string, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, currency);
+        this.sendResponse(client, 'config:update_currency', 'UPDATE_CURRENCY_OK');
     }
 
     @SubscribeMessage('config:update_period')
     updatePeriod(@MessageBody() period: PeriodEnum, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, null, period);
+        this.sendResponse(client, 'config:update_period', 'UPDATE_PERIOD_OK');
     }
 
     @SubscribeMessage('crypto:get_currency_data')
@@ -71,7 +73,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_price_trend')
     getPriceTrend(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getPriceTrend();
+            const res = this.dataService.getCurrencyPriceTrend();
             this.sendResponse(client, 'crypto:get_price_trend', res);
         }, client.id);
     }
@@ -79,7 +81,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_transactions')
     getTransactions(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getTransactions();
+            const res = this.dataService.getCurrencyTransactions();
             this.sendResponse(client, 'crypto:get_transactions', res);
         }, client.id);
     }
@@ -96,7 +98,7 @@ export class EventsGateway {
     getNews(@ConnectedSocket() client: Socket) {
         // query only the last one found
         this.loopData(async () => {
-            const res = this.dataService.getNews();
+            const res = this.dataService.getCurrencyNews();
             this.sendResponse(client, 'crypto:get_news', res);
         }, client.id);
     }
