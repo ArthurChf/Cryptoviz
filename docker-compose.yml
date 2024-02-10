@@ -51,7 +51,7 @@ services:
       - --rpc-addr broker-1:33145
       - --advertise-rpc-addr broker-1:33145
       - --smp 1
-      - --memory 1G
+      - --memory 2G
       - --mode dev-container
       - --default-log-level=debug
     volumes:
@@ -76,7 +76,7 @@ services:
       - --rpc-addr broker-2:33145
       - --advertise-rpc-addr broker-2:33145
       - --smp 1
-      - --memory 1G
+      - --memory 2G
       - --mode dev-container
       - --default-log-level=debug
       - --seeds broker-1:33145
@@ -182,9 +182,9 @@ networks:
     driver: bridge
 
 volumes:
-  broker-1: null
-  broker-2: null
-  broker-3: null
-  mongo: null
-  clickhouse: null
-  python-scripts: null
+  broker-1:
+  broker-2:
+  broker-3:
+  mongo:
+  clickhouse:
+  python-scripts:
