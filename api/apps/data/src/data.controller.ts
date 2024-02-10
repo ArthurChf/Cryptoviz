@@ -11,9 +11,22 @@ export class DataController {
         };
     }
 
+    @Get('/currencies')
+    getAllCurrencies() {
+        // (optional query search)
+        const res = this.dataService.getAllCurrencies();
+        return this.sendResponse(res);
+    }
+
     @Get('/currency/data')
     getCurrencyData() {
         const res = this.dataService.getCurrencyData();
+        return this.sendResponse(res);
+    }
+
+    @Get('/currency/price-trend')
+    getCurrencyPriceTrend() {
+        const res = this.dataService.getCurrencyPriceTrend();
         return this.sendResponse(res);
     }
 
@@ -24,15 +37,9 @@ export class DataController {
         return this.sendResponse(res);
     }
 
-    @Get('/currency/price-trend')
-    getCurrencyPriceTrend() {
-        const res = this.dataService.getCurrencyPriceTrend();
-        return this.sendResponse(res);
-    }
-
-    @Get('/currency/sentiment')
+    @Get('/currency/fear-and-greed')
     getCurrencyFearAndGreed() {
-        const res = this.dataService.getFearAndGreed();
+        const res = this.dataService.getCurrencyFearAndGreed();
         return this.sendResponse(res);
     }
 
@@ -43,29 +50,28 @@ export class DataController {
         return this.sendResponse(res);
     }
 
-    @Get('/currencies/data')
-    getCurrenciesData() {
-        const res = this.dataService.getAllCurrenciesData();
-        return this.sendResponse(res);
-    }
-
     @Get('/currencies/top')
     getTopCurrencies() {
         const res = this.dataService.getTopCurrencies();
         return this.sendResponse(res);
     }
 
+    @Get('/currencies/data')
+    getAllCurrenciesData() {
+        const res = this.dataService.getAllCurrenciesData();
+        return this.sendResponse(res);
+    }
+
     @Get('/currencies/news')
-    getCurrenciesNews() {
+    getAllCurrenciesNews() {
         // param max
         const res = this.dataService.getAllCurrenciesNews();
         return this.sendResponse(res);
     }
 
-    @Get('/currencies')
-    getAllCurrencies() {
-        // (optional query search)
-        const res = this.dataService.getAllCurrencies();
+    @Get('/currencies/news-trending')
+    getNewsTrendingCurrencies() {
+        const res = this.dataService.getNewsTrendingCurrencies();
         return this.sendResponse(res);
     }
 }
