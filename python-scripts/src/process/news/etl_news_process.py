@@ -1,7 +1,7 @@
 from src.process.etl_process import ETLProcess
 from src.config.clickhouse_config import ClickHouseConfig
 from src.process.news.etl_news_transform import transform_news_data
-from utils.env_utils import get_env
+from src.common.env_utils import get_env
 
 class EtlNewsProcess(ETLProcess):
     def __init__(self, topic):

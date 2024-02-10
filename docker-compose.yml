@@ -8,10 +8,12 @@ services:
     volumes:
       - mongo:/data/db
     ports:
-      - 27017:27017
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+      
     
   clickhouse:
     container_name: clickhouse
@@ -173,6 +175,7 @@ services:
     depends_on:
       - broker-ui
       - clickhouse
+      - mongo
     
 networks:
   broker_network:

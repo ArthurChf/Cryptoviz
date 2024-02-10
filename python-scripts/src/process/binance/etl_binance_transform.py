@@ -1,5 +1,5 @@
 from src.models.binance_data import CryptoData
-from utils.cryptodata import crypto_pairs
+from src.common.cryptodata import crypto_pairs
 
 def transform_binance_data(data):
     symbol = str(data['symbol']).lower()
