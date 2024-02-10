@@ -119,5 +119,49 @@ const selectCurrency = (currency: CurrencyData) => {
     if (!isSelectedCurrency(currency)) currencyStore.setSelectedCurrency(currency);
 };
 
-const updateData = () => {};
+const updateData = () => {
+    const newData = [
+        {
+            id: 3,
+            image: 'currencies/matic.webp',
+            name: 'Polygon',
+            symbol: 'MATIC',
+            priceChangeRate: -1.44,
+            price: '$376',
+            volume: '1M',
+            priceHigh: '$12',
+            priceLow: '3$',
+            transactions: '1M'
+        }
+    ];
+    newData.forEach((crypto, index) => {
+        const obj = {
+            id: crypto.id,
+            image: crypto.image,
+            name: crypto.name,
+            symbol: crypto.symbol,
+            priceChangeRate: crypto.priceChangeRate,
+            price: crypto.price,
+            volume: crypto.volume,
+            priceHigh: crypto.priceHigh,
+            priceLow: crypto.priceLow,
+            transactions: crypto.transactions
+        };
+
+        if (index > currencyData.value.length - 1) {
+            currencyData.value.push(obj);
+        } else {
+            currencyData.value[index]!.id = obj.id;
+            currencyData.value[index]!.image = obj.image;
+            currencyData.value[index]!.name = obj.name;
+            currencyData.value[index]!.symbol = obj.symbol;
+            currencyData.value[index]!.priceChangeRate = obj.priceChangeRate;
+            currencyData.value[index]!.price = obj.price;
+            currencyData.value[index]!.volume = obj.volume;
+            currencyData.value[index]!.priceHigh = obj.priceHigh;
+            currencyData.value[index]!.priceLow = obj.priceLow;
+            currencyData.value[index]!.transactions = obj.transactions;
+        }
+    });
+};
 </script>
