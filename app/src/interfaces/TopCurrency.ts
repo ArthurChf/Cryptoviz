@@ -4,6 +4,6 @@ export interface TopCurrency extends Currency {
     data: {
         price: string;
         volume: string;
-        changeRate: string;
+        priceChangeRate: string;
     };
 }

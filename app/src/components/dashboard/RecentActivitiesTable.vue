@@ -9,7 +9,7 @@
             </tr>
             <tr v-for="transaction in lastTransactions" :key="transaction.id" class="transition duration-200 hover:bg-background">
                 <td class="flex items-center gap-4 py-5 pl-3 font-medium text-subtitle">
-                    <AppImage :name="currencyStore.getCurrency(transaction.currencySymbol).image" size="35" />
+                    <AppImage :name="transaction.currencyImage" size="35" />
                     <span>{{ transaction.currencyName }}</span>
                 </td>
                 <td class="text-left py-5 font-medium text-title">{{ transaction.amount }}</td>
@@ -25,15 +25,13 @@ import { useAutoAnimate } from '@formkit/auto-animate/vue';
 import AppImage from '@/components/AppImage.vue';
 import type { Transaction } from '@/interfaces/Transaction';
 import { ref } from 'vue';
-import { useCurrencyStore } from '@/stores/currencyStore';
-
-const currencyStore = useCurrencyStore();
 
 const [recentActivitiesTable] = useAutoAnimate();
 
 const lastTransactions = ref<Transaction[]>([
     {
         currencySymbol: 'BTC',
+        currencyImage: 'currencies/btc.webp',
         currencyName: 'Bitcoin',
         amount: '$659.10',
         id: '1241',
@@ -41,6 +39,7 @@ const lastTransactions = ref<Transaction[]>([
     },
     {
         currencySymbol: 'ADA',
+        currencyImage: 'currencies/ada.webp',
         currencyName: 'Cardano',
         amount: '$37.56',
         id: '1242',
@@ -48,6 +47,7 @@ const lastTransactions = ref<Transaction[]>([
     },
     {
         currencySymbol: 'UNI',
+        currencyImage: 'currencies/uni.webp',
         currencyName: 'Uniswap',
         amount: '$438.03',
         id: '1243',
@@ -55,6 +55,7 @@ const lastTransactions = ref<Transaction[]>([
     },
     {
         currencySymbol: 'ETH',
+        currencyImage: 'currencies/eth.webp',
         currencyName: 'Ethereum',
         amount: '$67.44',
         id: '1244',

@@ -2,7 +2,7 @@
     <AppContainer class="!p-0 gap-6 overflow-hidden">
         <h2 class="mx-7 mt-6 text-2xl text-title font-bold">News Feed</h2>
         <div v-if="selectedCurrency.name" class="flex flex-col" ref="newsFeedPosts">
-            <NewsPost v-for="news in newsList" :key="news.id" :news="news" />
+            <NewsPost v-for="(news, id) in newsList" :key="id" :news="news" />
         </div>
         <AppLoader v-else class="mx-7 mb-6 self-center stroke-subtitle" size="35" />
     </AppContainer>
@@ -25,7 +25,6 @@ const [newsFeedPosts] = useAutoAnimate();
 
 const newsList = ref<News[]>([
     {
-        id: '1',
         source: 'coinjournal',
         sentiment: 56,
         title: `This title is too long but I don't really care because it is well handled by my Vue app`,
@@ -35,7 +34,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '2',
         source: 'cryptopotato',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -45,7 +43,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '3',
         source: 'ethereumworldnews',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -55,7 +52,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '4',
         source: 'cryptopolitan',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -65,7 +61,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '5',
         source: 'cryptoslate',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -76,12 +71,8 @@ const newsList = ref<News[]>([
     }
 ]);
 
-
-const lastId = ref(1245);
-
 const appendNews = () => {
     newsList.value.unshift({
-        id: `${lastId.value++}`,
         source: 'cryptoslate',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',

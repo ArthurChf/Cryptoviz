@@ -26,7 +26,7 @@
             <div class="flex flex-col gap-2">
                 <h4 class="text-title text-md font-semibold">24h Price Change</h4>
                 <Transition mode="out-in" :name="TransitionEnum.FADE">
-                    <span class="text-subtitle font-semibold" :key="currency.data.changeRate">{{ currency.data.changeRate }}</span>
+                    <span class="text-subtitle font-semibold" :key="currency.data.priceChangeRate">{{ currency.data.priceChangeRate }}</span>
                 </Transition>
             </div>
             <div class="flex flex-col gap-2 items-end">

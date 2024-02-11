@@ -14,13 +14,6 @@ export const useCurrencyStore = defineStore('currency', {
         setSelectedCurrency(currency: Currency) {
             Object.assign(this.selectedCurrency, currency);
             localStorage.setItem('selected_currency', JSON.stringify(currency));
-        },
-        getCurrency(currencySymbol: string): Currency {
-            return this.currencies.find((currency) => currency.symbol === currencySymbol) ?? {
-                name: '',
-                symbol: '',
-                image: ''
-            };
         }
     }
 });

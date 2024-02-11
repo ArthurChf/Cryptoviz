@@ -23,7 +23,7 @@
 import AppImage from '@/components/AppImage.vue';
 import AppTooltip from '@/components/AppTooltip.vue';
 import AppIcon from '@/components/AppIcon.vue';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { capitalize, truncate } from '@/utils/formatString';
 

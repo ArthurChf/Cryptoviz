@@ -66,10 +66,6 @@ import AppIcon from '@/components/AppIcon.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
 
-defineProps<{
-    search: string;
-}>();
-
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
 

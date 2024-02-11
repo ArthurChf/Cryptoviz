@@ -26,7 +26,7 @@ const topCurrencies = ref<TopCurrency[]>([
         name: 'Bitcoin',
         symbol: 'BTC',
         data: {
-            changeRate: '1.33%',
+            priceChangeRate: '1.33%',
             price: '$1500',
             volume: '2M'
         }
@@ -36,7 +36,7 @@ const topCurrencies = ref<TopCurrency[]>([
         name: 'Ethereum',
         symbol: 'ETH',
         data: {
-            changeRate: '-0.54%',
+            priceChangeRate: '-0.54%',
             price: '$6',
             volume: '1K'
         }
@@ -46,7 +46,7 @@ const topCurrencies = ref<TopCurrency[]>([
         name: 'Polygon',
         symbol: 'MATIC',
         data: {
-            changeRate: '3.72%',
+            priceChangeRate: '3.72%',
             price: '$2',
             volume: '5K'
         }

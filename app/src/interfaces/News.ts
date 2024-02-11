@@ -1,5 +1,4 @@
 export interface News {
-    id: string;
     source: string;
     sentiment: number;
     title: string;

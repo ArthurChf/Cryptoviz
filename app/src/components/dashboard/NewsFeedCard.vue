@@ -27,7 +27,7 @@
     <AppContainer class="!px-4 !py-5">
         <h2 class="px-3 text-2xl text-title font-bold">News Feed</h2>
         <div v-if="selectedCurrency.name" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
-            <NewsPost v-for="news in newsList" :key="news.id" :sentiment="news.sentiment" :date="news.date" :source="news.source" :title="news.title" @click="selectNews(news)" />
+            <NewsPost v-for="(news, newsId) in newsList" :key="newsId" :sentiment="news.sentiment" :date="news.date" :source="news.source" :title="news.title" @click="selectNews(news)" />
         </div>
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />
     </AppContainer>
@@ -55,7 +55,6 @@ const [newsFeedPosts] = useAutoAnimate();
 
 const newsList = ref<News[]>([
     {
-        id: '1',
         source: 'coinjournal',
         sentiment: 56,
         title: `This title is too long but I don't really care because it is well handled by my Vue app`,
@@ -65,7 +64,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '2',
         source: 'cryptopotato',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -75,7 +73,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '3',
         source: 'ethereumworldnews',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -85,7 +82,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '4',
         source: 'cryptopolitan',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -95,7 +91,6 @@ const newsList = ref<News[]>([
         link: 'http://google.fr'
     },
     {
-        id: '5',
         source: 'cryptoslate',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -107,12 +102,10 @@ const newsList = ref<News[]>([
 ]);
 
 
-const lastId = ref(1245);
 const maxDisplayedNews = 30;
 
 const appendNews = () => {
     newsList.value.unshift({
-        id: `${lastId.value++}`,
         source: 'cryptoslate',
         sentiment: 12,
         title: 'Lorem ipsum dolor sit amet',
@@ -126,7 +119,6 @@ const appendNews = () => {
 
 const isNewsDetailOpened = ref(false);
 const selectedNews = reactive<News>({
-    id: '',
     source: '',
     sentiment: 0,
     title: '',
