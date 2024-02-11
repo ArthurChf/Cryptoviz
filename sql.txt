@@ -1,3 +1,10 @@
 CREATE FUNCTION formatNumber AS(x) -> if(toFloat64(x) <= 0.1, if(toFloat64(x) = 0, '0', x), replaceAll(toString(toDecimal64(x, 2)), '.00', ''));
 CREATE FUNCTION dollar AS(s) -> concat('$', s);
 CREATE FUNCTION imageUrl AS(s) -> concat('currencies/', lower(s), '.webp');
+
+SELECT imageUrl(coin) AS image, name, coin AS symbol
+FROM crypto
+WHERE symbol ILIKE '%btc%'
+OR name ILIKE '%btc%'
+GROUP BY symbol, coin
+ORDER BY name;
