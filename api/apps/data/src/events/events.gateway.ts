@@ -13,6 +13,7 @@ import { Socket } from '@/apps/data/src/events/socket.interface';
 import { PeriodEnum } from '@/apps/data/src/events/period.enum';
 import { interval } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { ClickHouseNewsService } from '../clickhouse/clickhouse-news.service';
 
 @WebSocketGateway(8080, {
     cors: {
@@ -22,7 +23,8 @@ import { concatMap } from 'rxjs/operators';
 export class EventsGateway {
     constructor(
         private readonly dataService: DataService,
-        private readonly memoryService: MemoryService
+        private readonly memoryService: MemoryService,
+        private readonly clickhouseNewsService: ClickHouseNewsService
     ) { }
 
     @WebSocketServer()
@@ -89,7 +91,8 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_fear_and_greed')
     getCurrencyFearAndGreed(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getCurrencyFearAndGreed();
+            const clientCurrency = this.memoryService.getClientSettings(client.id).currency;
+            const res = await this.clickhouseNewsService.getCurrencyFearAndGreed(clientCurrency);
             this.sendResponse(client, 'crypto:get_currency_fear_and_greed', res);
         }, client.id);
     }
