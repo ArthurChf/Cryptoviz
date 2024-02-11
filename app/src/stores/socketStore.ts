@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { HttpOptions } from '@/interfaces/HttpOptions';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
-import type { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 import { createSocket } from '@/utils/createSocket';
 import { useRequest } from '@/composables/useRequest';
 import { useAppStore } from '@/stores/appStore';
@@ -58,21 +58,37 @@ export const useSocketStore = defineStore('socket', {
                     console.error('Error handling message', error);
                 }
             });
+
+            const currencyStore = useCurrencyStore();
+            const appStore = useAppStore();
+            this.addEvent(null, {
+                eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,
+                data: currencyStore.selectedCurrency.symbol
+            }, (response: string) => {
+                if (response === 'UPDATE_CURRENCY_OK') console.log('Selected currency init');
+            });
+            this.addEvent(null, {
+                eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,
+                data: appStore.selectedPeriod
+            }, (response: string) => {
+                if (response === 'UPDATE_PERIOD_OK') console.log('Selected period init');
+            });
         },
         async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions, callback: (data: T) => void) {
             if (!this.requestedEvents.has(socketOptions.eventName)) {
                 this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
 
                 if (httpOptions) {
-                    const { routeName, queryParams } = httpOptions;
+                    const { routeName } = httpOptions;
                     const currencyStore = useCurrencyStore();
                     const appStore = useAppStore();
 
-                    const query = {
+                    let query = {
                         currency: currencyStore.selectedCurrency.symbol,
-                        period: appStore.selectedPeriod,
-                        ...queryParams
+                        period: appStore.selectedPeriod
                     };
+                    if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
+
                     const response = await useRequest<T>(routeName, { query, method: 'GET' });
                     const action = this.requestedEvents.get(socketOptions.eventName)!;
                     action(response);
