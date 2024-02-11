@@ -13,27 +13,27 @@ export class DataController {
     }
 
     @Get('/currencies')
-    getAllCurrencies() {
-        const res = this.databaseService.getAllCurrencies();
+    async getAllCurrencies() {
+        const res = await this.databaseService.getAllCurrencies();
         return this.sendResponse(res);
     }
 
     @Get('/currency/data')
-    getCurrencyData(@Query() queryParams: AppPreferences) {
+    async getCurrencyData(@Query() queryParams: AppPreferences) {
         const { currency: symbol } = queryParams;
-        const res = this.databaseService.getCurrencyData(symbol);
+        const res = await this.databaseService.getCurrencyData(symbol);
         return this.sendResponse(res);
     }
 
     @Get('/currency/price-trend')
-    getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
-        const res = this.databaseService.getCurrencyPriceTrend();
+    async getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyPriceTrend();
         return this.sendResponse(res);
     }
 
     @Get('/currency/transactions')
-    getCurrencyTransactions(@Query() queryParams: AppPreferences) {
-        const res = this.databaseService.getCurrencyTransactions();
+    async getCurrencyTransactions(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyTransactions();
         return this.sendResponse(res);
     }
 
@@ -45,32 +45,32 @@ export class DataController {
     }
 
     @Get('/currency/news')
-    getCurrencyNews(@Query() queryParams: AppPreferences) {
-        const res = this.databaseService.getCurrencyNews();
+    async getCurrencyNews(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyNews();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/top')
-    getTopCurrencies() {
-        const res = this.databaseService.getTopCurrencies();
+    async getTopCurrencies() {
+        const res = await this.databaseService.getTopCurrencies();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/data')
-    getAllCurrenciesData() {
-        const res = this.databaseService.getAllCurrenciesData();
+    async getAllCurrenciesData() {
+        const res = await this.databaseService.getAllCurrenciesData();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/news')
-    getAllCurrenciesNews() {
-        const res = this.databaseService.getAllCurrenciesNews();
+    async getAllCurrenciesNews() {
+        const res = await this.databaseService.getAllCurrenciesNews();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/news-trending')
-    getNewsTrendingCurrencies() {
-        const res = this.databaseService.getNewsTrendingCurrencies();
+    async getNewsTrendingCurrencies() {
+        const res = await this.databaseService.getNewsTrendingCurrencies();
         return this.sendResponse(res);
     }
 }

@@ -23,8 +23,8 @@ export class DatabaseService {
                         LIMIT 1`;
 
         try {
-            const res = await this.cryptovizClickhouseServer.queryPromise(query);
-            console.log(res);
+            const [res] = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
         } catch (error) {
             console.error('Error executing query: ', error);
         }
