@@ -1,5 +1,5 @@
 from src.models.binance_data import CryptoData
-from src.common.cryptodata import crypto_pairs
+from src.common.cryptodata import crypto_pairs, currenciesNames
 
 def transform_binance_data(data):
     symbol = str(data['symbol']).lower()
@@ -9,10 +9,11 @@ def transform_binance_data(data):
         print(f"Pair not found for {data['symbol']}")
         return
     coin = str(pair[0]).upper()
+    name = currenciesNames[coin]
     reference = str(pair[1]).upper()
     crypto = CryptoData(
         data['symbol'],
-        data['name'],
+        name,
         coin,
         reference,
         eventTime,

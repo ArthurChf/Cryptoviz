@@ -1,5 +1,3 @@
-import { getCurrencyName } from '@/libs/utils/src';
-
 interface BinanceTickerDto {
   e: string;
   E: number;
@@ -30,7 +28,6 @@ export interface BinanceTicker {
     eventType: string;
     eventTime: number;
     symbol: string;
-    name: string;
     priceChange: string;
     priceChangPercent: string;
     weightedAveragePrice: string;
@@ -56,7 +53,6 @@ export interface BinanceTicker {
 export function tickerMapper(data: BinanceTickerDto): BinanceTicker {
     return {
         symbol: data.s,
-        name: getCurrencyName(data.s),
         eventType: data.e,
         eventTime: data.E,
         statisticsOpenTime: data.O,

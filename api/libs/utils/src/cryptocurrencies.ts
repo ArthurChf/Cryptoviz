@@ -35,7 +35,3 @@ const currenciesNames = {
 export function getPairs() : string[] {
     return cryptocurrencies.map((crypto) => `${crypto}usdt`);
 }
-
-export function getCurrencyName(symbol: string): string {
-    return currenciesNames[symbol.toUpperCase()] ?? '';
-}
