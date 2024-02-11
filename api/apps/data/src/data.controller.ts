@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { DataService } from '@/apps/data/src/data.service';
+import { ClickHouseNewsService } from './clickhouse/clickhouse-news.service';
 
 @Controller()
 export class DataController {
-    constructor(private readonly dataService: DataService) { }
+    constructor(private readonly dataService: DataService, private readonly clickhouseNewsService: ClickHouseNewsService) { }
 
     sendResponse(data: unknown) {
         return {
@@ -38,8 +39,8 @@ export class DataController {
     }
 
     @Get('/currency/fear-and-greed')
-    getCurrencyFearAndGreed() {
-        const res = this.dataService.getCurrencyFearAndGreed();
+    async getCurrencyFearAndGreed(@Query('symbol') symbol: string) {
+        const res = await this.clickhouseNewsService.getCurrencyFearAndGreed(symbol);
         return this.sendResponse(res);
     }
 
