@@ -4,6 +4,8 @@ import type { SocketOptions } from '@/interfaces/SocketOptions';
 import type { SocketEventEnum } from '@/enums/SocketEventEnum';
 import { createSocket } from '@/utils/createSocket';
 import { useRequest } from '@/composables/useRequest';
+import { useAppStore } from '@/stores/appStore';
+import { useCurrencyStore } from '@/stores/currencyStore';
 
 export const useSocketStore = defineStore('socket', {
     state: () => ({
@@ -63,7 +65,15 @@ export const useSocketStore = defineStore('socket', {
 
                 if (httpOptions) {
                     const { routeName, queryParams } = httpOptions;
-                    const response = await useRequest<T>(routeName, { query: queryParams, method: 'GET' });
+                    const currencyStore = useCurrencyStore();
+                    const appStore = useAppStore();
+
+                    const query = {
+                        currency: currencyStore.selectedCurrency.symbol,
+                        period: appStore.selectedPeriod,
+                        ...queryParams
+                    };
+                    const response = await useRequest<T>(routeName, { query, method: 'GET' });
                     const action = this.requestedEvents.get(socketOptions.eventName)!;
                     action(response);
                 }
