@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
+import { AppPreferences } from '@/apps/data/src/app-preferences.interface';
 
 @Controller()
 export class DataController {
@@ -13,39 +14,38 @@ export class DataController {
 
     @Get('/currencies')
     getAllCurrencies() {
-        // (optional query search)
         const res = this.databaseService.getAllCurrencies();
         return this.sendResponse(res);
     }
 
     @Get('/currency/data')
-    getCurrencyData() {
-        const res = this.databaseService.getCurrencyData();
+    getCurrencyData(@Query() queryParams: AppPreferences) {
+        const { currency: symbol } = queryParams;
+        const res = this.databaseService.getCurrencyData(symbol);
         return this.sendResponse(res);
     }
 
     @Get('/currency/price-trend')
-    getCurrencyPriceTrend() {
+    getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
         const res = this.databaseService.getCurrencyPriceTrend();
         return this.sendResponse(res);
     }
 
     @Get('/currency/transactions')
-    getCurrencyTransactions() {
-        // param max
+    getCurrencyTransactions(@Query() queryParams: AppPreferences) {
         const res = this.databaseService.getCurrencyTransactions();
         return this.sendResponse(res);
     }
 
     @Get('/currency/fear-and-greed')
-    async getCurrencyFearAndGreed(@Query('symbol') symbol: string) {
+    async getCurrencyFearAndGreed(@Query() queryParams: AppPreferences) {
+        const { currency: symbol } = queryParams;
         const res = await this.databaseService.getCurrencyFearAndGreed(symbol);
         return this.sendResponse(res);
     }
 
     @Get('/currency/news')
-    getCurrencyNews() {
-        // param max
+    getCurrencyNews(@Query() queryParams: AppPreferences) {
         const res = this.databaseService.getCurrencyNews();
         return this.sendResponse(res);
     }
@@ -64,7 +64,6 @@ export class DataController {
 
     @Get('/currencies/news')
     getAllCurrenciesNews() {
-        // param max
         const res = this.databaseService.getAllCurrenciesNews();
         return this.sendResponse(res);
     }
