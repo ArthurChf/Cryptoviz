@@ -10,6 +10,7 @@ class ClickHouseConfigTest(unittest.TestCase):
         clickhouse_config = ClickHouseConfig('clickhouse', 8123, 'epitech', 'admin', 'cryptoviz')
         data = (
             'BTCUSDT',
+            'Bitcoin',
             'BTC',
             'USDT',
             1754314812,

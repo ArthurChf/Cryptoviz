@@ -24,7 +24,7 @@ const currenciesNames = {
     'BTC': 'Bitcoin',
     'ETH': 'Ethereum',
     'SOL': 'Solana',
-    'XRP': 'XRP',
+    'XRP': 'Ripple',
     'LINK': 'Chainlink',
     'PEPE': 'Pepe Coin',
     'TRX': 'TRON',
