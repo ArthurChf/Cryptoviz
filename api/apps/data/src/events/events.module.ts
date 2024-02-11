@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MemoryService } from '@/apps/data/src/memory/memory.sevice';
-import { DataService } from '@/apps/data/src/data.service';
 import { EventsGateway } from '@/apps/data/src/events/events.gateway';
-import { ClickhouseModule } from '@/apps/data/src/clickhouse/clickhouse.module';
+import { DatabaseModule } from '@/apps/data/src/database/database.module';
+import { DatabaseService } from '@/apps/data/src/database/database.service';
 
 @Module({
-    imports: [ClickhouseModule],
-    providers: [DataService, MemoryService, EventsGateway]
+    imports: [DatabaseModule],
+    providers: [MemoryService, DatabaseService, EventsGateway]
 })
 export class EventsModule {}

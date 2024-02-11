@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClickHouseClient } from '@depyronick/nestjs-clickhouse';
 
 @Injectable()
-export class ClickHouseTestService {
+export class DatabaseTestService {
     constructor(@Inject('CRYPTOVIZ_CLICKHOUSE_SERVER') private readonly cryptovizClickHouseServer: ClickHouseClient) {}
 
     async testConnection() {

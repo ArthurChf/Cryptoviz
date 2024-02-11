@@ -2,8 +2,24 @@ import { ClickHouseClient } from '@depyronick/nestjs-clickhouse';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ClickHouseNewsService {
+export class DatabaseService {
     constructor(@Inject('CRYPTOVIZ_CLICKHOUSE_SERVER') private readonly cryptovizClickhouseServer: ClickHouseClient) {}
+
+    async getAllCurrencies() {
+        return 'getAllCurrencies';
+    }
+
+    async getCurrencyData() {
+        return 'getCurrencyData';
+    }
+
+    async getCurrencyPriceTrend() {
+        return 'getCurrencyPriceTrend';
+    }
+
+    async getCurrencyTransactions() {
+        return 'getCurrencyTransactions';
+    }
 
     async getCurrencyFearAndGreed(symbol: string) {
         const query = `SELECT AVG(sentiment) AS sentiment
@@ -23,5 +39,25 @@ export class ClickHouseNewsService {
         } catch (error) {
             console.error('Error executing query: ', error);
         }
+    }
+
+    async getCurrencyNews() {
+        return 'getCurrencyNews';
+    }
+
+    async getTopCurrencies() {
+        return 'getTopCurrencies';
+    }
+
+    async getAllCurrenciesData() {
+        return 'getAllCurrenciesData';
+    }
+
+    async getAllCurrenciesNews() {
+        return 'getAllCurrenciesNews';
+    }
+
+    async getNewsTrendingCurrencies() {
+        return 'getNewsTrendingCurrencies';
     }
 }

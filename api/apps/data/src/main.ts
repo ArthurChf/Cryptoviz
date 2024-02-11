@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { WsAdapter } from '@nestjs/platform-ws';
-import { DataModule } from './data.module';
+import { DataModule } from '@/apps/data/src/data.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(DataModule);

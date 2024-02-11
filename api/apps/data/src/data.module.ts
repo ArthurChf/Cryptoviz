@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { DataController } from './data.controller';
-import { DataService } from './data.service';
+import { DataController } from '@/apps/data/src/data.controller';
+import { DatabaseService } from '@/apps/data/src/database/database.service';
 import { EventsModule } from '@/apps/data/src/events/events.module';
-import { ClickhouseModule } from './clickhouse/clickhouse.module';
+import { DatabaseModule } from '@/apps/data/src/database/database.module';
 
 @Module({
-    imports: [EventsModule, ClickhouseModule],
+    imports: [EventsModule, DatabaseModule],
     controllers: [DataController],
-    providers: [DataService]
+    providers: [DatabaseService]
 })
 export class DataModule {}
