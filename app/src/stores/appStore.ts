@@ -1,13 +1,14 @@
-import { PeriodSelectorEnum } from '@/enums/period-selector/PeriodSelectorEnum';
+import type { PeriodEnum } from '@/enums/PeriodEnum';
+import { getDefaultPeriod } from '@/utils/getDefaultPeriod';
 import { defineStore } from 'pinia';
 
 export const useAppStore = defineStore('app', {
     state: () => ({
-        selectedPeriod: PeriodSelectorEnum.ONE_DAY,
+        selectedPeriod: getDefaultPeriod(),
         displayedImagesCount: 0
     }),
     actions: {
-        selectPeriod(period: PeriodSelectorEnum): void {
+        selectPeriod(period: PeriodEnum) {
             this.selectedPeriod = period;
         }
     }
