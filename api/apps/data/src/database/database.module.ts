@@ -1,20 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabaseTestService } from '@/apps/data/src/database/database-test.service';
-import { ClickHouseModule as DatabaseConfigModule } from '@depyronick/nestjs-clickhouse';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
+import { DatabaseConfigModule } from '@/apps/data/src/database/database-config.module';
 
 @Module({
-    imports: [DatabaseConfigModule.register([
-        {
-            name: 'CRYPTOVIZ_CLICKHOUSE_SERVER',
-            host: 'localhost',
-            port: 8123,
-            username: 'epitech',
-            password: 'admin',
-            database: 'cryptoviz'
-        }
-    ])],
-    controllers: [],
+    imports: [DatabaseConfigModule],
     providers: [DatabaseTestService, DatabaseService],
     exports: [DatabaseTestService, DatabaseService]
 })
