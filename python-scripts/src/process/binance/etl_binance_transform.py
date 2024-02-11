@@ -12,6 +12,7 @@ def transform_binance_data(data):
     reference = str(pair[1]).upper()
     crypto = CryptoData(
         data['symbol'],
+        data['name'],
         coin,
         reference,
         eventTime,

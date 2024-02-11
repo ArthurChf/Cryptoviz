@@ -19,6 +19,7 @@ class ClickHouseConfig:
                                 CREATE TABLE crypto (
                                     id UUID DEFAULT generateUUIDv4(),
                                     symbol String,
+                                    name String,
                                     coin String,
                                     reference String,
                                     createdAt DateTime,
@@ -75,10 +76,10 @@ class ClickHouseConfig:
         self.ensure_table_exists(ClickHouseTableEnum.CRYPTO_DATA.value)
         query = """
                 INSERT INTO crypto (
-                    symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
+                    symbol, name, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
                     lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity
                 ) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
         return self.client.query(query, data)
 

@@ -1,4 +1,9 @@
 cryptocurrencies = [
+    'ada',
+    'avax',
+    'bnb',
+    'matic',
+    'uni',
     'btc',
     'eth',
     'sol',
@@ -11,6 +16,11 @@ cryptocurrencies = [
 ]
 
 cryptocurrencies_keys = {
+    'cardano': 'ada',
+    'avalanche': 'avax',
+    'binance': 'bnb',
+    'polygon': 'matic',
+    'uniswap': 'uni',
     'bitcoin': 'btc',
     'ethereum': 'eth',
     'solana': 'sol',
@@ -20,6 +30,11 @@ cryptocurrencies_keys = {
     'tron': 'trx',
     'floki': 'floki',
     'auction': 'auction',
+    'ada': 'ada',
+    'avax': 'avax',
+    'bnb': 'bnb',
+    'matic': 'matic',
+    'uni': 'uni',
     'btc': 'btc',
     'eth': 'eth',
     'sol': 'sol',

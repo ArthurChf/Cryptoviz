@@ -1,6 +1,7 @@
 class CryptoData:
-    def __init__(self, symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity):
+    def __init__(self, symbol, name, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity):
         assert symbol is not None and symbol != "", "Le symbole ne doit pas être null ou vide"
+        assert name is not None and name != "", "Le nom ne doit pas être null ou vide"
         assert coin is not None and coin != "", "La pièce ne doit pas être null ou vide"
         assert reference is not None and reference != "", "La référence ne doit pas être null ou vide"
         assert createdAt is not None and isinstance(createdAt, float), "createdAt doit être un float représentant un timestamp et non null"
@@ -14,6 +15,7 @@ class CryptoData:
         assert lastQuantity is not None and lastQuantity != "", "lastQuantity ne doit pas être null ou vide"
 
         self.symbol = symbol
+        self.name = name
         self.coin = coin
         self.reference = reference
         self.createdAt = createdAt
@@ -29,6 +31,7 @@ class CryptoData:
     def toTuple(self):
         return (
             self.symbol,
+            self.name,
             self.coin,
             self.reference,
             self.createdAt,
