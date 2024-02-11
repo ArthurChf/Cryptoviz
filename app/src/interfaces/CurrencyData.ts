@@ -1,7 +1,7 @@
 import type { Currency } from '@/interfaces/Currency';
 
 export interface CurrencyData extends Currency {
-    id: number;
+    id?: number;
     price: string;
     volume: string;
     priceLow: string;
