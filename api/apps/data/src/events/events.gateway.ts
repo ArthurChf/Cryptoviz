@@ -65,7 +65,8 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_data')
     getCurrencyData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.databaseService.getCurrencyData();
+            const selectedCurrency = this.memoryService.getClientSettings(client.id).currency;
+            const res = this.databaseService.getCurrencyData(selectedCurrency);
             this.sendResponse(client, 'crypto:get_currency_data', res);
         }, client.id);
     }

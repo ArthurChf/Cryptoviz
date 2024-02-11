@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PeriodEnum } from '@/apps/data/src/events/period.enum';
-import type { AppPreferences } from '@/apps/data/src/events/app-preferences.interface';
+import type { AppPreferences } from '@/apps/data/src/app-preferences.interface';
 import type { Subscription } from 'rxjs';
 
 @Injectable()

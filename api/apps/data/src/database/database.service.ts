@@ -9,8 +9,25 @@ export class DatabaseService {
         return 'getAllCurrencies';
     }
 
-    async getCurrencyData() {
-        return 'getCurrencyData';
+    async getCurrencyData(symbol: string) {
+        const query = `SELECT dollar(formatNumber(lastPrice))         as price,
+                            toFloat32(formatNumber(priceChange))       as growthRate,
+                            dollar(formatNumber(highPrice)) as priceHigh,
+                            dollar(formatNumber(lowPrice)) as priceLow,
+                            totalNumberOfTrades as totalTrades,
+                            dollar(formatNumber(totalTradedBaseAssetVolume)) as volume
+                        FROM crypto
+                        WHERE reference = 'USDT'
+                        AND coin = '${symbol}'
+                        ORDER BY createdAt DESC
+                        LIMIT 1`;
+
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            console.log(res);
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getCurrencyPriceTrend() {
