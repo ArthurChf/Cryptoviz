@@ -15,6 +15,23 @@ cryptocurrencies = [
     'auction'
 ]
 
+currenciesNames = {
+    'ADA': 'Cardano',
+    'AVAX': 'Avalanche',
+    'BNB': 'Binance Coin',
+    'MATIC': 'Polygon',
+    'UNI': 'Uniswap',
+    'BTC': 'Bitcoin',
+    'ETH': 'Ethereum',
+    'SOL': 'Solana',
+    'XRP': 'Ripple',
+    'LINK': 'Chainlink',
+    'PEPE': 'Pepe Coin',
+    'TRX': 'TRON',
+    'FLOKI': 'FLOKI',
+    'AUCTION': 'Bounce Token'
+};
+
 cryptocurrencies_keys = {
     'cardano': 'ada',
     'avalanche': 'avax',
