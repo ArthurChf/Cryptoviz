@@ -6,7 +6,7 @@ export class ClickHouseTestService {
     constructor(@Inject('CRYPTOVIZ_CLICKHOUSE_SERVER') private readonly cryptovizClickHouseServer: ClickHouseClient) {}
 
     async testConnection() {
-        return await this.cryptovizClickHouseServer.queryPromise('SELECT 1');
+        return await this.cryptovizClickHouseServer.ping();
     }
 
     async createTestTable() {

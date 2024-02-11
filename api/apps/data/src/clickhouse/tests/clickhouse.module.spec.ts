@@ -18,7 +18,7 @@ describe('ClickhouseModule', () => {
 
     it('should successfully connect to ClickHouse', async () => {
         const result = await clickhouseTestService.testConnection();
-        expect(result).toEqual([{ 1: 1 }]);
+        expect(result).toEqual(true);
     });
 
     it('should insert data into test table', async () => {
