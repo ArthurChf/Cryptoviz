@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClickHouseTestService } from './clickhouse-test.service';
 import { ClickHouseModule as ClickHouseConfigModule } from '@depyronick/nestjs-clickhouse';
+import { ClickHouseNewsService } from './clickhouse-news.service';
 
 @Module({
     imports: [ClickHouseConfigModule.register([
@@ -14,8 +15,8 @@ import { ClickHouseModule as ClickHouseConfigModule } from '@depyronick/nestjs-c
         }
     ])],
     controllers: [],
-    providers: [ClickHouseTestService],
-    exports: [ClickHouseTestService]
+    providers: [ClickHouseTestService, ClickHouseNewsService],
+    exports: [ClickHouseTestService, ClickHouseNewsService]
 })
 export class ClickhouseModule {
 }
