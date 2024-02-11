@@ -21,7 +21,7 @@ class ClickHouseConfig:
                                     symbol String,
                                     coin String,
                                     reference String,
-                                    createdAt DateTime64(3, 'Europe/London'),
+                                    createdAt DateTime,
                                     totalTradedBaseAssetVolume String,
                                     lastTradeId UInt64,
                                     priceChange String,
@@ -40,7 +40,7 @@ class ClickHouseConfig:
                                     title String,
                                     author String,
                                     link String,
-                                    createdAt DateTime64(3, 'Europe/London'),
+                                    createdAt DateTime,
                                     content String,
                                     sentiment Int32
                                 ) ENGINE = ReplacingMergeTree
@@ -78,7 +78,7 @@ class ClickHouseConfig:
                     symbol, coin, reference, createdAt, totalTradedBaseAssetVolume, lastTradeId, priceChange, 
                     lastPrice, highPrice, lowPrice, totalNumberOfTrades, lastQuantity
                 ) 
-                VALUES (%s, %s, %s, toDateTime64(%s, 3), %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
         return self.client.query(query, data)
 
@@ -117,7 +117,6 @@ class ClickHouseConfig:
 
         for row in news_values:
             placeholders = ["%s"] * len(row)
-            placeholders[4] = "toDateTime64(%s, 3)"
             values_placeholders.append("({})".format(", ".join(placeholders)))
 
         news_query += ", ".join(values_placeholders)
