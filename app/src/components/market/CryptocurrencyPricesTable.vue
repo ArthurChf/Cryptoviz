@@ -31,7 +31,7 @@
             </Transition>
             <Transition :name="TransitionEnum.FADE" mode="out-in">
                 <td class="py-5 font-medium text-subtitle" :key="currency.priceChangeRate">
-                    <span v-show="selectedCurrency.name" class="flex items-center gap-2 w-fit border rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currency.priceChangeRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']">{{ currency.priceChangeRate > 0 ? '+' : currency.priceChangeRate < 0 ? '-' : '' }}{{ currency.priceChangeRate }} %</span>
+                    <span v-if="selectedCurrency.name" class="flex items-center gap-2 w-fit border rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currency.priceChangeRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']">{{ currency.priceChangeRate > 0 ? '+' : currency.priceChangeRate < 0 ? '-' : '' }}{{ currency.priceChangeRate }} %</span>
                 </td>
             </Transition>
             <Transition :name="TransitionEnum.FADE" mode="out-in">

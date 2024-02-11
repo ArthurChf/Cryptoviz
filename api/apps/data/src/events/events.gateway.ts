@@ -6,14 +6,13 @@ import {
     ConnectedSocket
 } from '@nestjs/websockets';
 import { MemoryService } from '@/apps/data/src/memory/memory.sevice';
-import { DataService } from '@/apps/data/src/data.service';
 import { randomUUID } from 'crypto';
 import { Server } from 'ws';
 import { Socket } from '@/apps/data/src/events/socket.interface';
 import { PeriodEnum } from '@/apps/data/src/events/period.enum';
 import { interval } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-import { ClickHouseNewsService } from '../clickhouse/clickhouse-news.service';
+import { DatabaseService } from '@/apps/data/src/database/database.service';
 
 @WebSocketGateway(8080, {
     cors: {
@@ -22,9 +21,8 @@ import { ClickHouseNewsService } from '../clickhouse/clickhouse-news.service';
 })
 export class EventsGateway {
     constructor(
-        private readonly dataService: DataService,
         private readonly memoryService: MemoryService,
-        private readonly clickhouseNewsService: ClickHouseNewsService
+        private readonly databaseService: DatabaseService
     ) { }
 
     @WebSocketServer()
@@ -67,7 +65,8 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_data')
     getCurrencyData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getCurrencyData();
+            const selectedCurrency = this.memoryService.getClientSettings(client.id).currency;
+            const res = await this.databaseService.getCurrencyData(selectedCurrency);
             this.sendResponse(client, 'crypto:get_currency_data', res);
         }, client.id);
     }
@@ -75,7 +74,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_price_trend')
     getCurrencyPriceTrend(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getCurrencyPriceTrend();
+            const res = await this.databaseService.getCurrencyPriceTrend();
             this.sendResponse(client, 'crypto:get_currency_price_trend', res);
         }, client.id);
     }
@@ -83,7 +82,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_transactions')
     getCurrencyTransactions(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getCurrencyTransactions();
+            const res = await this.databaseService.getCurrencyTransactions();
             this.sendResponse(client, 'crypto:get_currency_transactions', res);
         }, client.id);
     }
@@ -92,7 +91,7 @@ export class EventsGateway {
     getCurrencyFearAndGreed(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
             const clientCurrency = this.memoryService.getClientSettings(client.id).currency;
-            const res = await this.clickhouseNewsService.getCurrencyFearAndGreed(clientCurrency);
+            const res = await this.databaseService.getCurrencyFearAndGreed(clientCurrency);
             this.sendResponse(client, 'crypto:get_currency_fear_and_greed', res);
         }, client.id);
     }
@@ -101,7 +100,7 @@ export class EventsGateway {
     getCurrencyNews(@ConnectedSocket() client: Socket) {
         // query only the last one found
         this.loopData(async () => {
-            const res = this.dataService.getCurrencyNews();
+            const res = await this.databaseService.getCurrencyNews();
             this.sendResponse(client, 'crypto:get_currency_news', res);
         }, client.id);
     }
@@ -109,7 +108,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_top_currencies')
     getTopCurrencies(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getTopCurrencies();
+            const res = await this.databaseService.getTopCurrencies();
             this.sendResponse(client, 'crypto:get_top_currencies', res);
         }, client.id);
     }
@@ -117,7 +116,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_all_currencies_data')
     getAllCurrenciesData(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getAllCurrenciesData();
+            const res = await this.databaseService.getAllCurrenciesData();
             this.sendResponse(client, 'crypto:get_all_currencies_data', res);
         }, client.id);
     }
@@ -125,7 +124,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_all_currencies_news')
     getAllCurrenciesNews(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getAllCurrenciesNews();
+            const res = await this.databaseService.getAllCurrenciesNews();
             this.sendResponse(client, 'crypto:get_all_currencies_news', res);
         }, client.id);
     }
@@ -133,7 +132,7 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_news_trending_currencies')
     getNewsTrendingCurrencies(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = this.dataService.getNewsTrendingCurrencies();
+            const res = await this.databaseService.getNewsTrendingCurrencies();
             this.sendResponse(client, 'crypto:get_news_trending_currencies', res);
         }, client.id);
     }

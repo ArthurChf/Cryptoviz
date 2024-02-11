@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { DataService } from '@/apps/data/src/data.service';
-import { ClickHouseNewsService } from './clickhouse/clickhouse-news.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { DatabaseService } from '@/apps/data/src/database/database.service';
+import { AppPreferences } from '@/apps/data/src/app-preferences.interface';
 
 @Controller()
 export class DataController {
-    constructor(private readonly dataService: DataService, private readonly clickhouseNewsService: ClickHouseNewsService) { }
+    constructor(private readonly databaseService: DatabaseService) { }
 
     sendResponse(data: unknown) {
         return {
@@ -13,66 +13,64 @@ export class DataController {
     }
 
     @Get('/currencies')
-    getAllCurrencies() {
-        // (optional query search)
-        const res = this.dataService.getAllCurrencies();
+    async getAllCurrencies() {
+        const res = await this.databaseService.getAllCurrencies();
         return this.sendResponse(res);
     }
 
     @Get('/currency/data')
-    getCurrencyData() {
-        const res = this.dataService.getCurrencyData();
+    async getCurrencyData(@Query() queryParams: AppPreferences) {
+        const { currency: symbol } = queryParams;
+        const res = await this.databaseService.getCurrencyData(symbol);
         return this.sendResponse(res);
     }
 
     @Get('/currency/price-trend')
-    getCurrencyPriceTrend() {
-        const res = this.dataService.getCurrencyPriceTrend();
+    async getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyPriceTrend();
         return this.sendResponse(res);
     }
 
     @Get('/currency/transactions')
-    getCurrencyTransactions() {
-        // param max
-        const res = this.dataService.getCurrencyTransactions();
+    async getCurrencyTransactions(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyTransactions();
         return this.sendResponse(res);
     }
 
     @Get('/currency/fear-and-greed')
-    async getCurrencyFearAndGreed(@Query('symbol') symbol: string) {
-        const res = await this.clickhouseNewsService.getCurrencyFearAndGreed(symbol);
+    async getCurrencyFearAndGreed(@Query() queryParams: AppPreferences) {
+        const { currency: symbol } = queryParams;
+        const res = await this.databaseService.getCurrencyFearAndGreed(symbol);
         return this.sendResponse(res);
     }
 
     @Get('/currency/news')
-    getCurrencyNews() {
-        // param max
-        const res = this.dataService.getCurrencyNews();
+    async getCurrencyNews(@Query() queryParams: AppPreferences) {
+        const res = await this.databaseService.getCurrencyNews();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/top')
-    getTopCurrencies() {
-        const res = this.dataService.getTopCurrencies();
+    async getTopCurrencies() {
+        const res = await this.databaseService.getTopCurrencies();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/data')
-    getAllCurrenciesData() {
-        const res = this.dataService.getAllCurrenciesData();
+    async getAllCurrenciesData() {
+        const res = await this.databaseService.getAllCurrenciesData();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/news')
-    getAllCurrenciesNews() {
-        // param max
-        const res = this.dataService.getAllCurrenciesNews();
+    async getAllCurrenciesNews() {
+        const res = await this.databaseService.getAllCurrenciesNews();
         return this.sendResponse(res);
     }
 
     @Get('/currencies/news-trending')
-    getNewsTrendingCurrencies() {
-        const res = this.dataService.getNewsTrendingCurrencies();
+    async getNewsTrendingCurrencies() {
+        const res = await this.databaseService.getNewsTrendingCurrencies();
         return this.sendResponse(res);
     }
 }
