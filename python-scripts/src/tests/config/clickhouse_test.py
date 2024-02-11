@@ -7,7 +7,7 @@ from datetime import datetime
 class ClickHouseConfigTest(unittest.TestCase):
         
     def test_insert_one(self):
-        clickhouse_config = ClickHouseConfig('localhost', 8123, 'default', 'default')
+        clickhouse_config = ClickHouseConfig('clickhouse', 8123, 'epitech', 'admin', 'cryptoviz')
         data = (
             'BTCUSDT',
             'BTC',
@@ -26,7 +26,7 @@ class ClickHouseConfigTest(unittest.TestCase):
         self.assertTrue(True)
     
     def test_insert_many(self):
-        clickhouse_config = ClickHouseConfig('localhost', 8123, 'default', 'default')
+        clickhouse_config = ClickHouseConfig('clickhouse', 8123, 'epitech', 'admin', 'cryptoviz')
 
         data = [
             (uuid.uuid4(), 'Test 3', 'John Doe', 'https//test.com?4', datetime.strptime('2021-02-02', "%Y-%m-%d").timestamp(), 'btc and eth is great rere', 70, ['BTC', 'ETH']), 
