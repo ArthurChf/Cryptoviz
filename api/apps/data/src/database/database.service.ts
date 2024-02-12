@@ -77,7 +77,12 @@ export class DatabaseService {
                         upper(coin) AS coin,
                         concat(formatNumber(toString(avgPriceChange * 100)), '%') AS priceChangeRate,
                         dollar(formatNumber(toString(avgLastPrice))) AS price,
-                        dollar(toString(totalVolume)) AS volume
+                        dollar(
+                            if(totalVolume > 1e16,
+                            toString(round(totalVolume, 2)),
+                            formatNumber(toString(round(totalVolume, 2)))
+                            )
+                        ) AS volume
                     FROM
                         (
                             SELECT
