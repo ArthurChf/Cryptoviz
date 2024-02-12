@@ -13,8 +13,8 @@ export class DataController {
     }
 
     @Get('/currencies')
-    async getAllCurrencies() {
-        const res = await this.databaseService.getAllCurrencies();
+    async getAllCurrencies(@Query('search') search = '') {
+        const res = await this.databaseService.getAllCurrencies(search);
         return this.sendResponse(res);
     }
 
