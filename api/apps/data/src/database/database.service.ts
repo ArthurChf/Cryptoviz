@@ -71,7 +71,60 @@ export class DatabaseService {
     }
 
     async getTopCurrencies() {
-        return 'getTopCurrencies';
+        const query = `SELECT
+                        imageUrl(coin) AS image,
+                        name,
+                        upper(coin) AS coin,
+                        concat(formatNumber(toString(avgPriceChange * 100)), '%') AS priceChangeRate,
+                        dollar(formatNumber(toString(avgLastPrice))) AS price,
+                        dollar(toString(totalVolume)) AS volume
+                    FROM
+                        (
+                            SELECT
+                                coin,
+                                name,
+                                avg(toFloat64(lastPrice)) AS avgLastPrice,
+                                avg(toFloat64(priceChange)) AS avgPriceChange,
+                                sum(toFloat64(totalTradedBaseAssetVolume)) AS totalVolume
+                            FROM
+                                cryptoviz.crypto
+                            WHERE
+                                reference = 'USDT'
+                                AND createdAt >= now() - INTERVAL 1 DAY
+                            GROUP BY
+                                coin, name
+                        ) AS top_cryptos
+                    ORDER BY
+                        avgLastPrice DESC
+                    LIMIT 3
+                    `;
+        try {
+            const result = await this.cryptovizClickhouseServer.queryPromise(query);
+            if (Array.isArray(result) && result.length > 0) {
+                const topCurrencies = result.map((currency: {
+                    image: string;
+                    name: string;
+                    coin: string;
+                    priceChangeRate: string;
+                    price: string;
+                    volume: string;
+                }) => {
+                    return {
+                        image: currency.image,
+                        name: currency.name,
+                        coin: currency.coin,
+                        data: {
+                            priceChangeRate: currency.priceChangeRate,
+                            price: currency.price,
+                            volume: currency.volume
+                        }
+                    };
+                });
+                return topCurrencies;
+            }
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getAllCurrenciesData() {
