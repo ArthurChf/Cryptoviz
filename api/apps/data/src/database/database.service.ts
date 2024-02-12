@@ -5,8 +5,19 @@ import { Inject, Injectable } from '@nestjs/common';
 export class DatabaseService {
     constructor(@Inject('CRYPTOVIZ_CLICKHOUSE_SERVER') private readonly cryptovizClickhouseServer: ClickHouseClient) {}
 
-    async getAllCurrencies() {
-        return 'getAllCurrencies';
+    async getAllCurrencies(search: string = '') {
+        const query = `SELECT imageUrl(coin) AS image, coin AS symbol, name
+                        FROM crypto
+                        WHERE symbol ILIKE '%${search}%'
+                        OR name ILIKE '%${search}%'
+                        GROUP BY symbol, coin, name
+                        ORDER BY name`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ');
+        }
     }
 
     async getCurrencyData(symbol: string) {
