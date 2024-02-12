@@ -45,8 +45,30 @@ export class DatabaseService {
         return 'getCurrencyPriceTrend';
     }
 
-    async getCurrencyTransactions() {
-        return 'getCurrencyTransactions';
+    async getCurrencyTransactions(symbol: string, isHttp: boolean) {
+        const limit = isHttp ? 30 : 1;
+        const query = `SELECT
+                        createdAt as date,
+                        imageUrl(coin) AS image,
+                        coin as symbol,
+                        name,
+                        formatNumber(lastQuantity) AS lastTradeAmount,
+                        concat('#', toString(lastTradeId)) AS lastTradeId
+                    FROM
+                        crypto
+                    WHERE
+                        reference = 'USDT'
+                        AND coin = '${symbol}'
+                    ORDER BY
+                        createdAt DESC
+                    LIMIT ${limit}`;
+        try {
+            console.log(symbol, limit);
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getCurrencyFearAndGreed(symbol: string) {
@@ -87,7 +109,7 @@ export class DatabaseService {
         const query = `SELECT
                         imageUrl(coin) AS image,
                         name,
-                        upper(coin) AS coin,
+                        upper(coin) AS symbol,
                         concat(formatNumber(toString(avgPriceChange * 100)), '%') AS priceChangeRate,
                         dollar(formatNumber(toString(avgLastPrice))) AS price,
                         dollar(
@@ -122,7 +144,7 @@ export class DatabaseService {
                 const topCurrencies = result.map((currency: {
                     image: string;
                     name: string;
-                    coin: string;
+                    symbol: string;
                     priceChangeRate: string;
                     price: string;
                     volume: string;
@@ -130,7 +152,7 @@ export class DatabaseService {
                     return {
                         image: currency.image,
                         name: currency.name,
-                        coin: currency.coin,
+                        symbol: currency.symbol,
                         data: {
                             priceChangeRate: currency.priceChangeRate,
                             price: currency.price,
