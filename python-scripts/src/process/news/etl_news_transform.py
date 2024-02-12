@@ -31,13 +31,17 @@ def __generate_dataframe_from_news(data):
     return pda.DataFrame(data)
 
 def __reorder_dataframe_columns(dataframe):
-    columns = ['id', 'title', 'author', 'link', 'createdAt', 'content', 'sentiment', 'cryptocurrencies']
+    columns = ['id', 'title', 'author', 'link', 'createdAt', 'content', 'sentiment', 'cryptocurrencies', 'source']
     return dataframe[columns]
 
 def __generate_id(title, link, author):
     # On génère un id unique pour chaque news en utilisant le titre, le lien et l'auteur, afin d'éviter les doublons
     key = f"{title}{link}{author}"
     return hashlib.sha256(key.encode()).hexdigest()
+
+def __upper_first_letter(word):
+    return word[0].upper() + word[1:]
+
 
 def transform_news_data(data):
     news_dataframe = __generate_dataframe_from_news(data)
@@ -46,6 +50,7 @@ def transform_news_data(data):
     news_dataframe['createdAt'] = pda.to_datetime(news_dataframe['createdAt'])
     news_dataframe['createdAt'] = news_dataframe['createdAt'].apply(lambda x: x.timestamp())
     news_dataframe['id'] = news_dataframe.apply(lambda x: __generate_id(x['title'], x['link'], x['author']), axis=1)
+    news_dataframe['source'] = news_dataframe['source'].apply(__upper_first_letter)
     news_df_filtered = news_dataframe[news_dataframe['cryptocurrencies'].apply(lambda x: len(x) > 0)]
     # Reorgniser les colonnes
     news_df_filtered = __reorder_dataframe_columns(news_df_filtered)

@@ -43,7 +43,8 @@ class ClickHouseConfig:
                                     link String,
                                     createdAt DateTime,
                                     content String,
-                                    sentiment Int32
+                                    sentiment Int32,
+                                    source String
                                 ) ENGINE = ReplacingMergeTree
                                   ORDER BY (id)
                          """
@@ -102,7 +103,8 @@ class ClickHouseConfig:
                     item[3], 
                     item[4], 
                     item[5],
-                    item[6]
+                    item[6],
+                    item[8]
                 )
             )
             for symbol in item[7]:
@@ -112,7 +114,7 @@ class ClickHouseConfig:
                 )
         
         # On construit la requête d'insertion pour les news et on envoie dans une seule requête
-        news_query = "INSERT INTO news ( id, title, author, link, createdAt, content, sentiment ) VALUES "
+        news_query = "INSERT INTO news ( id, title, author, link, createdAt, content, sentiment, source ) VALUES "
         
         values_placeholders = []
 
