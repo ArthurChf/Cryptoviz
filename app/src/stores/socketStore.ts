@@ -17,6 +17,7 @@ export const useSocketStore = defineStore('socket', {
     actions: {
         async waitSocketConnection() {
             if (this.socketConnectionPromise) return this.socketConnectionPromise;
+            if (this.socketClient.readyState === this.socketClient.OPEN) return null;
 
             this.socketConnectionPromise = new Promise((resolve, reject) => {
                 const errorListener = () => {
@@ -74,26 +75,33 @@ export const useSocketStore = defineStore('socket', {
                 if (response === 'UPDATE_PERIOD_OK') console.log('Selected period init');
             });
         },
-        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions, callback: (data: T) => void) {
-            if (!this.requestedEvents.has(socketOptions.eventName)) {
-                this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
-
+        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: T) => void) {
+            if (!socketOptions) {
                 if (httpOptions) {
-                    const { routeName } = httpOptions;
-                    const currencyStore = useCurrencyStore();
-                    const appStore = useAppStore();
-
-                    let query = {
-                        currency: currencyStore.selectedCurrency.symbol,
-                        period: appStore.selectedPeriod
-                    };
-                    if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
-
-                    const response = await useRequest<T>(routeName, { query, method: 'GET' });
-                    const action = this.requestedEvents.get(socketOptions.eventName)!;
-                    action(response);
+                    const response = await useRequest<T>(httpOptions.routeName, { query: httpOptions.queryParams, method: 'GET' });
+                    callback(response);
                 }
-                this.subscribe(socketOptions);
+            } else {
+                if (!this.requestedEvents.has(socketOptions.eventName)) {
+                    this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
+
+                    if (httpOptions) {
+                        const { routeName } = httpOptions;
+                        const currencyStore = useCurrencyStore();
+                        const appStore = useAppStore();
+
+                        let query = {
+                            currency: currencyStore.selectedCurrency.symbol!,
+                            period: appStore.selectedPeriod.valueOf()
+                        };
+                        if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
+
+                        const response = await useRequest<T>(routeName, { query, method: 'GET' });
+                        const action = this.requestedEvents.get(socketOptions.eventName)!;
+                        action(response);
+                    }
+                    this.subscribe(socketOptions);
+                }
             }
         }
     }
