@@ -104,6 +104,24 @@ export class DatabaseService {
     }
 
     async getNewsTrendingCurrencies() {
-        return 'getNewsTrendingCurrencies';
+        const query = `WITH cryptoOccurences AS (
+                            SELECT COUNT(id) AS nb, upper(symbol) AS symbol
+                            FROM crypto_news
+                            GROUP BY symbol
+                        ), nbNews AS (
+                            SELECT COUNT(id) AS count FROM news FINAL
+                        )
+                        SELECT imageUrl(cryptoOccurences.symbol) AS image, c.name AS name, cryptoOccurences.symbol AS symbol, toFloat32(formatNumber(toString((cryptoOccurences.nb / nbNews.count) * 100))) AS articlesRate
+                        FROM cryptoOccurences, nbNews
+                        INNER JOIN crypto c ON c.coin = cryptoOccurences.symbol
+                        GROUP BY c.name, cryptoOccurences.symbol, cryptoOccurences.nb, nbNews.count
+                        ORDER BY cryptoOccurences.nb DESC
+                        LIMIT 5`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 }

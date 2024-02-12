@@ -5,7 +5,7 @@
             <div class="flex gap-5 items-center" v-for="currency in trendingCurrencies">
                 <div class="w-[57px] h-[50px]">
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
-                        <AppImage :name="currency.image" size="50" :key="currency.image" />
+                        <AppImage :name="currency.image" size="50" :key="currency.image" class="rounded-full shadow-md" />
                     </Transition>
                 </div>
                 <div class="flex flex-col gap-3 w-full">
@@ -39,43 +39,21 @@ import { TransitionEnum } from '@/enums/TransitionEnum';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { storeToRefs } from 'pinia';
 import type { NewsTrendingCurrency } from '@/interfaces/NewsTrendingCurrency';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import AppLoader from '@/components/AppLoader.vue';
+import { useFetchData } from '@/composables/useFetchData';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
 
-const trendingCurrencies = ref<NewsTrendingCurrency[]>([
-    {
-        image: 'currencies/btc.webp',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        articlesRate: 78
-    },
-    {
-        image: 'currencies/eth.webp',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        articlesRate: 43
-    },
-    {
-        image: 'currencies/matic.webp',
-        name: 'Polygon',
-        symbol: 'MATIC',
-        articlesRate: 32
-    }
-]);
+const trendingCurrencies = ref<NewsTrendingCurrency[]>([]);
 
-const updateData = () => {
-    const newData = [
-        {
-            image: 'currencies/matic.webp',
-            name: 'Polygon',
-            symbol: 'MATIC',
-            articlesRate: 12
-        }
-    ];
-    newData.forEach((crypto, index) => {
+const updateData = (data: NewsTrendingCurrency[]) => {
+    data.forEach((crypto, index) => {
         const obj: NewsTrendingCurrency = {
             image: crypto.image,
             name: crypto.name,
@@ -93,4 +71,16 @@ const updateData = () => {
         }
     });
 };
+
+onMounted(() => {
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_NEWS_TRENDING_CURRENCIES
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_NEWS_TRENDING_CURRENCIES
+    };
+    useFetchData(httpOptions, socketOptions, (data: NewsTrendingCurrency[]) => {
+        updateData(data);
+    });
+});
 </script>
