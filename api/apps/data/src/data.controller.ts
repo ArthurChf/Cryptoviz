@@ -1,10 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
 import { AppPreferences } from '@/apps/data/src/app-preferences.interface';
+import { MemoryService } from './memory/memory.sevice';
 
 @Controller()
 export class DataController {
-    constructor(private readonly databaseService: DatabaseService) { }
+    constructor(private readonly databaseService: DatabaseService, private readonly memoryService: MemoryService) { }
 
     sendResponse(data: unknown) {
         return {
@@ -34,6 +35,8 @@ export class DataController {
     @Get('/currency/transactions')
     async getCurrencyTransactions(@Query() queryParams: AppPreferences) {
         const res = await this.databaseService.getCurrencyTransactions(queryParams.currency, true);
+        const lastTransaction = res[0];
+        this.memoryService.setCryptoLastTrade(queryParams.currency, lastTransaction.lastTradeId);
         return this.sendResponse(res);
     }
 
