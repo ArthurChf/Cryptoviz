@@ -41,7 +41,7 @@ import CurrencySelectionModal from '@/components/dashboard/CurrencySelectionModa
 import AppTooltip from '@/components/AppTooltip.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
-import { computed, reactive, ref, shallowRef } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import AppImage from '@/components/AppImage.vue';
 import { storeToRefs } from 'pinia';
 import { useCurrencyStore } from '@/stores/currencyStore';
@@ -66,7 +66,10 @@ const currencyData = reactive<CurrencyData>({
     priceLow: '-',
     priceHigh: '-',
     priceChangeRate: 0,
-    transactions: '-'
+    transactions: '-',
+    image: '',
+    name: '',
+    symbol: ''
 });
 
 const statItems = computed(() => [
@@ -96,7 +99,6 @@ const socketOptions: SocketOptions = {
 };
 useFetchData(httpOptions, socketOptions, (data) => {
     const { price, growthRate, priceHigh, priceLow, totalTrades, volume } = data;
-    console.log(data);
     currencyData.price = price;
     currencyData.priceChangeRate = growthRate;
     currencyData.priceHigh = priceHigh;
