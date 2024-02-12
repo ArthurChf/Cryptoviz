@@ -63,7 +63,6 @@ export class DatabaseService {
                         createdAt DESC
                     LIMIT ${limit}`;
         try {
-            console.log(symbol, limit);
             const res = await this.cryptovizClickhouseServer.queryPromise(query);
             return res;
         } catch (error) {
