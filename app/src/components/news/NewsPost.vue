@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-3 py-6 px-7 border-b border-subtitle/5 last:border-[transparent] transition duration-200 hover:bg-background/50">
         <div class="flex items-center justify-between gap-4">
             <div class="flex gap-4">
-                <AppImage :name="`news_sources/${news.source}.webp`" size="40" class="rounded-full shadow-lg" />
+                <AppImage :name="news.image" size="40" class="rounded-full shadow-lg" />
                 <div class="flex flex-col">
                     <AppTooltip :text="capitalize(news.source)" position="bottom" :show="isSourceTruncated">
                         <span class="font-bold text-title text-lg">{{ formatSource(news.source) }}</span>

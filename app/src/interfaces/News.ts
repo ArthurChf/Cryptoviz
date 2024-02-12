@@ -6,4 +6,5 @@ export interface News {
     content: string;
     author: string;
     link: string;
+    image: string;
 }
