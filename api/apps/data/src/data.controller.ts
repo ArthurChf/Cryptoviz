@@ -33,7 +33,7 @@ export class DataController {
 
     @Get('/currency/transactions')
     async getCurrencyTransactions(@Query() queryParams: AppPreferences) {
-        const res = await this.databaseService.getCurrencyTransactions();
+        const res = await this.databaseService.getCurrencyTransactions(queryParams.currency, true);
         return this.sendResponse(res);
     }
 
