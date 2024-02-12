@@ -78,7 +78,25 @@ export class DatabaseService {
     }
 
     async getAllCurrenciesData() {
-        return 'getAllCurrenciesData';
+        const query = `SELECT imageUrl(c.coin) AS image,
+                            c.name AS name,
+                            c.coin AS symbol,
+                            toFloat64(formatNumber(c.priceChange)) AS priceChangeRate,
+                            dollar(formatNumber(c.lastPrice)) AS price,
+                            dollar(formatNumber(c.totalTradedBaseAssetVolume)) AS volume,
+                            dollar(formatNumber(c.highPrice)) AS priceHigh,
+                            dollar(formatNumber(c.lowPrice)) AS priceLow,
+                            c.totalNumberOfTrades AS transactions
+                        FROM crypto c
+                        INNER JOIN (SELECT coin, max(createdAt) AS lastCreatedAt FROM crypto GROUP BY symbol, coin) lastDates
+                        ON c.createdAt = lastDates.lastCreatedAt AND c.coin = lastDates.coin
+                        ORDER BY toFloat64(c.lastPrice) DESC`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getAllCurrenciesNews() {

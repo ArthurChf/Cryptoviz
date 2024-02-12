@@ -11,11 +11,11 @@
             <th class="text-left font-semibold pb-4 w-[10%]">Transactions</th>
             <th class="text-left font-semibold pb-4 w-[10%]">Action</th>
         </tr>
-        <tr v-for="currency in currencyData" :key="currency.id" class="transition duration-200 hover:bg-background">
-            <td class="py-5 pl-3 font-medium text-title">{{ currency.id }}</td>
+        <tr v-for="(currency, currencyId) in currencies" :key="currencyId + 1" class="transition duration-200 hover:bg-background">
+            <td class="py-5 pl-3 font-medium text-subtitle">{{ currencyId + 1 }}</td>
             <td class="py-5 flex items-center gap-4">
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <AppImage :name="currency.image" :key="currency.image" size="40" />
+                    <AppImage :name="currency.image" :key="currency.image" size="40" class="rounded-full shadow-md" />
                 </Transition>
                 <div class="flex flex-col">
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
@@ -59,54 +59,22 @@
 <script setup lang="ts">
 import AppImage from '@/components/AppImage.vue';
 import type { CurrencyData } from '@/interfaces/CurrencyData';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { storeToRefs } from 'pinia';
 import AppIcon from '@/components/AppIcon.vue';
 import { IconEnum } from '@/enums/IconEnum';
 import { TransitionEnum } from '@/enums/TransitionEnum';
+import { useFetchData } from '@/composables/useFetchData';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
 
-const currencyData = ref<CurrencyData[]>([
-    {
-        id: 1,
-        image: 'currencies/btc.webp',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        priceChangeRate: 1.33,
-        price: '$1500',
-        volume: '2M',
-        priceHigh: '$12',
-        priceLow: '3$',
-        transactions: '1M'
-    },
-    {
-        id: 2,
-        image: 'currencies/eth.webp',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        priceChangeRate: 1.33,
-        price: '$1500',
-        volume: '2M',
-        priceHigh: '$12',
-        priceLow: '3$',
-        transactions: '1M'
-    },
-    {
-        id: 3,
-        image: 'currencies/matic.webp',
-        name: 'Polygon',
-        symbol: 'MATIC',
-        priceChangeRate: 1.33,
-        price: '$1500',
-        volume: '2M',
-        priceHigh: '$12',
-        priceLow: '3$',
-        transactions: '1M'
-    }
-]);
+const currencies = ref<CurrencyData[]>([]);
 
 const isSelectedCurrency = (currency: CurrencyData) => {
     return selectedCurrency.value.image === currency.image && selectedCurrency.value.name === currency.name && selectedCurrency.value.symbol === currency.symbol;
@@ -115,24 +83,9 @@ const selectCurrency = (currency: CurrencyData) => {
     if (!isSelectedCurrency(currency)) currencyStore.setSelectedCurrency(currency);
 };
 
-const updateData = () => {
-    const newData = [
-        {
-            id: 3,
-            image: 'currencies/matic.webp',
-            name: 'Polygon',
-            symbol: 'MATIC',
-            priceChangeRate: -1.44,
-            price: '$376',
-            volume: '1M',
-            priceHigh: '$12',
-            priceLow: '3$',
-            transactions: '1M'
-        }
-    ];
-    newData.forEach((crypto, index) => {
+const updateData = (data: CurrencyData[]) => {
+    data.forEach((crypto, index) => {
         const obj = {
-            id: crypto.id,
             image: crypto.image,
             name: crypto.name,
             symbol: crypto.symbol,
@@ -144,20 +97,31 @@ const updateData = () => {
             transactions: crypto.transactions
         };
 
-        if (index > currencyData.value.length - 1) {
-            currencyData.value.push(obj);
+        if (index > currencies.value.length - 1) {
+            currencies.value.push(obj);
         } else {
-            currencyData.value[index]!.id = obj.id;
-            currencyData.value[index]!.image = obj.image;
-            currencyData.value[index]!.name = obj.name;
-            currencyData.value[index]!.symbol = obj.symbol;
-            currencyData.value[index]!.priceChangeRate = obj.priceChangeRate;
-            currencyData.value[index]!.price = obj.price;
-            currencyData.value[index]!.volume = obj.volume;
-            currencyData.value[index]!.priceHigh = obj.priceHigh;
-            currencyData.value[index]!.priceLow = obj.priceLow;
-            currencyData.value[index]!.transactions = obj.transactions;
+            currencies.value[index]!.image = obj.image;
+            currencies.value[index]!.name = obj.name;
+            currencies.value[index]!.symbol = obj.symbol;
+            currencies.value[index]!.priceChangeRate = obj.priceChangeRate;
+            currencies.value[index]!.price = obj.price;
+            currencies.value[index]!.volume = obj.volume;
+            currencies.value[index]!.priceHigh = obj.priceHigh;
+            currencies.value[index]!.priceLow = obj.priceLow;
+            currencies.value[index]!.transactions = obj.transactions;
         }
     });
 };
+
+onMounted(() => {
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_ALL_CURRENCIES_DATA
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_ALL_CURRENCIES_DATA
+    };
+    useFetchData(httpOptions, socketOptions, (data: CurrencyData[]) => {
+        updateData(data);
+    });
+});
 </script>
