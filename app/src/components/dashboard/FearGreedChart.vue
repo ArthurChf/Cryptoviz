@@ -5,14 +5,19 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
+import { useFetchData } from '@/composables/useFetchData';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 
 const chart = shallowRef<echarts.ECharts>();
 const fearGreedChartId = 'fearGreedChart';
 
 const sentiment = ref(50);
 
-const updateChartData = () => {
-    sentiment.value = Math.floor(Math.random() * 100);
+const updateChartData = (data: number) => {
+    sentiment.value = data;
 
     chart.value!.setOption({
         series: [
@@ -107,5 +112,15 @@ onMounted(() => {
     };
 
     option && chart.value!.setOption(option);
+
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_CURRENCY_FEAR_AND_GREED
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_FEAR_AND_GREED
+    };
+    useFetchData(httpOptions, socketOptions, (data: number) => {
+        updateChartData(data);
+    });
 });
 </script>
