@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ClickHouseModule } from '@depyronick/nestjs-clickhouse';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-    imports: [ClickHouseModule.register([
+    imports: [ConfigModule.forRoot(), ClickHouseModule.register([
         {
             name: 'CRYPTOVIZ_CLICKHOUSE_SERVER',
-            host: 'localhost',
-            port: 8123,
-            username: 'epitech',
-            password: 'admin',
-            database: 'cryptoviz'
+            host: process.env.CLICKHOUSE_HOST,
+            port: parseInt(process.env.CLICKHOUSE_PORT),
+            username: process.env.CLICKHOUSE_USER,
+            password: process.env.CLICKHOUSE_PASSWORD,
+            database: process.env.CLICKHOUSE_DB
         }
     ])],
     exports: [ClickHouseModule]
