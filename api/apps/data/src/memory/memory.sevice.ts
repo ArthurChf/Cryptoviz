@@ -7,6 +7,7 @@ import type { Subscription } from 'rxjs';
 export class MemoryService {
     private readonly clientSettings: Map<string, AppPreferences> = new Map();
     private readonly clientSubscriptions: Map<string, Subscription[]> = new Map();
+    private readonly lastFetchNewsDate: Map<string, string> = new Map();
 
     updateClientSettings(id: string, currency?: string, period?: PeriodEnum) {
         const clientExists = this.clientSettings.has(id);
@@ -45,5 +46,13 @@ export class MemoryService {
             s.unsubscribe();
         });
         this.clientSubscriptions.delete(id);
+    }
+
+    getLastFetchNewsDate(clientId: string) {
+        return this.lastFetchNewsDate.get(clientId) ?? null;
+    }
+
+    updateLastFetchNewsDate(clientId: string, newDate: string) {
+        this.lastFetchNewsDate.set(clientId, newDate);
     }
 }

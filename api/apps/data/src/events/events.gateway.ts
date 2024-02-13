@@ -28,8 +28,8 @@ export class EventsGateway {
     @WebSocketServer()
         server: Server;
 
-    loopData(action: () => Promise<void>, clientId: string) {
-        const sub = interval(2000).pipe(concatMap(action)).subscribe();
+    loopData(action: () => Promise<void>, clientId: string, msInterval: number = 2000) {
+        const sub = interval(msInterval).pipe(concatMap(action)).subscribe();
         this.memoryService.addClientSubscription(clientId, sub);
     }
 
@@ -98,11 +98,17 @@ export class EventsGateway {
 
     @SubscribeMessage('crypto:get_currency_news')
     getCurrencyNews(@ConnectedSocket() client: Socket) {
-        // query only the last one found
+        const fifteenMinutes = 900000;
         this.loopData(async () => {
-            const res = await this.databaseService.getCurrencyNews();
+            const selectedCurrency = this.memoryService.getClientSettings(client.id).currency;
+            const lastFetchDate = this.memoryService.getLastFetchNewsDate(client.id);
+            let res = await this.databaseService.getCurrencyNews(selectedCurrency, lastFetchDate);
+            if (res.length) {
+                if (res[0].originalDate === lastFetchDate) res = [];
+                else this.memoryService.updateLastFetchNewsDate(client.id, res[0].originalDate);
+            }
             this.sendResponse(client, 'crypto:get_currency_news', res);
-        }, client.id);
+        }, client.id, fifteenMinutes);
     }
 
     @SubscribeMessage('crypto:get_top_currencies')

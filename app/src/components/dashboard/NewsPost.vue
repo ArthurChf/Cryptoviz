@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <AppImage :name="`news_sources/${source}.webp`" size="28" class="rounded-full shadow-lg" />
+                    <AppImage :name="image" size="28" class="rounded-full shadow-lg" />
                     <AppTooltip :text="capitalize(source)" position="bottom" :show="isSourceTruncated">
                         <span class="font-bold text-title text-md">{{ formatSource(source) }}</span>
                     </AppTooltip>
@@ -29,6 +29,7 @@ import { capitalize, truncate } from '@/utils/formatString';
 
 const props = defineProps<{
     source: string;
+    image: string;
     sentiment: number;
     title: string;
     date: string;

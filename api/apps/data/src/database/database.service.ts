@@ -66,8 +66,21 @@ export class DatabaseService {
         }
     }
 
-    async getCurrencyNews() {
-        return 'getCurrencyNews';
+    async getCurrencyNews(symbol: string, lastFetchDate: string | null = null) {
+        const whereDate = lastFetchDate ? `AND nd.createdAt > '${lastFetchDate}'` : '';
+        const query = `SELECT imageUrlNews(nd.source) AS image, nd.source AS source, nd.sentiment AS sentiment, nd.title AS title, formatDate(nd.createdAt) AS date, nd.createdAt AS originalDate, nd.content AS content, nd.author AS author, nd.link AS link
+                        FROM news nd FINAL
+                        INNER JOIN (SELECT symbol, news_data_id FROM crypto_news FINAL) cn ON nd.id = cn.news_data_id
+                        WHERE cn.symbol = '${symbol.toLowerCase()}'
+                        ${whereDate}
+                        ORDER BY nd.createdAt DESC
+                        LIMIT 30`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getTopCurrencies() {
