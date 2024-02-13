@@ -45,26 +45,24 @@ export class DatabaseService {
         return 'getCurrencyPriceTrend';
     }
 
-    async getCurrencyTransactions(symbol: string, isHttp: boolean) {
-        const limit = isHttp ? 30 : 1;
+    async getCurrencyTransactions(symbol: string, limit: number = 1) {
         const query = `SELECT
-                        MIN(createdAt) as date,
-                        imageUrl(coin) AS image,
-                        coin as symbol,
-                        name,
-                        formatNumber(lastQuantity) AS lastTradeAmount,
-                        concat('#', toString(lastTradeId)) AS lastTradeId
-                    FROM
-                        crypto
-                    WHERE
-                        reference = 'USDT'
-                        AND coin = '${symbol}'
-                    GROUP BY
-                        lastTradeId, image, symbol, name, lastTradeAmount
-                    ORDER BY
-                        date DESC
-                    LIMIT ${limit}
-                    `;
+                            imageUrl(coin) AS currencyImage,
+                            coin AS currencySymbol,
+                            name AS currencyName,
+                            formatNumber(lastQuantity) AS amount,
+                            concat('#', toString(lastTradeId)) AS id,
+                            createdAt AS date
+                        FROM
+                            crypto
+                        WHERE
+                            reference = 'USDT'
+                            AND coin = '${symbol}'
+                        GROUP BY
+                            coin, name, lastQuantity, lastTradeId, createdAt
+                        ORDER BY
+                            createdAt DESC
+                        LIMIT ${limit}`;
         try {
             const res = await this.cryptovizClickhouseServer.queryPromise(query);
             return res;

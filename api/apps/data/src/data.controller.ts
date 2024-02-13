@@ -34,7 +34,7 @@ export class DataController {
 
     @Get('/currency/transactions')
     async getCurrencyTransactions(@Query() queryParams: AppPreferences) {
-        const res = await this.databaseService.getCurrencyTransactions(queryParams.currency, true);
+        const res = await this.databaseService.getCurrencyTransactions(queryParams.currency, 30);
         const lastTransaction = res[0];
         this.memoryService.setCryptoLastTrade(queryParams.currency, lastTransaction.lastTradeId);
         return this.sendResponse(res);
