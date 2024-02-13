@@ -159,8 +159,39 @@ services:
       dockerfile: ./dockerfiles/Dockerfile.Data
     ports:
       - '3000:3000'
+    # depends_on:
+    #   - broker-ui
+  
+  app:
+    build: ./app
+    hostname: ${APP_HOST}
+    restart: unless-stopped
+    expose:
+      - '${APP_PORT}'
+    networks:
+      - broker_network
     depends_on:
-      - broker-ui
+      - data
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app
+
+  nginx:
+    image: nginx:1.25.3-perl
+    restart: unless-stopped
+    ports:
+      - '${NGINX_PORT}:80'
+    depends_on:
+      - app
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/templates/default.conf.template
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./app:/home/nginx/app
+    networks:
+      - broker_network
+    env_file:
+      - .env
 
   python-scripts:
     networks:
