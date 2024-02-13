@@ -101,11 +101,11 @@ export class EventsGateway {
         const fifteenMinutes = 900000;
         this.loopData(async () => {
             const selectedCurrency = this.memoryService.getClientSettings(client.id).currency;
-            const lastFetchDate = this.memoryService.getLastFetchNewsDate();
+            const lastFetchDate = this.memoryService.getLastFetchNewsDate(client.id);
             let res = await this.databaseService.getCurrencyNews(selectedCurrency, lastFetchDate);
             if (res.length) {
                 if (res[0].originalDate === lastFetchDate) res = [];
-                else this.memoryService.updateLastFetchNewsDate(res[0].originalDate);
+                else this.memoryService.updateLastFetchNewsDate(client.id, res[0].originalDate);
             }
             this.sendResponse(client, 'crypto:get_currency_news', res);
         }, client.id, fifteenMinutes);
