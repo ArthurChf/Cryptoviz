@@ -5,3 +5,5 @@ CREATE FUNCTION formatNumber AS(x)->if(
 );
 CREATE FUNCTION dollar AS(s)->concat('$', s);
 CREATE FUNCTION imageUrl AS(s)->concat('currencies/', lower(s), '.webp');
+CREATE FUNCTION formatDate AS(s) -> concat(monthName(s), formatDateTime(s, ' %d, %Y at %H:%M %p'));
+CREATE FUNCTION imageUrlNews AS(s) -> concat('news_sources/', lower(s), '.webp');
