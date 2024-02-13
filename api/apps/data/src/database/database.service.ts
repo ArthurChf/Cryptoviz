@@ -48,7 +48,7 @@ export class DatabaseService {
     async getCurrencyTransactions(symbol: string, isHttp: boolean) {
         const limit = isHttp ? 30 : 1;
         const query = `SELECT
-                        createdAt as date,
+                        MIN(createdAt) as date,
                         imageUrl(coin) AS image,
                         coin as symbol,
                         name,
@@ -59,9 +59,12 @@ export class DatabaseService {
                     WHERE
                         reference = 'USDT'
                         AND coin = '${symbol}'
+                    GROUP BY
+                        lastTradeId, image, symbol, name, lastTradeAmount
                     ORDER BY
-                        createdAt DESC
-                    LIMIT ${limit}`;
+                        date DESC
+                    LIMIT ${limit}
+                    `;
         try {
             const res = await this.cryptovizClickhouseServer.queryPromise(query);
             return res;
