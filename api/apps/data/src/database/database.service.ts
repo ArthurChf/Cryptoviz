@@ -45,8 +45,30 @@ export class DatabaseService {
         return 'getCurrencyPriceTrend';
     }
 
-    async getCurrencyTransactions() {
-        return 'getCurrencyTransactions';
+    async getCurrencyTransactions(symbol: string, limit: number = 1) {
+        const query = `SELECT
+                            imageUrl(coin) AS currencyImage,
+                            coin AS currencySymbol,
+                            name AS currencyName,
+                            formatNumber(lastQuantity) AS amount,
+                            concat('#', toString(lastTradeId)) AS id,
+                            createdAt AS date
+                        FROM
+                            crypto
+                        WHERE
+                            reference = 'USDT'
+                            AND coin = '${symbol}'
+                        GROUP BY
+                            coin, name, lastQuantity, lastTradeId, createdAt
+                        ORDER BY
+                            createdAt DESC
+                        LIMIT ${limit}`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getCurrencyFearAndGreed(symbol: string) {
@@ -87,7 +109,7 @@ export class DatabaseService {
         const query = `SELECT
                         imageUrl(coin) AS image,
                         name,
-                        upper(coin) AS coin,
+                        upper(coin) AS symbol,
                         concat(formatNumber(toString(avgPriceChange * 100)), '%') AS priceChangeRate,
                         dollar(formatNumber(toString(avgLastPrice))) AS price,
                         dollar(
@@ -119,18 +141,11 @@ export class DatabaseService {
         try {
             const result = await this.cryptovizClickhouseServer.queryPromise(query);
             if (Array.isArray(result) && result.length > 0) {
-                const topCurrencies = result.map((currency: {
-                    image: string;
-                    name: string;
-                    coin: string;
-                    priceChangeRate: string;
-                    price: string;
-                    volume: string;
-                }) => {
+                const topCurrencies = result.map((currency) => {
                     return {
                         image: currency.image,
                         name: currency.name,
-                        coin: currency.coin,
+                        symbol: currency.symbol,
                         data: {
                             priceChangeRate: currency.priceChangeRate,
                             price: currency.price,

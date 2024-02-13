@@ -82,8 +82,12 @@ export class EventsGateway {
     @SubscribeMessage('crypto:get_currency_transactions')
     getCurrencyTransactions(@ConnectedSocket() client: Socket) {
         this.loopData(async () => {
-            const res = await this.databaseService.getCurrencyTransactions();
-            this.sendResponse(client, 'crypto:get_currency_transactions', res);
+            const clientCurrency = this.memoryService.getClientSettings(client.id).currency;
+            const [lastTransaction] = await this.databaseService.getCurrencyTransactions(clientCurrency);
+            if (this.memoryService.getCryptoLastTrade(clientCurrency) !== lastTransaction.id) {
+                this.memoryService.setCryptoLastTrade(clientCurrency, lastTransaction.id);
+                this.sendResponse(client, 'crypto:get_currency_transactions', lastTransaction);
+            }
         }, client.id);
     }
 

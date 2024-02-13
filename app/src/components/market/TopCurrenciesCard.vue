@@ -14,42 +14,28 @@ import { useCurrencyStore } from '@/stores/currencyStore';
 import { storeToRefs } from 'pinia';
 import AppLoader from '@/components/AppLoader.vue';
 import TopCurrencyCard from '@/components/market/TopCurrency.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { TopCurrency } from '@/interfaces/TopCurrency';
+import { useFetchData } from '@/composables/useFetchData';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
 
-const topCurrencies = ref<TopCurrency[]>([
-    {
-        image: 'currencies/btc.webp',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        data: {
-            priceChangeRate: '1.33%',
-            price: '$1500',
-            volume: '2M'
-        }
-    },
-    {
-        image: 'currencies/eth.webp',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        data: {
-            priceChangeRate: '-0.54%',
-            price: '$6',
-            volume: '1K'
-        }
-    },
-    {
-        image: 'currencies/matic.webp',
-        name: 'Polygon',
-        symbol: 'MATIC',
-        data: {
-            priceChangeRate: '3.72%',
-            price: '$2',
-            volume: '5K'
-        }
-    }
-]);
+const topCurrencies = ref<TopCurrency[]>([]);
+
+onMounted(() => {
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_TOP_CURRENCIES
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_TOP_CURRENCIES
+    };
+    useFetchData(httpOptions, socketOptions, (data: TopCurrency[]) => {
+        topCurrencies.value = data;
+    });
+});
 </script>
