@@ -21,7 +21,6 @@ class ETLProcess(ABC):
             while True:
                 message = consumer.consume()
                 if message:
-                    print(f"Message reçu: {message.value()}")
                     try :
                         json_message = json.loads(message.value().decode('utf-8'))
                         self.transform(json_message)

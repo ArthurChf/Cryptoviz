@@ -17,12 +17,9 @@ class Backup(ABC):
         consumer = KafkaConsumer(self.topic)
         try:
             consumer.subscribe([self.topic])
-            print(f"Consommation du topic {self.topic}")
             while True:
                 message = consumer.consume()
-                print(f"Message reçu: {message}")
                 if message:
-                    print(f"Message reçu: {message.value()}")
                     try :
                         json_message = json.loads(message.value().decode('utf-8'))
                         self.load(json_message)
