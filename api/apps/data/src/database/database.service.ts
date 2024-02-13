@@ -141,14 +141,7 @@ export class DatabaseService {
         try {
             const result = await this.cryptovizClickhouseServer.queryPromise(query);
             if (Array.isArray(result) && result.length > 0) {
-                const topCurrencies = result.map((currency: {
-                    image: string;
-                    name: string;
-                    symbol: string;
-                    priceChangeRate: string;
-                    price: string;
-                    volume: string;
-                }) => {
+                const topCurrencies = result.map((currency) => {
                     return {
                         image: currency.image,
                         name: currency.name,
