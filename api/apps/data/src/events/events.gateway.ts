@@ -14,9 +14,9 @@ import { interval } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
 
-@WebSocketGateway(8083, {
+@WebSocketGateway(parseInt(process.env.API_DATA_WS_PORT), {
     cors: {
-        origin: 'http://localhost:5173'
+        origin: `'http://${process.env.APP_HOST}:${process.env.APP_PORT}'`
     }
 })
 export class EventsGateway {
