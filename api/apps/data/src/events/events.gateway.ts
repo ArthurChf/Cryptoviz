@@ -19,7 +19,8 @@ export class EventsGateway {
     constructor(
         private readonly memoryService: MemoryService,
         private readonly databaseService: DatabaseService
-    ) { }
+    ) {
+    }
 
     @WebSocketServer()
         server: Server;
@@ -69,9 +70,36 @@ export class EventsGateway {
 
     @SubscribeMessage('crypto:get_currency_price_trend')
     getCurrencyPriceTrend(@ConnectedSocket() client: Socket) {
+        const clientParams = this.memoryService.getClientSettings(client.id);
         this.loopData(async () => {
-            const res = await this.databaseService.getCurrencyPriceTrend();
+            const [res] = await this.databaseService.getCurrencyPriceTrend(clientParams.currency, clientParams.period, false);
+            const cachePriceTrend = this.memoryService.getCryptoTrendPrices(client.id);
+            console.log(cachePriceTrend);
+            console.log(res.hour);
+            if (cachePriceTrend) {
+                if (clientParams.period === PeriodEnum.ONE_DAY) {
+                    const date = new Date(`${res.day} ${res.hour}`);
+                    const cacheDate = new Date(`${cachePriceTrend.day} ${cachePriceTrend.hour}`);
+                    if (date.getTime() < cacheDate.getTime() + 300000) return;
+                }
+                if (clientParams.period === PeriodEnum.SEVEN_DAYS) {
+                    const date = new Date(`${res.day} ${res.hour}`);
+                    const cacheDate = new Date(`${cachePriceTrend.day} ${cachePriceTrend.hour}`);
+                    if (date.getTime() < cacheDate.getTime() + 900000) return;
+                }
+                if (clientParams.period === PeriodEnum.ONE_MONTH) {
+                    const date = new Date(`${res.day} ${res.hour}`);
+                    const cacheDate = new Date(`${cachePriceTrend.day} ${cachePriceTrend.hour}`);
+                    if (date.getTime() < cacheDate.getTime() + 3600000) return;
+                }
+                if (clientParams.period === PeriodEnum.ONE_YEAR) {
+                    const date = new Date(`${res.day} ${res.hour}`);
+                    const cacheDate = new Date(`${cachePriceTrend.day} ${cachePriceTrend.hour}`);
+                    if (date.getTime() < cacheDate.getTime() + 36000000) return;
+                }
+            }
             this.sendResponse(client, 'crypto:get_currency_price_trend', res);
+            this.memoryService.setCryptoTrendPrices(client.id, { day: res.day, hour: res.hour });
         }, client.id);
     }
 

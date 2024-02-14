@@ -2,6 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
 import { AppPreferences } from '@/apps/data/src/app-preferences.interface';
 import { MemoryService } from './memory/memory.sevice';
+import { PeriodEnum } from './events/period.enum';
 
 @Controller()
 export class DataController {
@@ -28,7 +29,7 @@ export class DataController {
 
     @Get('/currency/price-trend')
     async getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
-        const res = await this.databaseService.getCurrencyPriceTrend();
+        const res = await this.databaseService.getCurrencyPriceTrend(queryParams.currency, queryParams.period, true);
         return this.sendResponse(res);
     }
 
