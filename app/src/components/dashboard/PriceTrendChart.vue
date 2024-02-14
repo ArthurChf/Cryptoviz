@@ -5,22 +5,45 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
+import { useSocketStore } from '@/stores/socketStore';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import { HttpOptions } from '@/interfaces/HttpOptions';
+import { useFetchData } from '@/composables/useFetchData';
+import { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
 
 const chart = shallowRef<echarts.ECharts>();
 const priceTrendChartId = 'priceTrendChart';
 const maxDisplayedPrices = 7;
 
-const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
-const prices = ref([12, 53, 47, 39, 54, 49, 68]);
-const hours = ref(['08:00:00', '10:30:00', '05:32:00', '15:45:00', '09:00:00', '18:30:00', '20:00:00']);
+const months = ref<string[]>([]);
+const prices = ref<number[]>([]);
+const hours = ref<string[]>([]);
 
-const updateChartData = () => {
-    const randomPrice = prices.value[Math.floor(Math.random() * prices.value.length)]!;
-    const randomMonth = months.value[Math.floor(Math.random() * months.value.length)]!;
-    const randomHour = hours.value[Math.floor(Math.random() * hours.value.length)]!;
-    prices.value.push(randomPrice);
-    months.value.push(randomMonth);
-    hours.value.push(randomHour);
+interface PriceTrendData {
+    price: number;
+    month: string;
+    hour: string;
+}
+
+interface PriceTrendDataArray {
+    prices: number[];
+    months: string[];
+    hours: string[];
+}
+
+const updateChartData = (payload: unknown, type: 'all' | 'one') => {
+    if (type === 'all') {
+        const data = payload as PriceTrendDataArray;
+        prices.value = data.prices;
+        months.value = data.months;
+        hours.value = data.hours;
+    } else {
+        const data = payload as PriceTrendData;
+        prices.value.push(data.price);
+        months.value.push(data.month);
+        hours.value.push(data.hour);
+    }
 
     chart.value!.setOption({
         xAxis: {
@@ -68,7 +91,7 @@ onMounted(() => {
                 const month = chartData.name;
                 const value = chartData.value as number;
                 const hour = hours.value[chartData.dataIndex]!;
-                const bulletColor = value < 40 ? '#d92a2a' : '#10b569';
+                const bulletColor = '#10b569';
 
                 const str = `
                     <div class="flex flex-col gap-3">
@@ -189,5 +212,26 @@ onMounted(() => {
     };
 
     option && chart.value!.setOption(option);
+
+    const socketStore = useSocketStore();
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_PRICE_TREND
+    };
+
+    useFetchData(httpOptions, socketOptions, (data) => {
+        updateChartData(data, 'one');
+    });
+
+    socketStore.onCurrencyUpdate(async () => {
+        months.value = [];
+        prices.value = [];
+        hours.value = [];
+
+        const response = await socketStore.request(httpOptions);
+        updateChartData(response, 'all');
+    });
 });
 </script>
