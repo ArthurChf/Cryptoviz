@@ -30,7 +30,14 @@ export class DataController {
     @Get('/currency/price-trend')
     async getCurrencyPriceTrend(@Query() queryParams: AppPreferences) {
         const res = await this.databaseService.getCurrencyPriceTrend(queryParams.currency, queryParams.period, true);
-        return this.sendResponse(res);
+        const slicedResult = res.slice(0, -1);
+        if (Array.isArray(slicedResult)) {
+            const prices = slicedResult.map((element) => element.price);
+            const days = slicedResult.map((element) => element.day);
+            const hours = slicedResult.map((element) => element.hour);
+            return this.sendResponse({ prices, days, hours });
+        }
+        return this.sendResponse(slicedResult);
     }
 
     @Get('/currency/transactions')
