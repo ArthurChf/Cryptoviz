@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore, storeToRefs } from 'pinia';
 import type { HttpOptions } from '@/interfaces/HttpOptions';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
@@ -12,7 +12,8 @@ export const useSocketStore = defineStore('socket', {
         isSocketInit: false,
         socketConnectionPromise: null as Promise<void> | null,
         socketClient: createSocket(),
-        requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown) => void>
+        requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown) => void>,
+        currencyUpdateCallbacks: [] as (() => void)[]
     }),
     actions: {
         async waitSocketConnection() {
@@ -37,21 +38,35 @@ export const useSocketStore = defineStore('socket', {
 
             return this.socketConnectionPromise;
         },
-        async subscribe(socketOptions: SocketOptions) {
+        async send(socketOptions: SocketOptions) {
+            await this.init();
             const payload = {
                 event: socketOptions.eventName,
                 data: socketOptions.data ?? ''
             };
             this.socketClient.send(JSON.stringify(payload));
         },
-        init() {
+        onCurrencyUpdate(callback: () => void) {
+            this.currencyUpdateCallbacks.push(callback);
+        },
+        async init() {
             if (this.isSocketInit) return;
-
             this.isSocketInit = true;
+
+            await this.waitSocketConnection();
+            const appStore = useAppStore();
+            const { isUpdatingConfig } = storeToRefs(appStore);
+
             this.socketClient.addEventListener('message', (event) => {
                 try {
                     const payload: { event: SocketEventEnum; data: unknown } = JSON.parse(event.data);
-                    if (this.requestedEvents.has(payload.event)) {
+                    if (payload.event === SocketEventEnum.CONFIG_UPDATE_CURRENCY && payload.data === 'UPDATE_CURRENCY_OK') {
+                        isUpdatingConfig.value = false;
+                        this.currencyUpdateCallbacks.forEach((callback) => {
+                            callback();
+                        });
+                    } else if (this.requestedEvents.has(payload.event)) {
+                        // if payload.currency === selectedCurrency && payload.period === selectedPeriod
                         const callback = this.requestedEvents.get(payload.event)!;
                         callback(payload.data);
                     }
@@ -59,21 +74,20 @@ export const useSocketStore = defineStore('socket', {
                     console.error('Error handling message', error);
                 }
             });
-
+        },
+        async request<T>(httpOptions: HttpOptions) {
+            const { routeName } = httpOptions;
             const currencyStore = useCurrencyStore();
             const appStore = useAppStore();
-            this.addEvent(null, {
-                eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,
-                data: currencyStore.selectedCurrency.symbol
-            }, (response: string) => {
-                if (response === 'UPDATE_CURRENCY_OK') console.log('Selected currency init');
-            });
-            this.addEvent(null, {
-                eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,
-                data: appStore.selectedPeriod
-            }, (response: string) => {
-                if (response === 'UPDATE_PERIOD_OK') console.log('Selected period init');
-            });
+
+            let query = {
+                currency: currencyStore.selectedCurrency.symbol!,
+                period: appStore.selectedPeriod.valueOf()
+            };
+            if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
+
+            const response = await useRequest<T>(routeName, { query, method: 'GET' });
+            return response;
         },
         async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: T) => void) {
             if (!socketOptions) {
@@ -86,21 +100,11 @@ export const useSocketStore = defineStore('socket', {
                     this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
 
                     if (httpOptions) {
-                        const { routeName } = httpOptions;
-                        const currencyStore = useCurrencyStore();
-                        const appStore = useAppStore();
-
-                        let query = {
-                            currency: currencyStore.selectedCurrency.symbol!,
-                            period: appStore.selectedPeriod.valueOf()
-                        };
-                        if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
-
-                        const response = await useRequest<T>(routeName, { query, method: 'GET' });
+                        const response = await this.request(httpOptions);
                         const action = this.requestedEvents.get(socketOptions.eventName)!;
                         action(response);
                     }
-                    this.subscribe(socketOptions);
+                    this.send(socketOptions);
                 }
             }
         }
