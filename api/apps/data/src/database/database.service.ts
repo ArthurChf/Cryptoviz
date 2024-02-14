@@ -1,5 +1,6 @@
 import { ClickHouseClient } from '@depyronick/nestjs-clickhouse';
 import { Inject, Injectable } from '@nestjs/common';
+import type { PeriodEnum } from '../events/period.enum';
 
 @Injectable()
 export class DatabaseService {
@@ -41,8 +42,38 @@ export class DatabaseService {
         }
     }
 
-    async getCurrencyPriceTrend() {
-        return 'getCurrencyPriceTrend';
+    async getCurrencyPriceTrend(currency: string, period: PeriodEnum, isHttp: boolean) {
+        const query = `SELECT
+                        toDate(createdAt) as day,
+                        formatDateTime(max(createdAt), '%R') as hour,
+                        dollar(formatNumber(anyLast(lastPrice))) as price
+                    FROM crypto
+                    WHERE
+                        coin = '${currency}' AND
+                        createdAt >= now() -
+                            CASE
+                                WHEN '${period}' = '1D' THEN 86400
+                                WHEN '${period}' = '7D' THEN 604800
+                                WHEN '${period}' = '1M' THEN 2592000
+                                WHEN '${period}' = '1Y' THEN 31536000
+                            END
+                    GROUP BY
+                        day,
+                        CASE
+                            WHEN '${period}' = '1D' THEN toStartOfFiveMinute(createdAt)
+                            WHEN '${period}' = '7D' THEN toStartOfFifteenMinutes(createdAt)
+                            WHEN '${period}' = '1M' THEN toStartOfHour(createdAt)
+                            WHEN '${period}' = '1Y' THEN toStartOfDay(createdAt) + toHour(createdAt) / 10 * 10 * 3600
+                        END
+                    ORDER BY
+                        ${!isHttp ? 'day DESC, hour DESC' : 'day, hour'}
+                    ${!isHttp ? 'LIMIT 1' : ''}`;
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            console.error('Error executing query: ', error);
+        }
     }
 
     async getCurrencyTransactions(symbol: string, limit: number = 1) {
