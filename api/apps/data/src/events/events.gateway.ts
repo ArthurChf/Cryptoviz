@@ -74,8 +74,6 @@ export class EventsGateway {
         this.loopData(async () => {
             const [res] = await this.databaseService.getCurrencyPriceTrend(clientParams.currency, clientParams.period, false);
             const cachePriceTrend = this.memoryService.getCryptoTrendPrices(client.id);
-            console.log(cachePriceTrend);
-            console.log(res.hour);
             if (cachePriceTrend) {
                 if (clientParams.period === PeriodEnum.ONE_DAY) {
                     const date = new Date(`${res.day} ${res.hour}`);
