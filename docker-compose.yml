@@ -14,7 +14,6 @@ services:
       
     
   clickhouse:
-    container_name: clickhouse
     build:
       context: ./clickhouse
       dockerfile: Dockerfile.Clickhouse
@@ -164,12 +163,11 @@ services:
     ports:
       - '${API_DATA_PORT}:${API_DATA_PORT}'
       - '${API_DATA_WS_PORT}:${API_DATA_WS_PORT}'
-    depends_on:
-      - broker-ui
+    # depends_on:
+    #   - broker-ui
   
   app:
     build: ./app
-    hostname: ${APP_HOST}
     restart: unless-stopped
     ports:
       - '${APP_PORT}:${APP_PORT}'
