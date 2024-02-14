@@ -14,11 +14,7 @@ import { interval } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { DatabaseService } from '@/apps/data/src/database/database.service';
 
-@WebSocketGateway(8083, {
-    cors: {
-        origin: 'http://localhost:5173'
-    }
-})
+@WebSocketGateway(8083, { cors: { origin: 'http://localhost:5173', credentials: true } })
 export class EventsGateway {
     constructor(
         private readonly memoryService: MemoryService,

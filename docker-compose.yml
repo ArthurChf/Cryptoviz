@@ -163,8 +163,8 @@ services:
     ports:
       - '${API_DATA_PORT}:${API_DATA_PORT}'
       - '${API_DATA_WS_PORT}:${API_DATA_WS_PORT}'
-    # depends_on:
-    #   - broker-ui
+    depends_on:
+      - broker-ui
   
   app:
     build: ./app
