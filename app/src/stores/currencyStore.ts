@@ -17,6 +17,13 @@ export const useCurrencyStore = defineStore('currency', {
                 eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,
                 data: this.selectedCurrency.symbol
             });
+        },
+        async initSelectedCurrency() {
+            const socketStore = useSocketStore();
+            await socketStore.send({
+                eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,
+                data: this.selectedCurrency.symbol
+            });
         }
     }
 });

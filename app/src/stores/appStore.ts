@@ -18,6 +18,13 @@ export const useAppStore = defineStore('app', {
                 eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,
                 data: this.selectedPeriod
             });
+        },
+        async initSelectedPeriod() {
+            const socketStore = useSocketStore();
+            await socketStore.send({
+                eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,
+                data: this.selectPeriod
+            });
         }
     }
 });

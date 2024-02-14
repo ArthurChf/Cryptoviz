@@ -13,7 +13,8 @@ export const useSocketStore = defineStore('socket', {
         socketConnectionPromise: null as Promise<void> | null,
         socketClient: createSocket(),
         requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown) => void>,
-        currencyUpdateCallbacks: [] as (() => void)[]
+        currencyUpdateCallbacks: [] as (() => void)[],
+        periodUpdateCallbacks: [] as (() => void)[]
     }),
     actions: {
         async waitSocketConnection() {
@@ -49,12 +50,20 @@ export const useSocketStore = defineStore('socket', {
         onCurrencyUpdate(callback: () => void) {
             this.currencyUpdateCallbacks.push(callback);
         },
+        onPeriodUpdate(callback: () => void) {
+            this.periodUpdateCallbacks.push(callback);
+        },
         async init() {
             if (this.isSocketInit) return;
             this.isSocketInit = true;
 
             await this.waitSocketConnection();
             const appStore = useAppStore();
+            const currencyStore = useCurrencyStore();
+
+            currencyStore.initSelectedCurrency();
+            appStore.initSelectedPeriod();
+
             const { isUpdatingConfig } = storeToRefs(appStore);
 
             this.socketClient.addEventListener('message', (event) => {
@@ -65,8 +74,12 @@ export const useSocketStore = defineStore('socket', {
                         this.currencyUpdateCallbacks.forEach((callback) => {
                             callback();
                         });
+                    } else if (payload.event === SocketEventEnum.CONFIG_UPDATE_PERIOD && payload.data === 'UPDATE_PERIOD_OK') {
+                        isUpdatingConfig.value = false;
+                        this.periodUpdateCallbacks.forEach((callback) => {
+                            callback();
+                        });
                     } else if (this.requestedEvents.has(payload.event)) {
-                        // if payload.currency === selectedCurrency && payload.period === selectedPeriod
                         const callback = this.requestedEvents.get(payload.event)!;
                         callback(payload.data);
                     }
