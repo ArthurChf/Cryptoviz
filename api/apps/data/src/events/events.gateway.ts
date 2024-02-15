@@ -129,10 +129,16 @@ export class EventsGateway {
 
     @SubscribeMessage('crypto:get_all_currencies_news')
     getAllCurrenciesNews(@ConnectedSocket() client: Socket) {
+        const fifteenMinutes = 900000;
         this.loopData(async () => {
-            const res = await this.databaseService.getAllCurrenciesNews();
+            const lastFetchDate = this.memoryService.getLastFetchAllNewsDate(client.id);
+            let res = await this.databaseService.getAllCurrenciesNews(lastFetchDate);
+            if (res.length) {
+                if (res[0].originalDate === lastFetchDate) res = [];
+                else this.memoryService.updateLastFetchAllNewsDate(client.id, res[0].originalDate);
+            }
             this.sendResponse(client, 'crypto:get_all_currencies_news', res);
-        }, client.id);
+        }, client.id, fifteenMinutes);
     }
 
     @SubscribeMessage('crypto:get_news_trending_currencies')
