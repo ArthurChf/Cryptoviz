@@ -149,7 +149,22 @@ services:
     ports:
       - '3001:3001'
     depends_on:
+      - broker-1
+      - broker-2
+      - broker-3
+  
+  python-scripts:
+    networks:
+      - broker_network
+    build:
+      context: ./python-scripts
+      dockerfile: Dockerfile.Scripts
+    volumes:
+      - .env:/app/.env
+    depends_on:
       - broker-ui
+      - clickhouse
+      - mongo
 
   data:
     networks:
@@ -164,7 +179,7 @@ services:
       - '${API_DATA_PORT}:${API_DATA_PORT}'
       - '${API_DATA_WS_PORT}:${API_DATA_WS_PORT}'
     depends_on:
-      - broker-ui
+      - clickhouse
   
   app:
     build: ./app
@@ -179,21 +194,10 @@ services:
       - .env
     volumes:
       - ./app:/app
-
-  python-scripts:
-    networks:
-      - broker_network
-    build:
-      context: ./python-scripts
-      dockerfile: Dockerfile.Scripts
-    volumes:
-      - .env:/app/.env
-    depends_on:
-      - broker-ui
-      - clickhouse
-      - mongo
-      - scrapper
     
+
+  
+
 networks:
   broker_network:
     driver: bridge
