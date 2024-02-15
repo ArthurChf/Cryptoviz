@@ -12,13 +12,9 @@ export const useCurrencyStore = defineStore('currency', {
         async setSelectedCurrency(currency: Currency) {
             Object.assign(this.selectedCurrency, currency);
             localStorage.setItem('selected_currency', JSON.stringify(currency));
-            const socketStore = useSocketStore();
-            await socketStore.send({
-                eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,
-                data: this.selectedCurrency.symbol
-            });
+            await this.selectCurrencyEvent();
         },
-        async initSelectedCurrency() {
+        async selectCurrencyEvent() {
             const socketStore = useSocketStore();
             await socketStore.send({
                 eventName: SocketEventEnum.CONFIG_UPDATE_CURRENCY,

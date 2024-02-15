@@ -13,13 +13,9 @@ export const useAppStore = defineStore('app', {
     actions: {
         async selectPeriod(period: PeriodEnum) {
             this.selectedPeriod = period;
-            const socketStore = useSocketStore();
-            await socketStore.send({
-                eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,
-                data: this.selectedPeriod
-            });
+            await this.selectPeriodEvent();
         },
-        async initSelectedPeriod() {
+        async selectPeriodEvent() {
             const socketStore = useSocketStore();
             await socketStore.send({
                 eventName: SocketEventEnum.CONFIG_UPDATE_PERIOD,

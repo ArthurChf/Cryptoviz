@@ -63,8 +63,8 @@ export const useSocketStore = defineStore('socket', {
             const appStore = useAppStore();
             const currencyStore = useCurrencyStore();
 
-            currencyStore.initSelectedCurrency();
-            appStore.initSelectedPeriod();
+            currencyStore.selectCurrencyEvent();
+            appStore.selectPeriodEvent();
 
             const { isUpdatingConfig } = storeToRefs(appStore);
 
