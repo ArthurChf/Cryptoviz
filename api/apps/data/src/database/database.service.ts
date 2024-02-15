@@ -50,7 +50,7 @@ export class DatabaseService {
                             imageUrl(coin) AS currencyImage,
                             coin AS currencySymbol,
                             name AS currencyName,
-                            formatNumber(lastQuantity) AS amount,
+                            dollar(formatNumber(lastQuantity)) AS amount,
                             concat('#', toString(lastTradeId)) AS id,
                             createdAt AS date
                         FROM
@@ -197,7 +197,7 @@ export class DatabaseService {
     async getNewsTrendingCurrencies() {
         const query = `WITH cryptoOccurences AS (
                             SELECT COUNT(id) AS nb, upper(symbol) AS symbol
-                            FROM crypto_news
+                            FROM crypto_news FINAL
                             GROUP BY symbol
                         ), nbNews AS (
                             SELECT COUNT(id) AS count FROM news FINAL
