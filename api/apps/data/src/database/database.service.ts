@@ -1,5 +1,6 @@
 import { ClickHouseClient } from '@depyronick/nestjs-clickhouse';
 import { Inject, Injectable } from '@nestjs/common';
+import type { PeriodEnum } from '../events/period.enum';
 
 @Injectable()
 export class DatabaseService {
@@ -41,8 +42,42 @@ export class DatabaseService {
         }
     }
 
-    async getCurrencyPriceTrend() {
-        return 'getCurrencyPriceTrend';
+    async getCurrencyPriceTrend(currency: string, period: PeriodEnum, orderBy: string, limit: string = '', start_date: Date = null) {
+        const query = `SELECT
+                            toDate(createdAt) as day,
+                            formatDateTime(max(createdAt), '%T') as hour,
+                            dollar(formatNumber(max(lastPrice))) as price
+                        FROM crypto
+                        WHERE
+                            coin = '${currency}' AND (
+                            createdAt  ${start_date ? `= parseDateTimeBestEffort('${start_date.toLocaleString()}')` : `>= now() -
+                                                                    CASE
+                                                                        WHEN '${period}' = '1D' THEN 86400
+                                                                        WHEN '${period}' = '7D' THEN 604800
+                                                                        WHEN '${period}' = '1M' THEN 2592000
+                                                                        WHEN '${period}' = '1Y' THEN 31536000
+                                                                    END`}
+                            ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date.toLocaleString()}') - 1` : ''}
+                            ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date.toLocaleString()}') + 1` : ''} )
+                        GROUP BY
+                            day,
+                            CASE
+                                WHEN '${period}' = '1D' THEN toStartOfFiveMinute(createdAt)
+                                WHEN '${period}' = '7D' THEN toStartOfFifteenMinutes(createdAt)
+                                WHEN '${period}' = '1M' THEN toStartOfHour(createdAt)
+                                WHEN '${period}' = '1Y' THEN toStartOfDay(createdAt) + toHour(createdAt) / 10 * 10 * 3600
+                            END
+                        ORDER BY
+                            ${orderBy}
+                        ${limit}
+                        `;
+
+        try {
+            const res = await this.cryptovizClickhouseServer.queryPromise(query);
+            return res;
+        } catch (error) {
+            // console.error('Error executing query: ', error);
+        }
     }
 
     async getCurrencyTransactions(symbol: string, limit: number = 1) {
