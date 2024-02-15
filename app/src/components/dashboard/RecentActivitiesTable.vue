@@ -34,6 +34,7 @@ import { SocketEventEnum } from '@/enums/SocketEventEnum';
 const [recentActivitiesTable] = useAutoAnimate();
 
 const lastTransactions = ref<Transaction[]>([]);
+const maxTransactions = 30;
 
 onMounted(() => {
     const httpOptions: HttpOptions = {
@@ -42,8 +43,17 @@ onMounted(() => {
     const socketOptions: SocketOptions = {
         eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_TRANSACTIONS
     };
-    useFetchData(httpOptions, socketOptions, (data: Transaction[]) => {
-        lastTransactions.value = data;
+    useFetchData(httpOptions, socketOptions, (payload: unknown) => {
+        if (Array.isArray(payload)) {
+            const data = payload as Transaction[];
+            lastTransactions.value = data;
+        } else {
+            const data = payload as Transaction;
+            if (lastTransactions.value.length === maxTransactions) {
+                lastTransactions.value.pop();
+            }
+            lastTransactions.value.unshift(data);
+        }
     });
 });
 </script>
