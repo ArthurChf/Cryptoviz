@@ -1,7 +1,7 @@
 <template>
     <AppContainer class="gap-7">
         <h2 class="text-2xl text-title font-bold">Top Currencies</h2>
-        <div v-if="selectedCurrency.name || isUpdatingConfig" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-7">
+        <div v-if="selectedCurrency.name && !isUpdatingConfig" class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-7">
             <TopCurrencyCard v-for="(currency, index) in topCurrencies" :key="currency.symbol" :currency="currency" :index="index + 1" />
         </div>
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />

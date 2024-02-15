@@ -1,7 +1,7 @@
 <template>
     <AppContainer class="gap-9">
         <h2 class="text-2xl text-title font-bold">Live Prices</h2>
-        <CryptocurrencyPricesTable v-if="selectedCurrency.name || isUpdatingConfig" />
+        <CryptocurrencyPricesTable v-if="selectedCurrency.name && !isUpdatingConfig" />
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />
     </AppContainer>
 </template>

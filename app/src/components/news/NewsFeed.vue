@@ -1,7 +1,7 @@
 <template>
     <AppContainer class="!p-0 gap-6 overflow-hidden">
         <h2 class="mx-7 mt-6 text-2xl text-title font-bold">News Feed</h2>
-        <div v-if="selectedCurrency.name || isUpdatingConfig" class="flex flex-col" ref="newsFeedPosts">
+        <div v-if="selectedCurrency.name && !isUpdatingConfig" class="flex flex-col" ref="newsFeedPosts">
             <NewsPost v-for="(news, id) in newsList" :key="id" :news="news" />
         </div>
         <AppLoader v-else class="mx-7 mb-6 self-center stroke-subtitle" size="35" />
@@ -22,12 +22,16 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { useAppStore } from '@/stores/appStore';
 
 const [newsFeedPosts] = useAutoAnimate();
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
 const newsList = ref<News[]>([]);
+
+const appStore = useAppStore();
+const { isUpdatingConfig } = storeToRefs(appStore);
 
 onMounted(() => {
     const httpOptions: HttpOptions = {

@@ -7,7 +7,7 @@ import { useRequest } from '@/composables/useRequest';
 import { useAppStore } from '@/stores/appStore';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
-import { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
+import type { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
 
 export const useSocketStore = defineStore('socket', {
     state: () => ({

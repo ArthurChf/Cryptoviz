@@ -26,7 +26,7 @@
     </AppModal>
     <AppContainer class="!px-4 !py-5">
         <h2 class="px-3 text-2xl text-title font-bold">News Feed</h2>
-        <div v-if="selectedCurrency.name || isUpdatingConfig" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
+        <div v-if="selectedCurrency.name && !isUpdatingConfig" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
             <NewsPost v-for="(news, newsId) in newsList" :key="newsId" :sentiment="news.sentiment" :date="news.date" :source="news.source" :image="news.image" :title="news.title" @click="selectNews(news)" />
         </div>
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />
