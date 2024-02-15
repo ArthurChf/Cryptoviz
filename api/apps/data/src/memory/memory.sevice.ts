@@ -9,7 +9,7 @@ export class MemoryService {
     private readonly clientSubscriptions: Map<string, Subscription[]> = new Map();
     private readonly lastFetchNewsDate: Map<string, string> = new Map();
     private readonly cryptoLastTrade: Map<string, string> = new Map();
-    private readonly cryptoTrendPrices: Map<string, { day: string; hour: string}> = new Map();
+    private readonly cryptoTrendDate: Map<string, { day: string; hour: string}> = new Map();
 
     updateClientSettings(id: string, currency?: string, period?: PeriodEnum) {
         const clientExists = this.clientSettings.has(id);
@@ -40,11 +40,11 @@ export class MemoryService {
     }
 
     getCryptoTrendPrices(symbol: string) {
-        return this.cryptoTrendPrices.get(symbol);
+        return this.cryptoTrendDate.get(symbol);
     }
 
-    setCryptoTrendPrices(symbol: string, data: { day: string; hour: string}) {
-        this.cryptoTrendPrices.set(symbol, data);
+    setCryptoTrendDate(symbol: string, data: { day: string; hour: string}) {
+        this.cryptoTrendDate.set(symbol, data);
     }
 
     setCryptoLastTrade(symbol: string, lastTradeId: string) {

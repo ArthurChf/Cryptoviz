@@ -70,8 +70,8 @@ export class EventsGateway {
 
     @SubscribeMessage('crypto:get_currency_price_trend')
     getCurrencyPriceTrend(@ConnectedSocket() client: Socket) {
-        const clientParams = this.memoryService.getClientSettings(client.id);
         this.loopData(async () => {
+            const clientParams = this.memoryService.getClientSettings(client.id);
             const [res] = await this.databaseService.getCurrencyPriceTrend(clientParams.currency, clientParams.period, false);
             const cachePriceTrend = this.memoryService.getCryptoTrendPrices(client.id);
             if (cachePriceTrend) {
@@ -97,7 +97,7 @@ export class EventsGateway {
                 }
             }
             this.sendResponse(client, 'crypto:get_currency_price_trend', res);
-            this.memoryService.setCryptoTrendPrices(client.id, { day: res.day, hour: res.hour });
+            this.memoryService.setCryptoTrendDate(client.id, { day: res.day, hour: res.hour });
         }, client.id);
     }
 
