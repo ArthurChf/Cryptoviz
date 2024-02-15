@@ -6,6 +6,8 @@ import { createSocket } from '@/utils/createSocket';
 import { useRequest } from '@/composables/useRequest';
 import { useAppStore } from '@/stores/appStore';
 import { useCurrencyStore } from '@/stores/currencyStore';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
 
 export const useSocketStore = defineStore('socket', {
     state: () => ({
@@ -116,6 +118,13 @@ export const useSocketStore = defineStore('socket', {
                         const response = await this.request(httpOptions);
                         const action = this.requestedEvents.get(socketOptions.eventName)!;
                         action(response);
+
+                        if (httpOptions.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND) {
+                            const data = response as PriceTrendDataArray;
+                            if (data.months.length && data.hours.length) {
+                                socketOptions.data = `${data.months[data.months.length - 1]!} ${data.hours[data.hours.length - 1]!}`;
+                            }
+                        }
                     }
                     this.send(socketOptions);
                 }
