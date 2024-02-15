@@ -7,10 +7,12 @@ import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
 import { useSocketStore } from '@/stores/socketStore';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
-import { HttpOptions } from '@/interfaces/HttpOptions';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { useFetchData } from '@/composables/useFetchData';
-import { SocketOptions } from '@/interfaces/SocketOptions';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import type { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
+import type { PriceTrendData } from '@/interfaces/PriceTrendData';
 
 const chart = shallowRef<echarts.ECharts>();
 const priceTrendChartId = 'priceTrendChart';
@@ -19,18 +21,6 @@ const maxDisplayedPrices = 7;
 const months = ref<string[]>([]);
 const prices = ref<number[]>([]);
 const hours = ref<string[]>([]);
-
-interface PriceTrendData {
-    price: number;
-    month: string;
-    hour: string;
-}
-
-interface PriceTrendDataArray {
-    prices: number[];
-    months: string[];
-    hours: string[];
-}
 
 const updateChartData = (payload: unknown, type: 'all' | 'one') => {
     if (type === 'all') {
