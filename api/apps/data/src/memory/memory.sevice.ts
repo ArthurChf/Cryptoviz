@@ -9,6 +9,7 @@ export class MemoryService {
     private readonly clientSubscriptions: Map<string, Subscription[]> = new Map();
     private readonly lastFetchNewsDate: Map<string, string> = new Map();
     private readonly cryptoLastTrade: Map<string, string> = new Map();
+    private readonly lastFetchAllNewsDate: Map<string, string> = new Map();
 
     updateClientSettings(id: string, currency?: string, period?: PeriodEnum) {
         const clientExists = this.clientSettings.has(id);
@@ -63,5 +64,13 @@ export class MemoryService {
 
     updateLastFetchNewsDate(clientId: string, newDate: string) {
         this.lastFetchNewsDate.set(clientId, newDate);
+    }
+
+    getLastFetchAllNewsDate(clientId: string) {
+        return this.lastFetchAllNewsDate.get(clientId) ?? null;
+    }
+
+    updateLastFetchAllNewsDate(clientId: string, newDate: string) {
+        this.lastFetchAllNewsDate.set(clientId, newDate);
     }
 }
