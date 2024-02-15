@@ -211,17 +211,18 @@ onMounted(() => {
         eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_PRICE_TREND
     };
 
-    useFetchData(httpOptions, socketOptions, (data) => {
-        updateChartData(data, 'one');
+    useFetchData(httpOptions, socketOptions, (data, otherParam) => {
+        const type = otherParam === 'all' ? 'all' : 'one';
+        updateChartData(data, type);
     });
 
-    socketStore.onCurrencyUpdate(async () => {
+    const updateChartCallback = async () => {
         months.value = [];
         prices.value = [];
         hours.value = [];
+    };
 
-        const response = await socketStore.request(httpOptions);
-        updateChartData(response, 'all');
-    });
+    socketStore.onCurrencyUpdate(updateChartCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateChartCallback, httpOptions, socketOptions);
 });
 </script>

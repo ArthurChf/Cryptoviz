@@ -13,6 +13,7 @@ export const useAppStore = defineStore('app', {
     actions: {
         async selectPeriod(period: PeriodEnum) {
             this.selectedPeriod = period;
+            localStorage.setItem('selected_period', JSON.stringify(period));
             await this.selectPeriodEvent();
         },
         async selectPeriodEvent() {

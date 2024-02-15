@@ -9,14 +9,20 @@ import { useCurrencyStore } from '@/stores/currencyStore';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
 
+interface ConfigUpdateOptions {
+    callback(): void;
+    httpOptions: HttpOptions | null;
+    socketOptions: SocketOptions | null;
+}
+
 export const useSocketStore = defineStore('socket', {
     state: () => ({
         isSocketInit: false,
         socketConnectionPromise: null as Promise<void> | null,
         socketClient: createSocket(),
-        requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown) => void>,
-        currencyUpdateCallbacks: [] as (() => void)[],
-        periodUpdateCallbacks: [] as (() => void)[]
+        requestedEvents: new Map() as Map<SocketEventEnum, (data: unknown, otherParam?: string) => void>,
+        currencyUpdateCallbacks: [] as ConfigUpdateOptions[],
+        periodUpdateCallbacks: [] as ConfigUpdateOptions[]
     }),
     actions: {
         async waitSocketConnection() {
@@ -49,11 +55,27 @@ export const useSocketStore = defineStore('socket', {
             };
             this.socketClient.send(JSON.stringify(payload));
         },
-        onCurrencyUpdate(callback: () => void) {
-            this.currencyUpdateCallbacks.push(callback);
+        onCurrencyUpdate(callback: () => void, httpOptions: HttpOptions | null, socketOptions: SocketOptions | null) {
+            this.currencyUpdateCallbacks.push({ callback, httpOptions, socketOptions });
         },
-        onPeriodUpdate(callback: () => void) {
-            this.periodUpdateCallbacks.push(callback);
+        onPeriodUpdate(callback: () => void, httpOptions: HttpOptions | null, socketOptions: SocketOptions | null) {
+            this.periodUpdateCallbacks.push({ callback, httpOptions, socketOptions });
+        },
+        async handleHttpRequest(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null) {
+            if (httpOptions && socketOptions) {
+                const response = await this.request(httpOptions);
+                const action = this.requestedEvents.get(socketOptions.eventName)!;
+
+                if (httpOptions.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND) {
+                    const data = response as PriceTrendDataArray;
+                    if (data.months.length && data.hours.length) {
+                        socketOptions.data = `${data.months[data.months.length - 1]!} ${data.hours[data.hours.length - 1]!}`;
+                    }
+                    action(response, 'all');
+                } else {
+                    action(response);
+                }
+            }
         },
         async init() {
             if (this.isSocketInit) return;
@@ -73,13 +95,15 @@ export const useSocketStore = defineStore('socket', {
                     const payload: { event: SocketEventEnum; data: unknown } = JSON.parse(event.data);
                     if (payload.event === SocketEventEnum.CONFIG_UPDATE_CURRENCY && payload.data === 'UPDATE_CURRENCY_OK') {
                         isUpdatingConfig.value = false;
-                        this.currencyUpdateCallbacks.forEach((callback) => {
-                            callback();
+                        this.currencyUpdateCallbacks.forEach((config) => {
+                            config.callback();
+                            this.handleHttpRequest(config.httpOptions, config.socketOptions);
                         });
                     } else if (payload.event === SocketEventEnum.CONFIG_UPDATE_PERIOD && payload.data === 'UPDATE_PERIOD_OK') {
                         isUpdatingConfig.value = false;
-                        this.periodUpdateCallbacks.forEach((callback) => {
-                            callback();
+                        this.periodUpdateCallbacks.forEach((config) => {
+                            config.callback();
+                            this.handleHttpRequest(config.httpOptions, config.socketOptions);
                         });
                     } else if (this.requestedEvents.has(payload.event)) {
                         const callback = this.requestedEvents.get(payload.event)!;
@@ -104,7 +128,7 @@ export const useSocketStore = defineStore('socket', {
             const response = await useRequest<T>(routeName, { query, method: 'GET' });
             return response;
         },
-        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: T) => void) {
+        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: T, otherParam?: string) => void) {
             if (!socketOptions) {
                 if (httpOptions) {
                     const response = await useRequest<T>(httpOptions.routeName, { query: httpOptions.queryParams, method: 'GET' });
@@ -112,20 +136,9 @@ export const useSocketStore = defineStore('socket', {
                 }
             } else {
                 if (!this.requestedEvents.has(socketOptions.eventName)) {
-                    this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown) => void);
+                    this.requestedEvents.set(socketOptions.eventName, callback as (data: unknown, otherParam?: string) => void);
 
-                    if (httpOptions) {
-                        const response = await this.request(httpOptions);
-                        const action = this.requestedEvents.get(socketOptions.eventName)!;
-                        action(response);
-
-                        if (httpOptions.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND) {
-                            const data = response as PriceTrendDataArray;
-                            if (data.months.length && data.hours.length) {
-                                socketOptions.data = `${data.months[data.months.length - 1]!} ${data.hours[data.hours.length - 1]!}`;
-                            }
-                        }
-                    }
+                    await this.handleHttpRequest(httpOptions, socketOptions);
                     this.send(socketOptions);
                 }
             }
