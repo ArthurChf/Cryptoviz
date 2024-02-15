@@ -36,11 +36,20 @@ export class KafkaService {
         }
     }
 
+
     private async createTopic(topic: KafkaTopicEnum) {
         const admin = this.kafka.admin();
         await admin.connect();
         const clusterInfo = await admin.describeCluster();
-        const numBrokers = clusterInfo.brokers.length;
+        let numBrokers = clusterInfo.brokers.length;
+        let retries = 0;
+        while (numBrokers < 3 && retries < 5) {
+            console.log('Retrying to create topic', retries, '(', numBrokers, 'brokers)');
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            retries++;
+            numBrokers = (await admin.describeCluster()).brokers.length;
+        }
+
 
         await admin.createTopics({
             topics: [{

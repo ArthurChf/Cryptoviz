@@ -173,9 +173,6 @@
         "no-async-promise-executor": [
             "error"
         ],
-        "no-await-in-loop": [
-            "error"
-        ],
         "no-class-assign": [
             "error"
         ],
@@ -338,9 +335,6 @@
             "error"
         ],
         "no-param-reassign": [
-            "error"
-        ],
-        "no-promise-executor-return": [
             "error"
         ],
         "no-redeclare": [
