@@ -46,7 +46,7 @@ export class DatabaseService {
         const query = `SELECT
                             toDate(createdAt) as day,
                             formatDateTime(max(createdAt), '%T') as hour,
-                            dollar(formatNumber(max(lastPrice))) as price
+                            toFloat64(formatNumber(max(lastPrice))) as price
                         FROM crypto
                         WHERE
                             coin = '${currency}' AND (

@@ -121,7 +121,7 @@ export const useSocketStore = defineStore('socket', {
 
             let query = {
                 currency: currencyStore.selectedCurrency.symbol!,
-                period: appStore.selectedPeriod.valueOf()
+                period: appStore.selectedPeriod.toString()
             };
             if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
 

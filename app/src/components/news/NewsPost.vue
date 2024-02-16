@@ -5,7 +5,7 @@
                 <AppImage :name="news.image" size="40" class="rounded-full shadow-lg" />
                 <div class="flex flex-col">
                     <div class="flex items-center gap-3">
-                        <span class="bg-subtitle/10 text-title/70 border border-subtitle/20">{{ news.symbol! }}</span>
+                        <span class="bg-subtitle/10 text-title/70 border border-subtitle/20 px-1 text-xs rounded-full">{{ news.symbol?.toUpperCase() }}</span>
                         <AppTooltip :text="capitalize(news.source)" position="bottom" :show="isSourceTruncated">
                             <span class="font-bold text-title text-lg">{{ formatSource(news.source) }}</span>
                         </AppTooltip>

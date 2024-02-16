@@ -67,20 +67,12 @@ export class EventsGateway {
     @SubscribeMessage('config:update_currency')
     updateCurrency(@MessageBody() currency: string, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, currency);
-        console.log({
-            memory: this.memoryService.getClientSettings(client.id),
-            key: 'update currency'
-        });
         this.sendResponse(client, 'config:update_currency', 'UPDATE_CURRENCY_OK');
     }
 
     @SubscribeMessage('config:update_period')
     updatePeriod(@MessageBody() period: PeriodEnum, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, null, period);
-        console.log({
-            memory: this.memoryService.getClientSettings(client.id),
-            key: 'update period'
-        });
         this.sendResponse(client, 'config:update_period', 'UPDATE_PERIOD_OK');
     }
 
