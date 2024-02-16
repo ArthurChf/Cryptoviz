@@ -19,7 +19,12 @@ export class EventsGateway {
     constructor(
         private readonly memoryService: MemoryService,
         private readonly databaseService: DatabaseService
-    ) {
+    ) { }
+
+    toLocalISOString(date: Date): string {
+        const offset = date.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(date.getTime() - offset).toISOString().slice(0, -1);
+        return localISOTime;
     }
 
     @WebSocketServer()
@@ -50,12 +55,20 @@ export class EventsGateway {
     @SubscribeMessage('config:update_currency')
     updateCurrency(@MessageBody() currency: string, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, currency);
+        console.log({
+            memory: this.memoryService.getClientSettings(client.id),
+            key: 'update currency'
+        });
         this.sendResponse(client, 'config:update_currency', 'UPDATE_CURRENCY_OK');
     }
 
     @SubscribeMessage('config:update_period')
     updatePeriod(@MessageBody() period: PeriodEnum, @ConnectedSocket() client: Socket) {
         this.memoryService.updateClientSettings(client.id, null, period);
+        console.log({
+            memory: this.memoryService.getClientSettings(client.id),
+            key: 'update period'
+        });
         this.sendResponse(client, 'config:update_period', 'UPDATE_PERIOD_OK');
     }
 
@@ -69,12 +82,12 @@ export class EventsGateway {
     }
 
     @SubscribeMessage('crypto:get_currency_price_trend')
-    getCurrencyPriceTrend(@ConnectedSocket() client: Socket) {
+    getCurrencyPriceTrend(@ConnectedSocket() client: Socket, @MessageBody() lastDate: string) {
         this.loopData(async () => {
             const clientParams = this.memoryService.getClientSettings(client.id);
             const payload_date = {
-                day: clientParams.lastDate.split(' ')[0],
-                hour: clientParams.lastDate.split(' ')[1]
+                day: lastDate.split(' ')[0],
+                hour: lastDate.split(' ')[1]
             };
             let cachePriceTrendDate = this.memoryService.getCryptoTrendDate(client.id);
             if (!cachePriceTrendDate) {
@@ -82,31 +95,34 @@ export class EventsGateway {
                 cachePriceTrendDate = this.memoryService.getCryptoTrendDate(client.id);
             }
             const start_date = new Date(`${cachePriceTrendDate.day} ${cachePriceTrendDate.hour}`);
-            const [res] = await this.databaseService.getCurrencyPriceTrend(clientParams.currency, clientParams.period, 'day, hour', 'LIMIT 1', start_date);
-            if (res) {
-                const incrementedDate: Date = new Date(start_date);
-                // Mettre la date à la bonne heure
-                incrementedDate.setHours(incrementedDate.getHours() + 1);
+            const incrementedDate = new Date(start_date);
 
-                if (clientParams.period === PeriodEnum.ONE_DAY) {
-                    incrementedDate.setMinutes(incrementedDate.getMinutes() + 5);
-                }
-                if (clientParams.period === PeriodEnum.SEVEN_DAYS) {
-                    incrementedDate.setMinutes(incrementedDate.getMinutes() + 15);
-                }
-                if (clientParams.period === PeriodEnum.ONE_MONTH) {
-                    incrementedDate.setMinutes(incrementedDate.getHours() + 1);
-                }
-                if (clientParams.period === PeriodEnum.ONE_YEAR) {
-                    incrementedDate.setMinutes(incrementedDate.getHours() + 10);
-                }
-                const day = incrementedDate.toISOString().split('T')[0];
-                const hour = incrementedDate.toISOString().split('T')[1].split('.')[0];
-                this.sendResponse(client, 'crypto:get_currency_price_trend', res);
+            switch (clientParams.period) {
+            case PeriodEnum.ONE_DAY:
+                incrementedDate.setMinutes(incrementedDate.getMinutes() + 5);
+                break;
+            case PeriodEnum.SEVEN_DAYS:
+                incrementedDate.setMinutes(incrementedDate.getMinutes() + 15);
+                break;
+            case PeriodEnum.ONE_MONTH:
+                incrementedDate.setHours(incrementedDate.getHours() + 1);
+                break;
+            case PeriodEnum.ONE_YEAR:
+                incrementedDate.setHours(incrementedDate.getHours() + 10);
+                break;
+            }
+
+            const [res] = await this.databaseService.getCurrencyPriceTrend(clientParams.currency, clientParams.period, 'day, hour', 'LIMIT 1', incrementedDate);
+            if (res) {
+                const localISODate = this.toLocalISOString(incrementedDate);
+                const day = localISODate.split('T')[0];
+                const hour = localISODate.split('T')[1].split('.')[0];
                 this.memoryService.setCryptoTrendDate(client.id, { day, hour });
+                this.sendResponse(client, 'crypto:get_currency_price_trend', res);
             }
         }, client.id);
     }
+
 
     @SubscribeMessage('crypto:get_currency_transactions')
     getCurrencyTransactions(@ConnectedSocket() client: Socket) {
