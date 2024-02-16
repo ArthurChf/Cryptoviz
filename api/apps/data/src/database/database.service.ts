@@ -42,7 +42,7 @@ export class DatabaseService {
         }
     }
 
-    async getCurrencyPriceTrend(currency: string, period: PeriodEnum, orderBy: string, limit: string = '', start_date: Date = null) {
+    async getCurrencyPriceTrend(currency: string, period: PeriodEnum, orderBy: string, limit: string = '', start_date: string = null) {
         const query = `SELECT
                             toDate(createdAt) as day,
                             formatDateTime(max(createdAt), '%T') as hour,
@@ -50,14 +50,14 @@ export class DatabaseService {
                         FROM crypto
                         WHERE
                             coin = '${currency}' AND (
-                            createdAt  ${start_date ? `= parseDateTimeBestEffort('${start_date.toLocaleString()}')` : `>= now() -
+                            createdAt  ${start_date ? `= parseDateTimeBestEffort('${start_date}')` : `>= now() -
                                                                     CASE
                                                                         WHEN '${period}' = '1D' THEN 86400
                                                                         WHEN '${period}' = '7D' THEN 604800
                                                                         WHEN '${period}' = '1M' THEN 2592000
                                                                         WHEN '${period}' = '1Y' THEN 31536000
                                                                     END`}
-                            ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date.toLocaleString()}') + 1` : ''} )
+                            ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date}') + 1` : ''} )
                         GROUP BY
                             day,
                             CASE
@@ -70,12 +70,11 @@ export class DatabaseService {
                             ${orderBy}
                         ${limit}
                         `;
-
         try {
             const res = await this.cryptovizClickhouseServer.queryPromise(query);
             return res;
         } catch (error) {
-            // console.error('Error executing query: ', error);
+            console.error('Error executing query: ', error);
         }
     }
 

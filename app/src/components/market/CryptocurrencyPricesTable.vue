@@ -129,7 +129,7 @@ onMounted(() => {
     });
 });
 
-const maxPriceChangeRateLength = 9;
+const maxPriceChangeRateLength = 6;
 
 const isPriceChangeRateTruncated = (changeRate: number) => {
     return changeRate.toString().length > maxPriceChangeRateLength;
