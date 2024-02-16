@@ -57,7 +57,6 @@ export class DatabaseService {
                                                                         WHEN '${period}' = '1M' THEN 2592000
                                                                         WHEN '${period}' = '1Y' THEN 31536000
                                                                     END`}
-                            ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date.toLocaleString()}') - 1` : ''}
                             ${start_date ? `OR createdAt = parseDateTimeBestEffort('${start_date.toLocaleString()}') + 1` : ''} )
                         GROUP BY
                             day,
