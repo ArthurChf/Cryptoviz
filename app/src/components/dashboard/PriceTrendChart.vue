@@ -18,7 +18,7 @@ const chart = shallowRef<echarts.ECharts>();
 const priceTrendChartId = 'priceTrendChart';
 const maxDisplayedPrices = 7;
 
-const months = ref<string[]>([]);
+const days = ref<string[]>([]);
 const prices = ref<number[]>([]);
 const hours = ref<string[]>([]);
 
@@ -26,18 +26,18 @@ const updateChartData = (payload: unknown, type: 'all' | 'one') => {
     if (type === 'all') {
         const data = payload as PriceTrendDataArray;
         prices.value = data.prices;
-        months.value = data.months;
+        days.value = data.days;
         hours.value = data.hours;
     } else {
         const data = payload as PriceTrendData;
         prices.value.push(data.price);
-        months.value.push(data.month);
+        days.value.push(data.day);
         hours.value.push(data.hour);
     }
 
     chart.value!.setOption({
         xAxis: {
-            data: months.value
+            data: days.value
         },
         series: [
             {
@@ -78,7 +78,7 @@ onMounted(() => {
             },
             formatter(params) {
                 const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
-                const month = chartData.name;
+                const day = chartData.name;
                 const value = chartData.value as number;
                 const hour = hours.value[chartData.dataIndex]!;
                 const bulletColor = '#10b569';
@@ -86,7 +86,7 @@ onMounted(() => {
                 const str = `
                     <div class="flex flex-col gap-3">
                         <div class="flex items-center justify-between text-md gap-16">
-                            <span class="font-semibold text-title">${month}</span>
+                            <span class="font-semibold text-title">${day}</span>
                             <span class="font-medium text-subtitle">${hour}</span>
                         </div>
                         <div class="flex flex-col gap-1">
@@ -117,7 +117,7 @@ onMounted(() => {
                 if (value.max < maxDisplayedPrices) return 0;
                 return value.max - maxDisplayedPrices;
             },
-            data: months.value,
+            data: days.value,
             axisLabel: {
                 color: '#adadad',
                 margin: 40,
@@ -217,7 +217,7 @@ onMounted(() => {
     });
 
     const updateChartCallback = async () => {
-        months.value = [];
+        days.value = [];
         prices.value = [];
         hours.value = [];
     };

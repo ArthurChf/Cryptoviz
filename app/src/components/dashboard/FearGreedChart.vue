@@ -10,6 +10,7 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { useSocketStore } from '@/stores/socketStore';
 
 const chart = shallowRef<echarts.ECharts>();
 const fearGreedChartId = 'fearGreedChart';
@@ -122,5 +123,13 @@ onMounted(() => {
     useFetchData(httpOptions, socketOptions, (data: number) => {
         updateChartData(data);
     });
+
+    const socketStore = useSocketStore();
+    const updateDataCallback = () => {
+        sentiment.value = 50;
+    };
+
+    socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
 });
 </script>

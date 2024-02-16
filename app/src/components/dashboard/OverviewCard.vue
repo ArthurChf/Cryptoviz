@@ -51,6 +51,7 @@ import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
 import type { CurrencyData } from '@/interfaces/CurrencyData';
+import { useSocketStore } from '@/stores/socketStore';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
@@ -106,4 +107,17 @@ useFetchData(httpOptions, socketOptions, (data) => {
     currencyData.transactions = totalTrades;
     currencyData.volume = volume;
 });
+
+const socketStore = useSocketStore();
+const updateDataCallback = () => {
+    currencyData.price = '';
+    currencyData.priceChangeRate = 0;
+    currencyData.priceHigh = '';
+    currencyData.priceLow = '';
+    currencyData.transactions = '';
+    currencyData.volume = '';
+};
+
+socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
+socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
 </script>

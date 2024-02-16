@@ -53,6 +53,7 @@ import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
 import { useFetchData } from '@/composables/useFetchData';
 import { useAppStore } from '@/stores/appStore';
+import { useSocketStore } from '@/stores/socketStore';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
@@ -98,5 +99,13 @@ onMounted(() => {
     useFetchData(httpOptions, socketOptions, (data: News[]) => {
         updateNews(data);
     });
+
+    const socketStore = useSocketStore();
+    const updateDataCallback = () => {
+        newsList.value = [];
+    };
+
+    socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
 });
 </script>
