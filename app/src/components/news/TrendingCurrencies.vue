@@ -1,7 +1,7 @@
 <template>
     <AppContainer class="gap-8">
         <h2 class="text-2xl text-title font-bold">Trending Currencies</h2>
-        <div v-if="selectedCurrency.name" class="flex flex-col gap-8">
+        <div v-if="selectedCurrency.name && !isUpdatingConfig" class="flex flex-col gap-8">
             <div class="flex gap-5 items-center" v-for="currency in trendingCurrencies">
                 <div class="w-[57px] h-[50px]">
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
@@ -46,9 +46,13 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { useAppStore } from '@/stores/appStore';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
+
+const appStore = useAppStore();
+const { isUpdatingConfig } = storeToRefs(appStore);
 
 const trendingCurrencies = ref<NewsTrendingCurrency[]>([]);
 

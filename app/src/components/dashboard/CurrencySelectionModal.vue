@@ -83,7 +83,7 @@ const searchCurrency = async (value: string) => {
 const isSelectedCurrency = (currency: Currency) => {
     return selectedCurrency.value.image === currency.image && selectedCurrency.value.name === currency.name && selectedCurrency.value.symbol === currency.symbol;
 };
-const selectCurrency = (currency: Currency) => {
+const selectCurrency = async (currency: Currency) => {
     if (!isSelectedCurrency(currency)) currencyStore.setSelectedCurrency(currency);
 };
 

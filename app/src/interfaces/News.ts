@@ -1,5 +1,6 @@
 export interface News {
     source: string;
+    symbol?: string;
     sentiment: number;
     title: string;
     date: string;

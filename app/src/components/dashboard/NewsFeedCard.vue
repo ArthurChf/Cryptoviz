@@ -26,7 +26,7 @@
     </AppModal>
     <AppContainer class="!px-4 !py-5">
         <h2 class="px-3 text-2xl text-title font-bold">News Feed</h2>
-        <div v-if="selectedCurrency.name" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
+        <div v-if="selectedCurrency.name && !isUpdatingConfig" class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden scrollbar max-h-[calc(100vh-100px)]" ref="newsFeedPosts">
             <NewsPost v-for="(news, newsId) in newsList" :key="newsId" :sentiment="news.sentiment" :date="news.date" :source="news.source" :image="news.image" :title="news.title" @click="selectNews(news)" />
         </div>
         <AppLoader v-else class="self-center stroke-subtitle" size="35" />
@@ -52,9 +52,14 @@ import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
 import { useFetchData } from '@/composables/useFetchData';
+import { useAppStore } from '@/stores/appStore';
+import { useSocketStore } from '@/stores/socketStore';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
+
+const appStore = useAppStore();
+const { isUpdatingConfig } = storeToRefs(appStore);
 
 const [newsFeedPosts] = useAutoAnimate();
 
@@ -94,5 +99,13 @@ onMounted(() => {
     useFetchData(httpOptions, socketOptions, (data: News[]) => {
         updateNews(data);
     });
+
+    const socketStore = useSocketStore();
+    const updateDataCallback = () => {
+        newsList.value = [];
+    };
+
+    socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
 });
 </script>

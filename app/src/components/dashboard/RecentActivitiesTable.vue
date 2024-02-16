@@ -30,6 +30,7 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { useSocketStore } from '@/stores/socketStore';
 
 const [recentActivitiesTable] = useAutoAnimate();
 
@@ -55,5 +56,13 @@ onMounted(() => {
             lastTransactions.value.unshift(data);
         }
     });
+
+    const socketStore = useSocketStore();
+    const updateDataCallback = () => {
+        lastTransactions.value = [];
+    };
+
+    socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
 });
 </script>

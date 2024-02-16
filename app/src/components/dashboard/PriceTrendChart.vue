@@ -5,26 +5,39 @@
 <script setup lang="ts">
 import { onMounted, ref, shallowRef } from 'vue';
 import * as echarts from 'echarts';
+import { useSocketStore } from '@/stores/socketStore';
+import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
+import type { HttpOptions } from '@/interfaces/HttpOptions';
+import { useFetchData } from '@/composables/useFetchData';
+import type { SocketOptions } from '@/interfaces/SocketOptions';
+import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import type { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
+import type { PriceTrendData } from '@/interfaces/PriceTrendData';
 
 const chart = shallowRef<echarts.ECharts>();
 const priceTrendChartId = 'priceTrendChart';
 const maxDisplayedPrices = 7;
 
-const months = ref(['2023-09-01', '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06', '2023-09-07']);
-const prices = ref([12, 53, 47, 39, 54, 49, 68]);
-const hours = ref(['08:00:00', '10:30:00', '05:32:00', '15:45:00', '09:00:00', '18:30:00', '20:00:00']);
+const days = ref<string[]>([]);
+const prices = ref<number[]>([]);
+const hours = ref<string[]>([]);
 
-const updateChartData = () => {
-    const randomPrice = prices.value[Math.floor(Math.random() * prices.value.length)]!;
-    const randomMonth = months.value[Math.floor(Math.random() * months.value.length)]!;
-    const randomHour = hours.value[Math.floor(Math.random() * hours.value.length)]!;
-    prices.value.push(randomPrice);
-    months.value.push(randomMonth);
-    hours.value.push(randomHour);
+const updateChartData = (payload: unknown, type: 'all' | 'one') => {
+    if (type === 'all') {
+        const data = payload as PriceTrendDataArray;
+        prices.value = data.prices;
+        days.value = data.days;
+        hours.value = data.hours;
+    } else {
+        const data = payload as PriceTrendData;
+        prices.value.push(data.price);
+        days.value.push(data.day);
+        hours.value.push(data.hour);
+    }
 
     chart.value!.setOption({
         xAxis: {
-            data: months.value
+            data: days.value
         },
         series: [
             {
@@ -65,15 +78,15 @@ onMounted(() => {
             },
             formatter(params) {
                 const chartData = Array.isArray(params) ? params[0]! : [params][0]!;
-                const month = chartData.name;
+                const day = chartData.name;
                 const value = chartData.value as number;
                 const hour = hours.value[chartData.dataIndex]!;
-                const bulletColor = value < 40 ? '#d92a2a' : '#10b569';
+                const bulletColor = '#10b569';
 
                 const str = `
                     <div class="flex flex-col gap-3">
                         <div class="flex items-center justify-between text-md gap-16">
-                            <span class="font-semibold text-title">${month}</span>
+                            <span class="font-semibold text-title">${day}</span>
                             <span class="font-medium text-subtitle">${hour}</span>
                         </div>
                         <div class="flex flex-col gap-1">
@@ -104,7 +117,7 @@ onMounted(() => {
                 if (value.max < maxDisplayedPrices) return 0;
                 return value.max - maxDisplayedPrices;
             },
-            data: months.value,
+            data: days.value,
             axisLabel: {
                 color: '#adadad',
                 margin: 40,
@@ -189,5 +202,27 @@ onMounted(() => {
     };
 
     option && chart.value!.setOption(option);
+
+    const socketStore = useSocketStore();
+    const httpOptions: HttpOptions = {
+        routeName: HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND
+    };
+    const socketOptions: SocketOptions = {
+        eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_PRICE_TREND
+    };
+
+    useFetchData(httpOptions, socketOptions, (data, otherParam) => {
+        const type = otherParam === 'all' ? 'all' : 'one';
+        updateChartData(data, type);
+    });
+
+    const updateChartCallback = async () => {
+        days.value = [];
+        prices.value = [];
+        hours.value = [];
+    };
+
+    socketStore.onCurrencyUpdate(updateChartCallback, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(updateChartCallback, httpOptions, socketOptions);
 });
 </script>

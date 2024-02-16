@@ -4,9 +4,12 @@
             <div class="flex gap-4">
                 <AppImage :name="news.image" size="40" class="rounded-full shadow-lg" />
                 <div class="flex flex-col">
-                    <AppTooltip :text="capitalize(news.source)" position="bottom" :show="isSourceTruncated">
-                        <span class="font-bold text-title text-lg">{{ formatSource(news.source) }}</span>
-                    </AppTooltip>
+                    <div class="flex items-center gap-3">
+                        <span class="bg-subtitle/10 text-title/70 border border-subtitle/20">{{ news.symbol! }}</span>
+                        <AppTooltip :text="capitalize(news.source)" position="bottom" :show="isSourceTruncated">
+                            <span class="font-bold text-title text-lg">{{ formatSource(news.source) }}</span>
+                        </AppTooltip>
+                    </div>
                     <span class="text-xs font-light text-subtitle">{{ news.date }}</span>
                 </div>
             </div>
