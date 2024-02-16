@@ -31,7 +31,9 @@
             </Transition>
             <Transition :name="TransitionEnum.FADE" mode="out-in">
                 <td class="py-5 font-medium text-subtitle" :key="currency.priceChangeRate">
-                    <span v-if="selectedCurrency.name" class="flex items-center gap-2 w-fit border rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currency.priceChangeRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']">{{ currency.priceChangeRate > 0 ? '+' : '' }}{{ currency.priceChangeRate }} %</span>
+                    <AppTooltip :text="`${currency.priceChangeRate.toString()} %`" position="bottom" :show="isPriceChangeRateTruncated(currency.priceChangeRate)">
+                        <span v-if="selectedCurrency.name" class="flex items-center gap-2 w-fit border rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currency.priceChangeRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']">{{ currency.priceChangeRate > 0 ? '+' : '' }}{{ formatPriceChangeRate(currency.priceChangeRate) }} %</span>
+                    </AppTooltip>
                 </td>
             </Transition>
             <Transition :name="TransitionEnum.FADE" mode="out-in">
@@ -60,6 +62,7 @@
 import AppImage from '@/components/AppImage.vue';
 import type { CurrencyData } from '@/interfaces/CurrencyData';
 import { onMounted, ref } from 'vue';
+import AppTooltip from '@/components/AppTooltip.vue';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { storeToRefs } from 'pinia';
 import AppIcon from '@/components/AppIcon.vue';
@@ -70,6 +73,7 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { SocketEventEnum } from '@/enums/SocketEventEnum';
+import { truncate } from '@/utils/formatString';
 
 const currencyStore = useCurrencyStore();
 const { selectedCurrency } = storeToRefs(currencyStore);
@@ -124,4 +128,13 @@ onMounted(() => {
         updateData(data);
     });
 });
+
+const maxPriceChangeRateLength = 9;
+
+const isPriceChangeRateTruncated = (changeRate: number) => {
+    return changeRate.toString().length > maxPriceChangeRateLength;
+};
+const formatPriceChangeRate = (changeRate: number) => {
+    return truncate(changeRate.toString(), maxPriceChangeRateLength);
+};
 </script>

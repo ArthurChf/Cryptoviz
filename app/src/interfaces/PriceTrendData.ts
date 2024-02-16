@@ -1,5 +1,5 @@
 export interface PriceTrendData {
     price: number;
-    month: string;
+    day: string;
     hour: string;
 }

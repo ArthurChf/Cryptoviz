@@ -68,8 +68,8 @@ export const useSocketStore = defineStore('socket', {
 
                 if (httpOptions.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND) {
                     const data = response as PriceTrendDataArray;
-                    if (data.months.length && data.hours.length) {
-                        socketOptions.data = `${data.months[data.months.length - 1]!} ${data.hours[data.hours.length - 1]!}`;
+                    if (data.days.length && data.hours.length) {
+                        socketOptions.data = `${data.days[data.days.length - 1]!} ${data.hours[data.hours.length - 1]!}`;
                     }
                     action(response, 'all');
                 } else {
@@ -107,7 +107,7 @@ export const useSocketStore = defineStore('socket', {
                         });
                     } else if (this.requestedEvents.has(payload.event)) {
                         const callback = this.requestedEvents.get(payload.event)!;
-                        callback(payload.data);
+                        if (!isUpdatingConfig.value) callback(payload.data);
                     }
                 } catch (error) {
                     console.error('Error handling message', error);

@@ -1,5 +1,5 @@
 export interface PriceTrendDataArray {
     prices: number[];
-    months: string[];
+    days: string[];
     hours: string[];
 }
