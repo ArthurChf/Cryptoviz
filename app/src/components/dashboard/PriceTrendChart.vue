@@ -22,19 +22,7 @@ const days = ref<string[]>([]);
 const prices = ref<number[]>([]);
 const hours = ref<string[]>([]);
 
-const updateChartData = (payload: unknown, type: 'all' | 'one') => {
-    if (type === 'all') {
-        const data = payload as PriceTrendDataArray;
-        prices.value = data.prices;
-        days.value = data.days;
-        hours.value = data.hours;
-    } else {
-        const data = payload as PriceTrendData;
-        prices.value.push(data.price);
-        days.value.push(data.day);
-        hours.value.push(data.hour);
-    }
-
+const updateChart = () => {
     chart.value!.setOption({
         xAxis: {
             data: days.value
@@ -45,6 +33,32 @@ const updateChartData = (payload: unknown, type: 'all' | 'one') => {
             }
         ]
     });
+};
+
+const resetChart = async () => {
+    days.value = [];
+    prices.value = [];
+    hours.value = [];
+
+    updateChart();
+};
+
+const updateChartData = (payload: unknown, type: 'all' | 'one' | 'mockReset') => {
+    if (type === 'all') {
+        const data = payload as PriceTrendDataArray;
+        prices.value = data.prices;
+        days.value = data.days;
+        hours.value = data.hours;
+    } else if (type === 'one') {
+        const data = payload as PriceTrendData;
+        prices.value.push(data.price);
+        days.value.push(data.day);
+        hours.value.push(data.hour);
+    } else {
+        resetChart();
+    }
+
+    updateChart();
 };
 
 onMounted(() => {
@@ -212,17 +226,10 @@ onMounted(() => {
     };
 
     useFetchData(httpOptions, socketOptions, (data, otherParam) => {
-        const type = otherParam === 'all' ? 'all' : 'one';
-        updateChartData(data, type);
+        updateChartData(data, otherParam as 'all' | 'one' | 'mockReset');
     });
 
-    const updateChartCallback = async () => {
-        days.value = [];
-        prices.value = [];
-        hours.value = [];
-    };
-
-    socketStore.onCurrencyUpdate(updateChartCallback, httpOptions, socketOptions);
-    socketStore.onPeriodUpdate(updateChartCallback, httpOptions, socketOptions);
+    socketStore.onCurrencyUpdate(resetChart, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(resetChart, httpOptions, socketOptions);
 });
 </script>

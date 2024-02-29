@@ -8,7 +8,8 @@ export const useAppStore = defineStore('app', {
     state: () => ({
         selectedPeriod: getDefaultPeriod(),
         displayedImagesCount: 0,
-        isUpdatingConfig: true
+        isUpdatingConfig: true,
+        dataReloadInterval: 2000
     }),
     actions: {
         async selectPeriod(period: PeriodEnum) {
