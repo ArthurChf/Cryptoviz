@@ -8,6 +8,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useCurrencyStore } from '@/stores/currencyStore';
 import { HttpRouteEnum } from '@/enums/HttpRouteEnum';
 import type { PriceTrendDataArray } from '@/interfaces/PriceTrendDataArray';
+import { isDemoEnv } from '@/composables/useEnv';
 
 interface ConfigUpdateOptions {
     callback(): void;
@@ -27,7 +28,7 @@ export const useSocketStore = defineStore('socket', {
     actions: {
         async waitSocketConnection() {
             if (this.socketConnectionPromise) return this.socketConnectionPromise;
-            if (this.socketClient.readyState === this.socketClient.OPEN) return null;
+            if (this.socketClient!.readyState === this.socketClient!.OPEN) return null;
 
             this.socketConnectionPromise = new Promise((resolve, reject) => {
                 const errorListener = () => {
@@ -36,24 +37,25 @@ export const useSocketStore = defineStore('socket', {
                     resolve();
                 };
                 const openListener = () => {
-                    this.socketClient.removeEventListener('open', openListener);
-                    this.socketClient.removeEventListener('error', errorListener);
+                    this.socketClient!.removeEventListener('open', openListener);
+                    this.socketClient!.removeEventListener('error', errorListener);
                     this.socketConnectionPromise = null;
                     resolve();
                 };
-                this.socketClient.addEventListener('open', openListener);
-                this.socketClient.addEventListener('error', errorListener);
+                this.socketClient!.addEventListener('open', openListener);
+                this.socketClient!.addEventListener('error', errorListener);
             });
 
             return this.socketConnectionPromise;
         },
         async send(socketOptions: SocketOptions) {
+            if (isDemoEnv || !this.socketClient) return;
             await this.init();
             const payload = {
                 event: socketOptions.eventName,
                 data: socketOptions.data ?? ''
             };
-            this.socketClient.send(JSON.stringify(payload));
+            this.socketClient!.send(JSON.stringify(payload));
         },
         onCurrencyUpdate(callback: () => void, httpOptions: HttpOptions | null, socketOptions: SocketOptions | null) {
             this.currencyUpdateCallbacks.push({ callback, httpOptions, socketOptions });
@@ -90,7 +92,7 @@ export const useSocketStore = defineStore('socket', {
 
             const { isUpdatingConfig } = storeToRefs(appStore);
 
-            this.socketClient.addEventListener('message', (event) => {
+            this.socketClient!.addEventListener('message', (event) => {
                 try {
                     const payload: { event: SocketEventEnum; data: unknown } = JSON.parse(event.data);
                     if (payload.event === SocketEventEnum.CONFIG_UPDATE_CURRENCY && payload.data === 'UPDATE_CURRENCY_OK') {
@@ -114,7 +116,7 @@ export const useSocketStore = defineStore('socket', {
                 }
             });
         },
-        async request<T>(httpOptions: HttpOptions) {
+        async request(httpOptions: HttpOptions) {
             const { routeName } = httpOptions;
             const currencyStore = useCurrencyStore();
             const appStore = useAppStore();
@@ -125,13 +127,13 @@ export const useSocketStore = defineStore('socket', {
             };
             if (httpOptions?.queryParams) query = { ...query, ...httpOptions.queryParams };
 
-            const response = await useRequest<T>(routeName, { query, method: 'GET' });
+            const response = await useRequest(routeName, { query, method: 'GET' });
             return response;
         },
-        async addEvent<T>(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: T, otherParam?: string) => void) {
+        async addEvent(httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: unknown, otherParam?: string) => void) {
             if (!socketOptions) {
                 if (httpOptions) {
-                    const response = await useRequest<T>(httpOptions.routeName, { query: httpOptions.queryParams, method: 'GET' });
+                    const response = await useRequest(httpOptions.routeName, { query: httpOptions.queryParams, method: 'GET' });
                     callback(response);
                 }
             } else {
