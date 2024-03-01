@@ -37,6 +37,10 @@ const [recentActivitiesTable] = useAutoAnimate();
 const lastTransactions = ref<Transaction[]>([]);
 const maxTransactions = 30;
 
+const resetData = () => {
+    lastTransactions.value = [];
+};
+
 onMounted(() => {
     const httpOptions: HttpOptions = {
         routeName: HttpRouteEnum.CRYPTO_GET_CURRENCY_TRANSACTIONS
@@ -48,7 +52,7 @@ onMounted(() => {
         if (Array.isArray(payload)) {
             const data = payload as Transaction[];
             lastTransactions.value = data;
-        } else {
+        } else if (!Array.isArray(payload)) {
             const data = payload as Transaction;
             if (lastTransactions.value.length === maxTransactions) {
                 lastTransactions.value.pop();
@@ -58,11 +62,8 @@ onMounted(() => {
     });
 
     const socketStore = useSocketStore();
-    const updateDataCallback = () => {
-        lastTransactions.value = [];
-    };
 
-    socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);
-    socketStore.onPeriodUpdate(updateDataCallback, httpOptions, socketOptions);
+    socketStore.onCurrencyUpdate(resetData, httpOptions, socketOptions);
+    socketStore.onPeriodUpdate(resetData, httpOptions, socketOptions);
 });
 </script>

@@ -3,6 +3,7 @@ import type { HttpOptions } from '@/interfaces/HttpOptions';
 import type { SocketOptions } from '@/interfaces/SocketOptions';
 import { getCurrencyData } from '@/mocks/getCurrencyData';
 import { getPriceTrend } from '@/mocks/getPriceTrend';
+import { getCurrencyTransactions } from '@/mocks/getCurrencyTransactions';
 import { useAppStore } from '@/stores/appStore';
 
 export const useMock = (httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: unknown, otherParam?: string) => void) => {
@@ -13,5 +14,7 @@ export const useMock = (httpOptions: HttpOptions | null, socketOptions: SocketOp
         getCurrencyData(callback, appStore.dataReloadInterval);
     } else if (httpOptions?.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_PRICE_TREND) {
         getPriceTrend(callback, appStore.dataReloadInterval);
+    } else if (httpOptions?.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_TRANSACTIONS) {
+        getCurrencyTransactions(callback, appStore.dataReloadInterval);
     }
 };
