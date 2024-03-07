@@ -120,13 +120,13 @@ onMounted(() => {
     const socketOptions: SocketOptions = {
         eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_FEAR_AND_GREED
     };
-    useFetchData(httpOptions, socketOptions, (data: number) => {
-        updateChartData(data);
+    useFetchData(httpOptions, socketOptions, (data) => {
+        updateChartData(data as number);
     });
 
     const socketStore = useSocketStore();
     const updateDataCallback = () => {
-        sentiment.value = 50;
+        updateChartData(50);
     };
 
     socketStore.onCurrencyUpdate(updateDataCallback, httpOptions, socketOptions);

@@ -5,6 +5,7 @@ import { getCurrencyData } from '@/mocks/getCurrencyData';
 import { getPriceTrend } from '@/mocks/getPriceTrend';
 import { getCurrencyTransactions } from '@/mocks/getCurrencyTransactions';
 import { useAppStore } from '@/stores/appStore';
+import { getCurrencyFearAndGreed } from '@/mocks/getCurrencyFearAndGreed';
 
 export const useMock = (httpOptions: HttpOptions | null, socketOptions: SocketOptions | null, callback: (data: unknown, otherParam?: string) => void) => {
     const appStore = useAppStore();
@@ -16,5 +17,7 @@ export const useMock = (httpOptions: HttpOptions | null, socketOptions: SocketOp
         getPriceTrend(callback, appStore.dataReloadInterval);
     } else if (httpOptions?.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_TRANSACTIONS) {
         getCurrencyTransactions(callback, appStore.dataReloadInterval);
+    } else if (httpOptions?.routeName === HttpRouteEnum.CRYPTO_GET_CURRENCY_FEAR_AND_GREED) {
+        getCurrencyFearAndGreed(callback, appStore.dataReloadInterval);
     }
 };
