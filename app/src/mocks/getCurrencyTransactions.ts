@@ -42,7 +42,7 @@ export const getCurrencyTransactions = (callback: (data: unknown, otherParam?: s
             currencyName: 'Bitcoin',
             currencyImage: 'currencies/btc.webp',
             amount: '$853',
-            id: '#5',
+            id: '',
             date: '2024-02-29 02:10:08'
         },
         {
@@ -50,7 +50,7 @@ export const getCurrencyTransactions = (callback: (data: unknown, otherParam?: s
             currencyName: 'Uniswap',
             currencyImage: 'currencies/uni.webp',
             amount: '$55',
-            id: '#6',
+            id: '',
             date: '2024-02-29 02:10:10'
         },
         {
@@ -58,7 +58,7 @@ export const getCurrencyTransactions = (callback: (data: unknown, otherParam?: s
             currencyName: 'Ripple',
             currencyImage: 'currencies/xrp.webp',
             amount: '$21',
-            id: '#7',
+            id: '',
             date: '2024-02-29 02:10:12'
         },
         {
@@ -66,16 +66,18 @@ export const getCurrencyTransactions = (callback: (data: unknown, otherParam?: s
             currencyName: 'Avalanche',
             currencyImage: 'currencies/avax.webp',
             amount: '$16',
-            id: '#8',
+            id: '',
             date: '2024-02-29 02:10:14'
         }
     ]);
-
     const currentDataIndex = ref(0);
+    const lastTransactionId = ref(5);
 
     callback(allData);
     setInterval(() => {
-        callback(data.value[currentDataIndex.value]);
+        const currentRow = { ...data.value[currentDataIndex.value]! };
+        currentRow.id = `#${lastTransactionId.value++}`;
+        callback(currentRow);
         currentDataIndex.value = (currentDataIndex.value + 1) % data.value.length;
     }, reloadInterval);
 };
