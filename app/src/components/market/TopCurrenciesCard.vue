@@ -38,8 +38,8 @@ onMounted(() => {
     const socketOptions: SocketOptions = {
         eventName: SocketEventEnum.CRYPTO_GET_TOP_CURRENCIES
     };
-    useFetchData(httpOptions, socketOptions, (data: TopCurrency[]) => {
-        topCurrencies.value = data;
+    useFetchData(httpOptions, socketOptions, (data: unknown) => {
+        topCurrencies.value = data as TopCurrency[];
     });
 });
 </script>

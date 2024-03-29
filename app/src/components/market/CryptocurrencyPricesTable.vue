@@ -124,8 +124,8 @@ onMounted(() => {
     const socketOptions: SocketOptions = {
         eventName: SocketEventEnum.CRYPTO_GET_ALL_CURRENCIES_DATA
     };
-    useFetchData(httpOptions, socketOptions, (data: CurrencyData[]) => {
-        updateData(data);
+    useFetchData(httpOptions, socketOptions, (data: unknown) => {
+        updateData(data as CurrencyData[]);
     });
 });
 

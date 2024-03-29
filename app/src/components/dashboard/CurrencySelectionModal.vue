@@ -70,8 +70,8 @@ const fetchCurrencies = async (search: string = '') => {
             search
         }
     };
-    await useFetchData(httpOptions, null, (data: Currency[]) => {
-        currencies.value = data;
+    await useFetchData(httpOptions, null, (data: unknown) => {
+        currencies.value = data as Currency[];
     });
     isSearchLoading.value = false;
 };

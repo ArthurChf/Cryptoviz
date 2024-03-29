@@ -98,8 +98,15 @@ const httpOptions: HttpOptions = {
 const socketOptions: SocketOptions = {
     eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_DATA
 };
-useFetchData(httpOptions, socketOptions, (data) => {
-    const { price, growthRate, priceHigh, priceLow, totalTrades, volume } = data;
+useFetchData(httpOptions, socketOptions, (data: unknown) => {
+    const { price, growthRate, priceHigh, priceLow, totalTrades, volume } = data as {
+        price: string;
+        growthRate: number;
+        priceHigh: string;
+        priceLow: string;
+        totalTrades: string;
+        volume: string;
+    };
     currencyData.price = price;
     currencyData.priceChangeRate = growthRate;
     currencyData.priceHigh = priceHigh;
