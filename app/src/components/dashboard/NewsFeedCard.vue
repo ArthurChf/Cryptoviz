@@ -96,8 +96,8 @@ onMounted(() => {
     const socketOptions: SocketOptions = {
         eventName: SocketEventEnum.CRYPTO_GET_CURRENCY_NEWS
     };
-    useFetchData(httpOptions, socketOptions, (data: News[]) => {
-        updateNews(data);
+    useFetchData(httpOptions, socketOptions, (data: unknown) => {
+        updateNews(data as News[]);
     });
 
     const socketStore = useSocketStore();
