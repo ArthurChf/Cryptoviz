@@ -3,7 +3,7 @@
         <h2 class="text-2xl text-title font-bold">Trending Currencies</h2>
         <div v-if="selectedCurrency.name && !isUpdatingConfig" class="flex flex-col gap-8">
             <div class="flex gap-5 items-center" v-for="currency in trendingCurrencies">
-                <div class="w-[57px] h-[50px]">
+                <div>
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
                         <AppImage :name="currency.image" size="50" :key="currency.image" class="rounded-full shadow-md" />
                     </Transition>

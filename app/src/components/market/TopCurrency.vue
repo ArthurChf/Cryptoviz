@@ -1,16 +1,16 @@
 <template>
-    <div class="flex flex-col gap-7 bg-background py-8 px-9 rounded-xl">
+    <div class="flex flex-col gap-6 bg-background py-8 px-9 rounded-xl">
         <div class="flex gap-4 justify-between">
             <div class="flex gap-5 items-center">
-                <AppImage :name="currency.image" size="65" class="rounded-full shadow-[#000] shadow-md" />
-                <div class="flex flex-col gap-1">
+                <AppImage :name="currency.image" size="55" class="rounded-full shadow-[#000] shadow-md" />
+                <div class="flex flex-col">
                     <Transition mode="out-in" :name="TransitionEnum.FADE_SLIDE">
                         <AppTooltip :text="currency.name" position="top" :show="isCurrencyNameTruncated">
-                            <h3 class="text-3xl font-bold text-title" :key="currency.name">{{ formatCurrencyName(currency.name) }}</h3>
+                            <h3 class="text-2xl font-bold text-title" :key="currency.name">{{ formatCurrencyName(currency.name) }}</h3>
                         </AppTooltip>
                     </Transition>
                     <Transition mode="out-in" :name="TransitionEnum.FADE_SLIDE">
-                        <span class="text-subtitle font-semibold text-xl" :key="currency.symbol">{{ currency.symbol }}</span>
+                        <span class="text-subtitle font-semibold text-lg" :key="currency.symbol">{{ currency.symbol }}</span>
                     </Transition>
                 </div>
             </div>

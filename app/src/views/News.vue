@@ -1,6 +1,6 @@
 <template>
     <div class="flex w-full p-10 gap-6">
-        <div class="w-7/12 2xl:w-8/12">
+        <div class="w-[70%]">
             <NewsFeed />
         </div>
         <div class="sticky top-10 h-fit flex-1">
