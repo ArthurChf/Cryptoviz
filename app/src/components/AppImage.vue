@@ -1,5 +1,5 @@
 <template>
-    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" :style="`width: ${size}px; height: max-content;`" class="transition duration-200" :class="imageLoading ? 'opacity-0' : 'opacity-100'" @load="imageLoading = false" />
+    <img v-if="name" :src="imageSrc" :key="imageId" :id="imageId" class="h-max transition duration-200" :class="imageLoading ? 'opacity-0' : 'opacity-100'" @load="imageLoading = false" />
 </template>
 
 <script setup lang="ts">
@@ -9,7 +9,6 @@ import { storeToRefs } from 'pinia';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const props = defineProps<{
-    size: string;
     name: string;
 }>();
 

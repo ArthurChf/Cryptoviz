@@ -18,7 +18,7 @@
                                     </div>
                                     <AppTooltip position="bottom" :text="currency.name">
                                         <div class="flex items-start gap-4 mt-2">
-                                            <AppImage :name="currency.image" size="40" class="rounded-full shadow-md" />
+                                            <AppImage :name="currency.image" class="w-[40px] rounded-full shadow-md" />
                                             <div class="flex flex-col gap-[3px]">
                                                 <span class="text-title font-semibold text-lg">{{ formatCurrency(currency.name) }}</span>
                                                 <span class="text-subtitle text-sm">{{ currency.symbol }}</span>

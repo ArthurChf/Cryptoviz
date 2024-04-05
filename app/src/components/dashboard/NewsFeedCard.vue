@@ -6,7 +6,7 @@
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <AppImage :name="selectedNews.image" :key="selectedNews.source" size="45" class="rounded-full shadow-lg" />
+                            <AppImage :name="selectedNews.image" :key="selectedNews.source" class="w-[45px] rounded-full shadow-lg" />
                             <span class="font-bold text-title text-xl">{{ capitalize(selectedNews.source) }}</span>
                         </div>
                         <div class="flex items-center gap-3 rounded-lg border py-2 px-3 text-sm font-semibold" :class="isBullish ? 'border-active text-active' : 'border-inactive text-inactive'">

@@ -5,7 +5,7 @@
             <div class="flex gap-5 items-center" v-for="currency in trendingCurrencies">
                 <div>
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
-                        <AppImage :name="currency.image" size="50" :key="currency.image" class="rounded-full shadow-md" />
+                        <AppImage :name="currency.image" :key="currency.image" class="w-[50px] rounded-full shadow-md" />
                     </Transition>
                 </div>
                 <div class="flex flex-col gap-3 w-full">

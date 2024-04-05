@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-3 py-6 px-7 border-b border-subtitle/5 last:border-[transparent] transition duration-200 hover:bg-background/50">
         <div class="flex items-center justify-between gap-4">
             <div class="flex gap-4">
-                <AppImage :name="news.image" size="40" class="rounded-full shadow-lg" />
+                <AppImage :name="news.image" class="w-[40px] rounded-full shadow-lg" />
                 <div class="flex flex-col">
                     <div class="flex items-center gap-3">
                         <span class="bg-subtitle/10 text-title/70 border border-subtitle/20 px-1 text-xs rounded-full">{{ news.symbol?.toUpperCase() }}</span>

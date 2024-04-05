@@ -1,7 +1,7 @@
 <template>
     <div class="sticky top-0 w-full xl:h-screen z-sidebar shadow-lg bg-container py-6 flex shrink-0 flex-col md:flex-row items-center md:justify-between gap-6 md:gap-0 xl:gap-11 xl:w-[252px] xl:flex-col xl:justify-start">
         <div class="flex items-center mx-9 gap-4 h-[51px]">
-            <AppImage size="45" name="logo.webp" />
+            <AppImage class="w-[45px]" name="logo.webp" />
             <span class="font-bold text-title text-2xl">CryptoViz</span>
         </div>
         <div class="flex flex-col sm:flex-row xl:flex-col items-center gap-2 xl:gap-3 mx-4">

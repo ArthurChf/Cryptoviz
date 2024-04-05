@@ -6,7 +6,7 @@
                 <div class="group cursor-pointer inline-flex w-fit items-center" @click="selectCurrency">
                     <AppTooltip text="Select a currency" position="right">
                         <div class="flex items-center gap-3">
-                            <AppImage size="30" :name="selectedCurrency.image!" :key="selectedCurrency.image" />
+                            <AppImage class="w-[30px]" :name="selectedCurrency.image!" :key="selectedCurrency.image" />
                             <h1 class="font-bold text-2xl transition duration-200" :class="selectedCurrency.name ? 'text-title group-hover:text-title/80' : 'text-subtitle/80 group-hover:text-subtitle/60'">{{ selectedCurrency.name ? selectedCurrency.name : 'Select currency' }}</h1>
                             <span v-if="selectedCurrency.symbol" class="text-sm font-medium mt-1 transition duration-200 text-subtitle group-hover:text-subtitle/80">({{ selectedCurrency.symbol }})</span>
                             <AppIcon :name="IconEnum.ARROW_DOWN" size="16" class="transition duration-200" :class="selectedCurrency.name ? 'text-title/90 group-hover:text-title/70' : 'text-subtitle/70 group-hover:text-subtitle/50'" />

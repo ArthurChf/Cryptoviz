@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-[24px] w-full p-[40px]">
+    <div class="flex flex-col gap-[24px] w-full p-[40px] overflow-hidden">
         <TopCurrenciesCard />
         <CryptocurrencyPrices />
     </div>

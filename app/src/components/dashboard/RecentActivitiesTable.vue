@@ -9,7 +9,7 @@
             </tr>
             <tr v-for="transaction in lastTransactions" :key="transaction.id" class="transition duration-200 hover:bg-background">
                 <td class="flex items-center gap-4 py-5 pl-3 font-medium text-subtitle">
-                    <AppImage :name="transaction.currencyImage" size="35" />
+                    <AppImage :name="transaction.currencyImage" class="w-[35px]" />
                     <span>{{ transaction.currencyName }}</span>
                 </td>
                 <td class="text-left py-5 font-medium text-title">{{ transaction.amount }}</td>

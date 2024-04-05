@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <AppImage :name="image" size="28" class="rounded-full shadow-lg" />
+                    <AppImage :name="image" class="w-[28px] rounded-full shadow-lg" />
                     <AppTooltip :text="capitalize(source)" position="bottom" :show="isSourceTruncated">
                         <span class="font-bold text-title text-md">{{ formatSource(source) }}</span>
                     </AppTooltip>
