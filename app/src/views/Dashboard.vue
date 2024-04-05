@@ -1,11 +1,11 @@
 <template>
-    <div class="flex gap-[24px] w-full p-[40px]">
-        <div class="flex flex-col gap-[24px]" style="width: calc(100vw - 712px);">
+    <div class="flex flex-col xl:flex-row gap-[24px] w-full p-[40px]">
+        <div class="flex flex-col gap-[24px] w-full xl:w-[calc(100vw-712px)]">
             <OverviewCard />
             <PriceTrendCard />
             <RecentActivitiesCard />
         </div>
-        <div class="flex flex-col gap-8" style="width: 350px;">
+        <div class="flex flex-col gap-8 w-full xl:w-[350px]">
             <FearGreedCard />
             <NewsFeedCard />
         </div>

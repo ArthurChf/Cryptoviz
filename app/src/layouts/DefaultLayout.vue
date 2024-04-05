@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-background flex min-h-screen">
+    <div class="bg-background flex flex-col xl:flex-row min-h-screen">
         <AppSidebar />
         <RouterView #default="{ Component }">
             <Transition :name="TransitionEnum.FADE" mode="out-in">
