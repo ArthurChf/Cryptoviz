@@ -1,20 +1,20 @@
 <template>
-    <div class="overflow-auto scrollbar">
-        <table class="table-fixed select-none w-max">
+    <div class="overflow-auto scrollbar w-full">
+        <table class="table-auto select-none w-max 2xl:w-full">
             <tr class="border-b-2 border-subtitle/5 text-subtitle text-md">
-                <th class="text-left font-semibold pb-4 px-3">#</th>
-                <th class="text-left font-semibold pb-4 px-8">Currency</th>
-                <th class="text-left font-semibold pb-4 px-8">Price</th>
-                <th class="text-left font-semibold pb-4 px-8">24h %</th>
-                <th class="text-left font-semibold pb-4 px-8">All-Time High</th>
-                <th class="text-left font-semibold pb-4 px-8">All-Time Low</th>
-                <th class="text-left font-semibold pb-4 px-8">Volume (24h)</th>
-                <th class="text-left font-semibold pb-4 px-8">Transactions</th>
-                <th class="text-left font-semibold pb-4 px-8">Action</th>
+                <th class="text-left font-semibold pb-4 px-3 2xl:px-0 2xl:w-[4%]">#</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[15%]">Currency</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[10%]">Price</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[11%]">24h %</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[12%]">All-Time High</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[12%]">All-Time Low</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[13%]">Volume (24h)</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[10%]">Transactions</th>
+                <th class="text-left font-semibold pb-4 px-8 2xl:px-0 2xl:w-[10%]">Action</th>
             </tr>
             <tr v-for="(currency, currencyId) in currencies" :key="currencyId + 1" class="transition duration-200 hover:bg-background">
-                <td class="py-5 px-3 font-medium text-subtitle">{{ currencyId + 1 }}</td>
-                <td class="py-5 px-8 flex items-center gap-4">
+                <td class="py-5 px-3 2xl:px-0 font-medium text-subtitle">{{ currencyId + 1 }}</td>
+                <td class="py-5 px-8 2xl:px-0 flex items-center gap-4">
                     <Transition :name="TransitionEnum.FADE" mode="out-in">
                         <AppImage :name="currency.image" :key="currency.image" class="w-[40px] rounded-full shadow-md" />
                     </Transition>
@@ -28,28 +28,28 @@
                     </div>
                 </td>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.price">{{ currency.price }}</td>
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.price">{{ currency.price }}</td>
                 </Transition>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.priceChangeRate">
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.priceChangeRate">
                         <AppTooltip :text="`${currency.priceChangeRate.toString()} %`" position="bottom" :show="isPriceChangeRateTruncated(currency.priceChangeRate)">
                             <span v-if="selectedCurrency.name" class="flex items-center gap-2 w-fit border rounded-2xl font-bold text-sm px-2 py-1 mt-1" :class="[currency.priceChangeRate >= 0 ? 'border-active text-active' : 'border-inactive text-inactive']">{{ currency.priceChangeRate > 0 ? '+' : '' }}{{ formatPriceChangeRate(currency.priceChangeRate) }} %</span>
                         </AppTooltip>
                     </td>
                 </Transition>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.priceHigh">{{ currency.priceHigh }}</td>
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.priceHigh">{{ currency.priceHigh }}</td>
                 </Transition>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.priceLow">{{ currency.priceLow }}</td>
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.priceLow">{{ currency.priceLow }}</td>
                 </Transition>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.volume">{{ currency.volume }}</td>
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.volume">{{ currency.volume }}</td>
                 </Transition>
                 <Transition :name="TransitionEnum.FADE" mode="out-in">
-                    <td class="py-5 px-8 font-medium text-subtitle" :key="currency.transactions">{{ currency.transactions }}</td>
+                    <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle" :key="currency.transactions">{{ currency.transactions }}</td>
                 </Transition>
-                <td class="py-5 px-8 font-medium text-subtitle">
+                <td class="py-5 px-8 2xl:px-0 font-medium text-subtitle">
                     <div role="button" class="inline-flex items-center gap-3 border-2 transition duration-200 rounded-lg w-fit px-3 py-1" :key="currency.symbol" :class="isSelectedCurrency(currency) ? 'text-active border-active/20 hover:border-active/30' : 'text-subtitle border-subtitle/20 hover:border-subtitle/30'" @click="selectCurrency(currency)">
                         <AppIcon v-if="isSelectedCurrency(currency)" :name="IconEnum.CHECK" size="7" class="text-active" />
                         <span>{{ isSelectedCurrency(currency) ? 'Selected' : 'Select' }}</span>
