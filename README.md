@@ -8,6 +8,10 @@ Used stack :
 * **Data lake** : MongoDB
 * **Data warehouse** : ClickHouse
 
+## Demo
+
+[https://arthurchf.github.io/Cryptoviz/demo](https://arthurchf.github.io/Cryptoviz/demo)
+
 ## App environments
 The app has two environments, that can be changed in the .env file in the app folder :
 * **DEMO** (default)
